@@ -8,6 +8,6 @@ Channel.hpp :
 
 Channel.cpp :
 
-Server.hpp :
+Server.hpp : DONE
 
-Server.cpp :
+Server.cpp : WORK IN PROGRESS

@@ -6,7 +6,7 @@
 /*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/14 21:18:10 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/15 20:49:54 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,23 +30,31 @@ Server::~Server() {
     stopServer();
 }
 
-// ==========================================
-// 1. SERVER LIFECYCLE (Person A)
-// ==========================================
-
 void Server::initServer() {
-    // Create master TCP IPv4 Socket
+    // Turn _serverFd into a the master socket, meaning the first socket created (usually to listen)
+	// AF_INET = IPv4, SOCK_STREAM = TCP, 0 = default protocol for those params
     _serverFd = socket(AF_INET, SOCK_STREAM, 0);
-    if (_serverFd < 0) throw std::runtime_error("Failed to create socket");
+    if (_serverFd < 0) throw std::runtime_error("socket error: failed to create socket");
 
-    // Set SO_REUSEADDR so port frees up instantly on restart
+    // Needed to restart the server without going through the TIME_WAIT syscall
+	// _serverFd = configured socket, SOL_SOCKET = where to seek the options of the socket, 
+	// SO_REUSEADDR = the rule we're giving to skip TIME_WAIT, &opt = pointer to the opt bool (system expect an int, not bool)
+	// the sizeof operation is needed because setsockopt is generic, so we must tell it what we're sending 
     int opt = 1;
     if (setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
-        throw std::runtime_error("setsockopt failed");
+        throw std::runtime_error("setsockopt error: SO_REUSEADDR failed on master socket");
 
-    // Set master socket to Non-Blocking
-    if (fcntl(_serverFd, F_SETFL, O_NONBLOCK) < 0)
-        throw std::runtime_error("fcntl failed on master socket");
+    // Set master socket to non-blocking
+	// _serverFd = fd to change permissions of, F_SETFL = tells to change / override the fd flags with the next args
+	// O_NONBLOCK = configure to open fd in non blocking, so cmd like accept or send won't block program running
+	int flags = fcntl(_serverFd, F_GETFL, 0);
+	if (flags < 0) {
+    	throw std::runtime_error("fcntl error: F_GETFL failed on master socket");
+	}
+
+	if (fcntl(_serverFd, F_SETFL, flags | O_NONBLOCK) < 0) {
+    	throw std::runtime_error("fcntl error: O_NONBLOCK failed on master socket");
+	}
 
     // Bind socket to Port
     struct sockaddr_in address;
