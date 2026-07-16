@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/14 17:39:44 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/16 09:17:45 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,3 +51,5 @@ class Parser
 		static std::vector<std::string> _trailing;
 
 };
+
+std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content);

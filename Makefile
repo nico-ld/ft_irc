@@ -6,11 +6,11 @@
 #    By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/07/13 08:35:33 by nile-dai         ###   ########.fr        #
+#    Updated: 2026/07/16 09:03:39 by nile-dai         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		:= ft_irc
+NAME 		:= ircserv
 CXXFLAGS	:= -Wall -Wextra -Werror -g -std=c++98
 CXX			:= c++
 INC			:= -Iincludes
@@ -27,7 +27,9 @@ YELLOW		:= \033[93m
 # ~~ Sources files
 SRC_DIR		:= src/
 SRC			:= \
-				$(SRC_DIR)main.cpp
+				$(SRC_DIR)main.cpp \
+				$(SRC_DIR)parser/Parser.cpp \
+				$(SRC_DIR)parser/ParserInit.cpp
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/
