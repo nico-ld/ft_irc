@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/16 09:22:37 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/16 09:26:46 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void Parser::parse(std::string &input) {
 	if (word.empty())
 		throw InvalidCommandException();
 
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 14; i++) {
 		ss >> word;
 		if (word[0] == ':') {
 			_trailing.push_back(word);
