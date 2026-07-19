@@ -6,7 +6,7 @@
 /*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/14 21:12:17 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/16 04:42:17 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,11 @@ class Channel;
 
 class Server {
 private:
-    // 1. Immutable Server Configuration
     int         _port;
     std::string _password;
 
-    // 2. Network / Socket Descriptors (Person A's Territory)
-    int         _serverFd; // The master listening socket
-    int         _epollFd;  // The epoll instance file descriptor
+    int         _serverFd;
+    int         _epollFd;
 
     // 3. Central Memory Storage (The "Database")
     std::map<int, User>            _users;    // Key: client socket FD -> Value: User object

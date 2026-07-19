@@ -1,13 +1,13 @@
 RULE : WORK IN PROGRESS, DONE, VERIFIED
 
-User.hpp :
+User.hpp : WORK IN PROGRESS
 
-User.cpp :
+User.cpp : WORK IN PROGRESS
 
 Channel.hpp :
 
 Channel.cpp :
 
-Server.hpp : DONE
+Server.hpp : WORK IN PROGRESS
 
 Server.cpp : WORK IN PROGRESS

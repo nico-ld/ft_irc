@@ -6,7 +6,7 @@
 /*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/15 20:49:54 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/16 05:02:15 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,18 +45,22 @@ void Server::initServer() {
         throw std::runtime_error("setsockopt error: SO_REUSEADDR failed on master socket");
 
     // Set master socket to non-blocking
-	// _serverFd = fd to change permissions of, F_SETFL = tells to change / override the fd flags with the next args
-	// O_NONBLOCK = configure to open fd in non blocking, so cmd like accept or send won't block program running
+	// _serverFd = fd to change permissions of, F_GETFL = gets the flags to be saved, so they're not overriden at the later if
 	int flags = fcntl(_serverFd, F_GETFL, 0);
 	if (flags < 0) {
     	throw std::runtime_error("fcntl error: F_GETFL failed on master socket");
 	}
 
+	// F_SETFL = tells to change / override the fd flags with the next args
+	// O_NONBLOCK = configure to open fd in non blocking, so cmd like accept or send won't block program running
 	if (fcntl(_serverFd, F_SETFL, flags | O_NONBLOCK) < 0) {
     	throw std::runtime_error("fcntl error: O_NONBLOCK failed on master socket");
 	}
 
     // Bind socket to Port
+	// sockaddr_in type comes from <netinet/in.h>
+	// INADDR_ANY = set IP placeholder to 0.0.0.0, meaning it accepts connexions from any source, so wifi, ethernet and so on
+	// The htons function converts the port number in Big-Endian, so it match what's expected on the Network protocol standart
     struct sockaddr_in address;
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
