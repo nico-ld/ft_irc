@@ -4,9 +4,9 @@ User.hpp : WORK IN PROGRESS
 
 User.cpp : WORK IN PROGRESS
 
-Channel.hpp :
+Channel.hpp : WORK IN PROGRESS
 
-Channel.cpp :
+Channel.cpp : WORK IN PROGRESS
 
 Server.hpp : WORK IN PROGRESS
 

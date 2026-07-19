@@ -6,13 +6,13 @@
 /*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/16 05:02:15 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/19 20:50:44 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include "User.hpp"      // Assuming Person A/B writes this
-#include "Channel.hpp"   // Assuming Person A/C writes this
+#include "User.hpp"
+#include "Channel.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <string.h>
@@ -22,7 +22,9 @@
 
 #define MAX_EVENTS 64
 #define BUFFER_SIZE 512
+#define loop while(1)
 
+//serverFd and epollFd are set at -1, because that's a Unix convention saying the fd is closed / not init
 Server::Server(int port, const std::string& password) 
     : _port(port), _password(password), _serverFd(-1), _epollFd(-1) {}
 
@@ -67,24 +69,34 @@ void Server::initServer() {
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(_port);
 
+	// 	The bind function is used to claim a port, in order to receive traffic
     if (bind(_serverFd, (struct sockaddr*)&address, sizeof(address)) < 0)
-        throw std::runtime_error("Bind failed");
+        throw std::runtime_error("Bind error: unable to bind the server to a port");
 
-    // Start listening
+	// Listen takes to args, the socket that receive packets, and the size of the queue 
+    // SOMAXCONN means we give maximum size allowed by the OS for the queue
     if (listen(_serverFd, SOMAXCONN) < 0)
-        throw std::runtime_error("Listen failed");
+        throw std::runtime_error("Listen error : unable to set the server to listen");
 
-    // Create epoll instance
+    // Create epoll instance, and instance is a monitoring tool that warns if there's
+	// a change in the monitored socket (more efficient memory-wise that multi-threading)
+	// The parameter is a flag, 0 means standart behavior for an epoll instance
     _epollFd = epoll_create1(0);
-    if (_epollFd < 0) throw std::runtime_error("Failed to create epoll instance");
+    if (_epollFd < 0) throw std::runtime_error("Epoll_create1 error : failed to create epoll instance");
 
     // Add master server socket to epoll
+	// The struct tells the kernel what to watch for (EPOLLIN = read data) 
+	// and which file descriptor is associated with that event (data.fd = _serverFd)
     struct epoll_event ev;
     memset(&ev, 0, sizeof(ev));
-    ev.events = EPOLLIN; // Watch for incoming connections
+    ev.events = EPOLLIN;
     ev.data.fd = _serverFd;
+
+	// epoll_ctl is the API to control the dashboard built by epoll_create1
+	// 4 args: dashboard, operation to do, target of the operation, pointer to the epoll_event struct
+	// Here, we're _serverFd to the watchlist
     if (epoll_ctl(_epollFd, EPOLL_CTL_ADD, _serverFd, &ev) < 0)
-        throw std::runtime_error("epoll_ctl failed for master socket");
+        throw std::runtime_error("epoll_ctl error : failed to add master socket to watchlist");
 
     std::cout << "IRC Server successfully launched on port " << _port << std::endl;
 }
@@ -92,7 +104,7 @@ void Server::initServer() {
 void Server::startLoop() {
     struct epoll_event events[MAX_EVENTS];
 
-    while (true) {
+    loop {
         // Wait for OS network events (Blocks here until something happens)
         int numEvents = epoll_wait(_epollFd, events, MAX_EVENTS, -1);
         if (numEvents < 0) {
