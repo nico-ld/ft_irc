@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 08:36:12 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/13 08:39:20 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 10:25:49 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,3 +35,8 @@
 #define CYAN		"\033[96m"
 #define WHITE		"\033[97m"
 
+// > Includes
+#include "Parser.hpp"
+#include "../src/core/User.hpp"
+#include "../src/core/Server.hpp"
+#include "../src/core/Channel.hpp"

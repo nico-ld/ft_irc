@@ -6,7 +6,11 @@
 #    By: afons <afons@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
+<<<<<<< HEAD
 #    Updated: 2026/07/20 17:03:16 by afons            ###   ########.fr        #
+=======
+#    Updated: 2026/07/20 11:25:58 by nile-dai         ###   ########.fr        #
+>>>>>>> parser
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,15 +28,24 @@ RED			:= \033[91m
 GREEN		:= \033[92m
 YELLOW		:= \033[93m
 
-# ~~ Sources files
+# ~~ Sources dir ~~
 SRC_DIR		:= src/
+BUF_DIR		:= $(SRC_DIR)buffer/
+NET_DIR		:= $(SRC_DIR)network/
+PARS_DIR	:= $(SRC_DIR)parser/
+CORE_DIR	:= $(SRC_DIR)core/
+
+# ~~ Sources files ~~
 SRC			:= \
 				$(SRC_DIR)main.cpp \
-				$(SRC_DIR)/core/Channel.cpp \
-				$(SRC_DIR)Join.cpp \
-				$(SRC_DIR)/core/Server.cpp \
+				$(PARS_DIR)Parser/Parser.cpp \
+				$(PARS_DIR)Parser/ParserInit.cpp \
+				$(PARS_DIR)dispatcher/dispatcher.cpp \
+				$(CORE_DIR)Channel.cpp \
+				$(CORE_DIR)Server.cpp \
+				$(CORE_DIR)User.cpp \
 				$(SRC_DIR)Message.cpp \
-				$(SRC_DIR)/core/User.cpp
+				$(SRC_DIR)Join.cpp
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/
