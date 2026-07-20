@@ -6,7 +6,7 @@
 #    By: afons <afons@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/07/18 16:20:06 by afons            ###   ########.fr        #
+#    Updated: 2026/07/20 15:32:22 by afons            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,11 +27,12 @@ YELLOW		:= \033[93m
 # ~~ Sources files
 SRC_DIR		:= src/
 SRC			:= \
-				$(SRC_DIR)main2.cpp \
-				$(SRC_DIR)Channel.cpp \
+				$(SRC_DIR)main.cpp \
+				$(SRC_DIR)/core/Channel.cpp \
 				$(SRC_DIR)Join.cpp \
-				$(SRC_DIR)Server.cpp
-				
+				$(SRC_DIR)/core/Server.cpp \
+				$(SRC_DIR)Broadcast.cpp \
+				$(SRC_DIR)/core/User.cpp
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/

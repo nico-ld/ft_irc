@@ -1,7 +1,6 @@
-#include "Server.hpp"
-#include "User.hpp"
-#include "../core/Channel.hpp"
-#include <sys/socket.h>
+#include "core/Server.hpp"
+#include "core/User.hpp"
+#include "core/Channel.hpp"
 
 void Server::join(std::string nameChannel, User *client) {
     std::map<std::string, Channel>::iterator it = _channels.find(nameChannel);
@@ -12,15 +11,15 @@ void Server::join(std::string nameChannel, User *client) {
         channel.addMember(client);
         _channels.insert(std::make_pair(nameChannel, channel));
     }
+    std::string message = " JOIN " + nameChannel + '\n';
+    broadcast(client, message);
 }
-    
+
 void Server::join(std::string nameChannel, std::string key, User *client) {
     std::map<std::string, Channel>::iterator it = _channels.find(nameChannel);
     if (it != _channels.end()) {
         if (it->second.getKey() != key) {
-            std::string messageError = client->getUsername() + " cannot join the channel : key error\n";
-            if (send(client->getFd(), messageError.c_str(), messageError.size(), 0) == -1)
-                perror("Send crashed.");
+            broadcast(client, " cannot join the channel : key error\n");
             return ;
         }
         it->second.addMember(client);
@@ -30,4 +29,6 @@ void Server::join(std::string nameChannel, std::string key, User *client) {
         channel.addMember(client);
         _channels.insert(std::make_pair(nameChannel, channel));
     }
+    std::string message = " JOIN " + nameChannel + '\n';
+    broadcast(client, message);
 }
