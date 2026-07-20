@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+         #
+#    By: afons <afons@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/07/13 08:35:33 by nile-dai         ###   ########.fr        #
+#    Updated: 2026/07/18 16:20:06 by afons            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		:= ft_irc
+NAME 		:= ircserv
 CXXFLAGS	:= -Wall -Wextra -Werror -g -std=c++98
 CXX			:= c++
 INC			:= -Iincludes
@@ -27,7 +27,11 @@ YELLOW		:= \033[93m
 # ~~ Sources files
 SRC_DIR		:= src/
 SRC			:= \
-				$(SRC_DIR)main.cpp
+				$(SRC_DIR)main2.cpp \
+				$(SRC_DIR)Channel.cpp \
+				$(SRC_DIR)Join.cpp \
+				$(SRC_DIR)Server.cpp
+				
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/16 04:42:17 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:32:41 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,10 @@ public:
     // --- Getters / Setters ---
     int                getPort() const;
     const std::string& getPassword() const;
+
+    // COMMANDES 
+    void join(std::string nameChannel, std::string key, User *client);
+    void join(std::string channel, User *client);
 };
 
 #endif

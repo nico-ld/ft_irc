@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:50:45 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/19 19:51:08 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:39:23 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,14 @@ Channel::Channel(const std::string& name)
       _key(""),
       _userLimit(-1) {} // -1 means no limit is enforced
 
+Channel::Channel(const std::string& name, const std::string& key)
+    : _name(name),
+      _topic(""),
+      _isInviteOnly(false),
+      _isTopicRestricted(true), // Standard IRC default: usually only ops change topic (+t)
+      _key(key),
+      _userLimit(-1) {}
+
 Channel::~Channel() {}
 
 // Orthodox Canonical Form: Copy Constructor
@@ -33,7 +41,7 @@ Channel::Channel(const Channel& src) {
 }
 
 // Orthodox Canonical Form: Copy Assignment Operator
-Channel::Channel& Channel::operator=(const Channel& src) {
+Channel &Channel::operator=(const Channel& src) {
     if (this != &src) {
         _name = src._name;
         _topic = src._topic;

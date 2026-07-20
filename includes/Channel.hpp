@@ -1,15 +1,15 @@
 #pragma once
 
 #include <string>
-#include "user.hpp"
+#include "client.hpp"
 #include <list>
 
 struct mode {
 	bool i; //for invitations
-	std::list<User> invitationList;
+	std::list<Client> invitationList;
 	std::string topic;
 	std::string key;
-	std::list<User> operatorList; //o
+	std::list<Client> operatorList; //o
 	int l; //for limits of members
 };
 
@@ -19,18 +19,18 @@ class Channel {
 		Channel(std::string name, std::string key);
 		~Channel();
 
-		void addClient(const User &client);
-		void removeClient(const User &client);
+		void addClient(const Client &client);
+		void removeClient(const Client &client);
 		
 		//SETTERS
-		void setOperator(const User &client);	
+		void setOperator(const Client &client);	
 		
 		//GETTERS
-		bool isClientOperator(const User &client, const Channel &channel);
-		std::string Channel::getKey();
+		bool isClientOperator(const Client &client, const Channel &channel);
+		std::string getKey();
 
 	private:
 		std::string			_name;
 		mode				_modeChannel;
-		std::list<User>	_clientList;
+		std::list<Client>	_clientList;
 };

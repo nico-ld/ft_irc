@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:49:37 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/19 19:50:38 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:39:00 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ private:
 public:
     // Constructor / Destructor
     Channel(const std::string& name);
+    Channel(const std::string& name, const std::string& key);
     ~Channel();
 
     // Orthodox Canonical Form
