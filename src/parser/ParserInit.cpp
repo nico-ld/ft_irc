@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 17:37:06 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 09:37:41 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 09:47:31 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 std::string Parser::_prefix = "";
 std::string Parser::_command = "";
+unsigned int Parser::_commandListId = 0;
 std::vector<std::string> Parser::_parameters;
 std::vector<std::string> Parser::_trailing;
 std::vector<std::string> Parser::_commandsChannel;

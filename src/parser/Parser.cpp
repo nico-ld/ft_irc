@@ -6,29 +6,58 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/16 09:26:46 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 09:48:10 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
 
+/*
+ * ::parseCommand() -> search into every list to find command. If no command
+ *					   is founded, '_command' stay empty and an error is throwed.
+ *
+ * Parameters: The user input limited on the second word
+ */
 void Parser::parseCommand(std::string &input) {
 	std::transform(input.begin(), input.end(), input.begin(), ::tolower);
 
 	std::vector<std::string>::iterator it;
-	for (it = _commandList.begin(); it != _commandList.end(); it++) {
+	for (it = _commandsChannel.begin(); it != _commandsChannel.end(); it++) {
 		if (*it == input) {
 			_command = input;
+			_commandListId = 1;
+			return ;
+		}
+	}
+
+	for (it = _commandsMessage.begin(); it != _commandsMessage.end(); it++) {
+		if (*it == input) {
+			_command = input;
+			_commandListId = 2;
+			return ;
+		}
+	}
+
+	for (it = _commandsUser.begin(); it != _commandsUser.end(); it++) {
+		if (*it == input) {
+			_command = input;
+			_commandListId = 3;
 			return ;
 		}
 	}
 }
 
+/*
+ * ::parse() -> Check user input
+ *
+ * Parameters : The user input
+ */
 void Parser::parse(std::string &input) {
 	initCommandList();
 
 	_prefix = "";
 	_command = "";
+	_commandListId = 0;
 	_parameters.clear();
 	_trailing.clear();
 

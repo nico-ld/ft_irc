@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 09:34:53 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 09:56:55 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class Parser
 		// == Getters ==
 		static std::string getPrefix( void ) {return (_prefix);}
 		static std::string getCommand( void ) {return (_command);}
+		static unsigned int getCommandListId( void ) {return (_commandListId);}
 		static std::vector<std::string> getParameters( void ) {return (_parameters);}
 		static std::vector<std::string> getTrailing( void ) {return (_trailing);}
 
@@ -49,9 +50,12 @@ class Parser
 
 		static std::string _prefix;
 		static std::string _command;
+		static unsigned int _commandListId;
 		static std::vector<std::string> _parameters;
 		static std::vector<std::string> _trailing;
 
 };
 
 std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content);
+
+void dispatch( void );
