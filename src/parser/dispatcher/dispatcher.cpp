@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 10:45:00 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 11:15:40 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,30 @@ static void messageCommandsDispatch(std::string command) {
 
 /* Commands to register a user */
 static void userCommandsDispatch(std::string command, User &user) {
-	/* code */
+	std::vector<std::string> parameters = Parser::getParameters();
+
+	if (command == "user") {
+		if (parameters.empty())
+			throw std::runtime_error("Error: Invalid parameter for USER command.");
+		user.setRealname(parameters[0]);
+		user.setProvidedUser(true);
+	}
+	else if (command == "nick") {
+		if (parameters.empty())
+			throw std::runtime_error("Error: Invalid parameter for NICK command.");
+		user.setNickname(parameters[0]);
+		user.setProvidedNick(true);
+	}
+	else if (command == "pass") {
+		if (parameters.empty())
+			throw std::runtime_error("Error: Invalid parameter for PASS command.");
+		// if (parameters[0] != Server::getPassword())
+		// 	throw std::runtime_error("Error: Invalid password");
+		user.setProvidedPassword(true);
+	}
+	
+	if (user.hasProvidedNick() && user.hasProvidedUser() && user.hasProvidedPassword())
+		user.setAuthenticated(true);
 }
 
 void dispatchCommand(User &user) {
