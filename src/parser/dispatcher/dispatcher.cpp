@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 11:15:40 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:04:55 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 /* Commands to manage channel and user */
 static void	channelCommandsDispatch(std::string command, User &user) {
+	(void)user;
+	std::cout << command << " is no handled for the moment." << std::endl;
 	/*
 	std::vector<std::string> parameters = Parser::getParameters();
 	
@@ -27,7 +29,9 @@ static void	channelCommandsDispatch(std::string command, User &user) {
 }
 
 /* Commands to send a message */
-static void messageCommandsDispatch(std::string command) {
+static void messageCommandsDispatch(std::string command, User &user) {
+	(void)user;
+	std::cout << command << " is not handled for the moment." << std::endl;
 	/* code */
 }
 
@@ -68,7 +72,7 @@ void dispatchCommand(User &user) {
 			channelCommandsDispatch(command, user);
 			break ;
 		case 2:
-			messageCommandsDispatch(command);
+			messageCommandsDispatch(command, user);
 			break ;
 		case 3:
 			userCommandsDispatch(command, user);

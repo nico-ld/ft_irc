@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:50:45 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/19 19:51:08 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:06:24 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ Channel::Channel(const Channel& src) {
 }
 
 // Orthodox Canonical Form: Copy Assignment Operator
-Channel::Channel& Channel::operator=(const Channel& src) {
+Channel& Channel::operator=(const Channel& src) {
     if (this != &src) {
         _name = src._name;
         _topic = src._topic;

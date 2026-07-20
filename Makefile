@@ -6,7 +6,7 @@
 #    By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/07/20 10:27:53 by nile-dai         ###   ########.fr        #
+#    Updated: 2026/07/20 11:25:58 by nile-dai         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,12 +24,22 @@ RED			:= \033[91m
 GREEN		:= \033[92m
 YELLOW		:= \033[93m
 
-# ~~ Sources files
+# ~~ Sources dir ~~
 SRC_DIR		:= src/
+BUF_DIR		:= $(SRC_DIR)buffer/
+NET_DIR		:= $(SRC_DIR)network/
+PARS_DIR	:= $(SRC_DIR)parser/
+CORE_DIR	:= $(SRC_DIR)core/
+
+# ~~ Sources files ~~
 SRC			:= \
 				$(SRC_DIR)main.cpp \
-				$(SRC_DIR)parser/Parser/Parser.cpp \
-				$(SRC_DIR)parser/Parser/ParserInit.cpp
+				$(PARS_DIR)Parser/Parser.cpp \
+				$(PARS_DIR)Parser/ParserInit.cpp \
+				$(PARS_DIR)dispatcher/dispatcher.cpp \
+				$(CORE_DIR)Channel.cpp \
+				$(CORE_DIR)Server.cpp \
+				$(CORE_DIR)User.cpp
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/

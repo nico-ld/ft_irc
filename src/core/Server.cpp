@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/16 05:02:15 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:08:45 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,9 @@ void Server::initServer() {
 	// SO_REUSEADDR = the rule we're giving to skip TIME_WAIT, &opt = pointer to the opt bool (system expect an int, not bool)
 	// the sizeof operation is needed because setsockopt is generic, so we must tell it what we're sending 
     int opt = 1;
-    if (setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+    if (setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
         throw std::runtime_error("setsockopt error: SO_REUSEADDR failed on master socket");
+	}
 
     // Set master socket to non-blocking
 	// _serverFd = fd to change permissions of, F_GETFL = gets the flags to be saved, so they're not overriden at the later if

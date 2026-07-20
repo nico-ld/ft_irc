@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 11:07:12 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:03:07 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <algorithm>
 #include <stdexcept>
 #include <vector>
+
+class User;
 
 class Parser
 {
