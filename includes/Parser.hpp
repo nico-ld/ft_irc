@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 09:56:55 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 10:26:05 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,4 @@ class Parser
 
 std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content);
 
-void dispatch( void );
+void dispatchCommand(User &user);
