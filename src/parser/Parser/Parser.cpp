@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 10:32:39 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:22:56 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,19 @@ void Parser::parseCommand(std::string &input) {
 	}
 }
 
-void Parser::parse(std::string &input) {
-	initCommandList();
-
-	_prefix = "";
-	_command = "";
+void Parser::clearParser(void) {
+	_prefix.clear();
+	_command.clear();
 	_commandListId = 0;
 	_parameters.clear();
 	_trailing.clear();
+}
+
+void Parser::parse(std::string &input) {
+	if (!_listInit)
+		throw CommandListNotInitException();
+
+	clearParser();
 
 	std::string word;
 	std::stringstream ss(input);

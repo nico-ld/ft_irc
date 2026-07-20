@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 13:03:07 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:23:12 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,13 @@ class Parser
 		/* Parse and tokenize user input */
 		static void	parse(std::string &input);
 
+		/* Reset private attribut */
+		static void clearParser( void );
+		
+		/* Init every commands list */
+		static void initCommandList( void );
+
+		
 		// === GETTERS ===
 		/* Return the prefix of user input as string */
 		static std::string getPrefix( void ) {return (_prefix);}
@@ -43,9 +50,14 @@ class Parser
 		/* Return the trailing parameter as vector */
 		static std::vector<std::string> getTrailing( void ) {return (_trailing);}
 
+		
 		// === EXCEPTION ===
 		class InvalidCommandException: public std::exception {
 			public: virtual const char *what() const throw() {return ("Error: invalid command.");}
+		};
+		
+		class CommandListNotInitException: public std::exception {
+			public: virtual const char *what() const throw() {return ("Parser Error: command list not init.");}
 		};
 		
 	private:
@@ -56,13 +68,16 @@ class Parser
 		/* Search command, if command is unknow _command  stay empty and an error is throwed */
 		static void parseCommand(std::string &input);
 
+		/* Build origin prefix, if there is an existing prefix, it overwrite the function */
+		static void buildPrefix(std::string &word);
+
+
 		// === COMMANDS LISTS ===
+		static bool	_listInit;
 		static std::vector<std::string> _commandsChannel;
 		static std::vector<std::string> _commandsMessage;
 		static std::vector<std::string> _commandsUser;
-		
-		/* Init every commands list */
-		static void initCommandList( void );
+
 
 		// === PRIVATE ATTRIBUTS ===
 		static std::string _prefix;

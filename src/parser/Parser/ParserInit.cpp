@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 17:37:06 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 09:47:31 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:25:06 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,16 @@ std::string Parser::_command = "";
 unsigned int Parser::_commandListId = 0;
 std::vector<std::string> Parser::_parameters;
 std::vector<std::string> Parser::_trailing;
+
+bool Parser::_listInit = false;
 std::vector<std::string> Parser::_commandsChannel;
 std::vector<std::string> Parser::_commandsMessage;
 std::vector<std::string> Parser::_commandsUser;
 
 void Parser::initCommandList() {
+	if (_listInit)
+		return ;
+
 	_commandsChannel.push_back("join");
 	_commandsChannel.push_back("kick");
 	_commandsChannel.push_back("invite");
@@ -35,6 +40,8 @@ void Parser::initCommandList() {
 	_commandsUser.push_back("user");
 	_commandsUser.push_back("nick");
 	_commandsUser.push_back("pass");
+
+	_listInit = true;
 }
 
 std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content) {
