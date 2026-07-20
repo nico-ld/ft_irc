@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/20 15:10:24 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/20 17:24:20 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,11 @@ public:
     void join(std::string nameChannel, std::string key, User *client);
     void join(std::string channel, User *client);
 
-    // Broadcast
-    void broadcast(const User *user, std::string message);
+    // Message
+    void broadcast(const Channel &channel, std::string message);
+    void broadcast(const Channel &channel, const User *user, std::string message);
+
+    void notification(const User *user, std::string message);
 };
 
 #endif

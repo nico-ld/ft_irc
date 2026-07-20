@@ -6,7 +6,7 @@
 #    By: afons <afons@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/07/20 15:32:22 by afons            ###   ########.fr        #
+#    Updated: 2026/07/20 17:03:16 by afons            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ SRC			:= \
 				$(SRC_DIR)/core/Channel.cpp \
 				$(SRC_DIR)Join.cpp \
 				$(SRC_DIR)/core/Server.cpp \
-				$(SRC_DIR)Broadcast.cpp \
+				$(SRC_DIR)Message.cpp \
 				$(SRC_DIR)/core/User.cpp
 
 # ~~ Objects ~~
