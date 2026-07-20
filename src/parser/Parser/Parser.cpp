@@ -6,18 +6,12 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 09:48:10 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 10:32:39 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
 
-/*
- * ::parseCommand() -> search into every list to find command. If no command
- *					   is founded, '_command' stay empty and an error is throwed.
- *
- * Parameters: The user input limited on the second word
- */
 void Parser::parseCommand(std::string &input) {
 	std::transform(input.begin(), input.end(), input.begin(), ::tolower);
 
@@ -47,11 +41,6 @@ void Parser::parseCommand(std::string &input) {
 	}
 }
 
-/*
- * ::parse() -> Check user input
- *
- * Parameters : The user input
- */
 void Parser::parse(std::string &input) {
 	initCommandList();
 

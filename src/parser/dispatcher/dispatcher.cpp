@@ -6,12 +6,13 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 10:26:47 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 10:45:00 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
 
+/* Commands to manage channel and user */
 static void	channelCommandsDispatch(std::string command, User &user) {
 	/*
 	std::vector<std::string> parameters = Parser::getParameters();
@@ -25,10 +26,12 @@ static void	channelCommandsDispatch(std::string command, User &user) {
 	*/
 }
 
+/* Commands to send a message */
 static void messageCommandsDispatch(std::string command) {
 	/* code */
 }
 
+/* Commands to register a user */
 static void userCommandsDispatch(std::string command, User &user) {
 	/* code */
 }

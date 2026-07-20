@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 10:26:05 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 10:43:44 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,27 @@
 class Parser
 {
 	public:
-		// == Basic methods ==
+		// === PUBLIC METHODS ===
+		/* Parse and tokenize user input */
 		static void	parse(std::string &input);
 
-		// == Getters ==
+		// === GETTERS ===
+		/* Return the prefix of user input as string */
 		static std::string getPrefix( void ) {return (_prefix);}
+		
+		/* Return the command of user input */
 		static std::string getCommand( void ) {return (_command);}
+
+		/* Return the Id of command list {1: Channel commands; 2: Message commands; 3: User commands} */
 		static unsigned int getCommandListId( void ) {return (_commandListId);}
+
+		/* Return the list of paramaters (no trailing) as vector */
 		static std::vector<std::string> getParameters( void ) {return (_parameters);}
+
+		/* Return the trailing parameter as vector */
 		static std::vector<std::string> getTrailing( void ) {return (_trailing);}
 
-		// == Exception ==
+		// === EXCEPTION ===
 		class InvalidCommandException: public std::exception {
 			public: virtual const char *what() const throw() {return ("Error: invalid command.");}
 		};
@@ -39,15 +49,19 @@ class Parser
 		Parser() {}
 		~Parser() {}
 
-		// == Private methods ==
+		// === PRIVATE METHODS ===
+		/* Search command, if command is unknow _command  stay empty and an error is throwed */
 		static void parseCommand(std::string &input);
 
-		// Change type when Amy push commands prototype
+		// === COMMANDS LISTS ===
 		static std::vector<std::string> _commandsChannel;
 		static std::vector<std::string> _commandsMessage;
 		static std::vector<std::string> _commandsUser;
+		
+		/* Init every commands list */
 		static void initCommandList( void );
 
+		// === PRIVATE ATTRIBUTS ===
 		static std::string _prefix;
 		static std::string _command;
 		static unsigned int _commandListId;
@@ -58,4 +72,5 @@ class Parser
 
 std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content);
 
+/* After parsing the user input, this function take the targer user and call the good command */
 void dispatchCommand(User &user);
