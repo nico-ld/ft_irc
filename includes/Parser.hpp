@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 13:23:12 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:30:06 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@ class Parser
 		
 		/* Init every commands list */
 		static void initCommandList( void );
+
+		/* Build origin prefix, if there is an existing prefix, it overwrite the function */
+		static void buildPrefix(User &user);
 
 		
 		// === GETTERS ===
@@ -67,9 +70,6 @@ class Parser
 		// === PRIVATE METHODS ===
 		/* Search command, if command is unknow _command  stay empty and an error is throwed */
 		static void parseCommand(std::string &input);
-
-		/* Build origin prefix, if there is an existing prefix, it overwrite the function */
-		static void buildPrefix(std::string &word);
 
 
 		// === COMMANDS LISTS ===

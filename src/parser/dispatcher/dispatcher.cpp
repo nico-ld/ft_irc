@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 13:04:55 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:33:42 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ static void userCommandsDispatch(std::string command, User &user) {
 
 void dispatchCommand(User &user) {
 	std::string command = Parser::getCommand();
+	Parser::buildPrefix(user);
 
 	switch (Parser::getCommandListId())
 	{

@@ -6,11 +6,11 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 13:22:56 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 13:33:09 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Parser.hpp"
+#include "ft_irc.hpp"
 
 void Parser::parseCommand(std::string &input) {
 	std::transform(input.begin(), input.end(), input.begin(), ::tolower);
@@ -41,14 +41,6 @@ void Parser::parseCommand(std::string &input) {
 	}
 }
 
-void Parser::clearParser(void) {
-	_prefix.clear();
-	_command.clear();
-	_commandListId = 0;
-	_parameters.clear();
-	_trailing.clear();
-}
-
 void Parser::parse(std::string &input) {
 	if (!_listInit)
 		throw CommandListNotInitException();
@@ -76,4 +68,20 @@ void Parser::parse(std::string &input) {
 	}
 	while (ss >> word)
 		_trailing.push_back(word);
+}
+
+void Parser::clearParser(void) {
+	_prefix.clear();
+	_command.clear();
+	_commandListId = 0;
+	_parameters.clear();
+	_trailing.clear();
+}
+
+void Parser::buildPrefix(User &user) {
+	if (!_prefix.empty())
+		return ;
+
+	if (user.isAuthenticated())
+		_prefix = user.getNickname() + "!" + user.getRealname() + "@" + user.getHostname();
 }
