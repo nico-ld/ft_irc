@@ -1,0 +1,13 @@
+RULE : WORK IN PROGRESS, DONE, VERIFIED
+
+User.hpp : WORK IN PROGRESS
+
+User.cpp : WORK IN PROGRESS
+
+Channel.hpp : WORK IN PROGRESS
+
+Channel.cpp : WORK IN PROGRESS
+
+Server.hpp : WORK IN PROGRESS
+
+Server.cpp : WORK IN PROGRESS
