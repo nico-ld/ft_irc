@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 17:37:06 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/16 09:22:08 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 09:37:41 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,24 @@ std::string Parser::_prefix = "";
 std::string Parser::_command = "";
 std::vector<std::string> Parser::_parameters;
 std::vector<std::string> Parser::_trailing;
-std::vector<std::string> Parser::_commandList;
+std::vector<std::string> Parser::_commandsChannel;
+std::vector<std::string> Parser::_commandsMessage;
+std::vector<std::string> Parser::_commandsUser;
 
 void Parser::initCommandList() {
-	_commandList.push_back("join");
-	_commandList.push_back("kick");
-	_commandList.push_back("invite");
-	_commandList.push_back("topic");
-	_commandList.push_back("mode");
-	_commandList.push_back("part");
-	_commandList.push_back("privmsg");
-	_commandList.push_back("notice");
+	_commandsChannel.push_back("join");
+	_commandsChannel.push_back("kick");
+	_commandsChannel.push_back("invite");
+	_commandsChannel.push_back("topic");
+	_commandsChannel.push_back("mode");
+	_commandsChannel.push_back("part");
+
+	_commandsMessage.push_back("privmsg");
+	_commandsMessage.push_back("notice");
+
+	_commandsUser.push_back("user");
+	_commandsUser.push_back("nick");
+	_commandsUser.push_back("pass");
 }
 
 std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content) {

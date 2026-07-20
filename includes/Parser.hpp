@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/16 09:17:45 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/20 09:34:53 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,9 @@ class Parser
 		static void parseCommand(std::string &input);
 
 		// Change type when Amy push commands prototype
-		static std::vector<std::string> _commandList;
+		static std::vector<std::string> _commandsChannel;
+		static std::vector<std::string> _commandsMessage;
+		static std::vector<std::string> _commandsUser;
 		static void initCommandList( void );
 
 		static std::string _prefix;
