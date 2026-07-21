@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 13:30:06 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/21 12:50:03 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,6 @@ class Parser
 		// === EXCEPTION ===
 		class InvalidCommandException: public std::exception {
 			public: virtual const char *what() const throw() {return ("Error: invalid command.");}
-		};
-		
-		class CommandListNotInitException: public std::exception {
-			public: virtual const char *what() const throw() {return ("Parser Error: command list not init.");}
 		};
 		
 	private:

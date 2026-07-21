@@ -6,11 +6,52 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 13:33:09 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/21 12:56:45 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
+
+void Parser::parse(std::string &input) {
+	std::stringstream ss(input);
+	std::string word;
+
+	initCommandList();
+
+	// Reset private attributs to avoid vector already filled
+	clearParser();
+	
+	try {
+		ss >> word;
+
+		// Get prefix
+		if (word[0] == ':') {
+			_prefix = word;
+			ss >> word;
+		}
+
+		// Get command
+		parseCommand(word);
+
+		// Get parameters
+		for (int i = 0; i < 14; i++) {
+			if (!(ss >> word))
+				break ;
+			if (word[0] == ':') {
+				_trailing.push_back(word);
+				break ;
+			}
+			_parameters.push_back(word);
+		}
+
+		// Get trailing
+		while (ss >> word) {
+			_trailing.push_back(word);
+		}
+	} catch (std::exception &e) {
+		std::cerr << e.what() << std::flush << std::endl;
+	}
+}
 
 void Parser::parseCommand(std::string &input) {
 	std::transform(input.begin(), input.end(), input.begin(), ::tolower);
@@ -39,35 +80,8 @@ void Parser::parseCommand(std::string &input) {
 			return ;
 		}
 	}
-}
 
-void Parser::parse(std::string &input) {
-	if (!_listInit)
-		throw CommandListNotInitException();
-
-	clearParser();
-
-	std::string word;
-	std::stringstream ss(input);
-	ss >> word;
-	if (word[0] == ':') {
-		_prefix = word;
-		ss >> word;
-	}
-	parseCommand(word);
-	if (word.empty())
-		throw InvalidCommandException();
-
-	for (int i = 0; i < 14; i++) {
-		ss >> word;
-		if (word[0] == ':') {
-			_trailing.push_back(word);
-			break ;
-		}
-		_parameters.push_back(word);
-	}
-	while (ss >> word)
-		_trailing.push_back(word);
+	throw InvalidCommandException();
 }
 
 void Parser::clearParser(void) {
