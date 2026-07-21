@@ -6,7 +6,7 @@
 /*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/19 20:50:44 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/21 15:30:11 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,47 +105,51 @@ void Server::startLoop() {
     struct epoll_event events[MAX_EVENTS];
 
     loop {
-        // Wait for OS network events (Blocks here until something happens)
+        // Pause the socket until an event happens
+		// _epollFd = the socket to watch over, events = An array of struct epoll_event
+		// MAX_EVENTS = the size of the events array
+		// -1 = it's the timeout arg, -1 means the socket is under sleep indefinitely until an event happen
         int numEvents = epoll_wait(_epollFd, events, MAX_EVENTS, -1);
         if (numEvents < 0) {
-            std::cerr << "epoll_wait error" << std::endl;
+            std::cerr << "epoll_wait error: unable to pause the socket" << std::endl;
             break; 
         }
 
+		// Pulls out the currentFd that triggered an event
         for (int i = 0; i < numEvents; ++i) {
             int currentFd = events[i].data.fd;
 
-            // Scenario A: New Connection coming in on the listening socket
+            // Case A: currentFd == _serverFd, meaning currentFd is a new client
+			// The OS picks up the new connection, create a socket for the client
+			// then adds it to the epoll list and register it as Unauthenticated User for now
             if (currentFd == _serverFd) {
                 struct sockaddr_in clientAddr;
                 socklen_t addrLen = sizeof(clientAddr);
                 int clientFd = accept(_serverFd, (struct sockaddr*)&clientAddr, &addrLen);
                 if (clientFd >= 0) {
-                    // Set new client socket to non-blocking
                     fcntl(clientFd, F_SETFL, O_NONBLOCK);
 
-                    // Add new client to epoll list
                     struct epoll_event ev;
                     memset(&ev, 0, sizeof(ev));
-                    ev.events = EPOLLIN; // Watch for readable data from client
+                    ev.events = EPOLLIN;
                     ev.data.fd = clientFd;
                     epoll_ctl(_epollFd, EPOLL_CTL_ADD, clientFd, &ev);
 
-                    // Instantiate a User in core memory
                     addUnauthenticatedUser(clientFd);
                     std::cout << "New client connected on fd: " << clientFd << std::endl;
                 }
             } 
-            // Scenario B: Read event on an existing client's socket
+            // Case B: the incoming client is already connected and registered through epoll
+			// events[i].events & EPOLLIN means there are incoming bytes waiting from currentFd
+			// We therefore create a buffer in which we'll receive all the incoming bytes
             else if (events[i].events & EPOLLIN) {
                 char buffer[BUFFER_SIZE];
                 memset(buffer, 0, BUFFER_SIZE);
                 
-                // Read exactly once (No loops checking errno, as per the subject!)
                 int bytesRead = recv(currentFd, buffer, BUFFER_SIZE - 1, 0);
 
+				// if <= 0, it means the network disconnected during the process
                 if (bytesRead <= 0) {
-                    // Client disconnected or read error
                     std::cout << "Client disconnected on fd: " << currentFd << std::endl;
                     removeUser(currentFd);
                 } else {
