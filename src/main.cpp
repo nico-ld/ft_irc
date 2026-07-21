@@ -1,8 +1,6 @@
 #include "ft_irc.hpp"
 
 int main(void) {
-	Parser::initCommandList();
-
 	std::string line;
 	std::cout << "input > ";
 	std::getline(std::cin, line);
