@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/21 12:53:04 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/21 12:56:45 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,23 @@ void Parser::parse(std::string &input) {
 	std::string word;
 
 	initCommandList();
+
+	// Reset private attributs to avoid vector already filled
+	clearParser();
 	
 	try {
 		ss >> word;
+
+		// Get prefix
 		if (word[0] == ':') {
 			_prefix = word;
 			ss >> word;
 		}
 
+		// Get command
 		parseCommand(word);
 
+		// Get parameters
 		for (int i = 0; i < 14; i++) {
 			if (!(ss >> word))
 				break ;
@@ -37,6 +44,7 @@ void Parser::parse(std::string &input) {
 			_parameters.push_back(word);
 		}
 
+		// Get trailing
 		while (ss >> word) {
 			_trailing.push_back(word);
 		}
