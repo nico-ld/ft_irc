@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:50:45 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/20 19:11:55 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/22 14:53:44 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ const std::map<int, User*>& Channel::getMembers() const {
     return _members;
 }
 
-size_t Channel::getMemberCount() const {
+long Channel::getMemberCount() const {
     return _members.size();
 }
 

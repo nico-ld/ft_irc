@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/20 19:09:42 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/21 14:17:26 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,3 +214,8 @@ User* Server::getUserByNickname(const std::string& nickname) {
 // ==========================================
 int Server::getPort() const { return _port; }
 const std::string& Server::getPassword() const { return _password; }
+
+Channel* Server::getChannelByName(const std::string& name) {
+    std::map<std::string, Channel>::iterator it = _channels.find(name);
+    return &it->second;
+}

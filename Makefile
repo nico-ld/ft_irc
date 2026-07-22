@@ -6,7 +6,7 @@
 #    By: afons <afons@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/07/20 19:11:37 by afons            ###   ########.fr        #
+#    Updated: 2026/07/22 15:52:17 by afons            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,9 @@ SRC			:= \
 				$(CORE_DIR)Server.cpp \
 				$(CORE_DIR)User.cpp \
 				$(SRC_DIR)Message.cpp \
-				$(SRC_DIR)Join.cpp
+				$(SRC_DIR)commands/Join.cpp\
+				$(SRC_DIR)commands/Kick.cpp
+				
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/

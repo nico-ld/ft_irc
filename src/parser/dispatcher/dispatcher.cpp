@@ -3,29 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   dispatcher.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 13:33:42 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/22 15:42:42 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
 
 /* Commands to manage channel and user */
-static void	channelCommandsDispatch(std::string command, User &user) {
-	(void)user;
-	std::cout << command << " is no handled for the moment." << std::endl;
-	/*
+static void	channelCommandsDispatch(Server &server, std::string command, User &user) {
+	// std::cout << command << " is no handled for the moment." << std::endl;
+	
 	std::vector<std::string> parameters = Parser::getParameters();
 	
+	std::cout << command << std::endl;
 	if (command == "join") {
-		if (parameters[1])
-			Server::join(parameters[0], parameters[1], user);
+		if (parameters.size() > 1)
+			server.join(parameters[0], parameters[1], &user);
 		else
-			Server::join(parameters[0], user);
+			server.join(parameters[0], &user);
 	}
-	*/
+	if (command == "kick") {
+		if (parameters.size() > 2)
+			server.kick(parameters[0], parameters[1], parameters[2], &user);
+		else 
+			server.kick(parameters[0], parameters[1], &user);
+	}
 }
 
 /* Commands to send a message */
@@ -63,14 +68,16 @@ static void userCommandsDispatch(std::string command, User &user) {
 		user.setAuthenticated(true);
 }
 
-void dispatchCommand(User &user) {
+void dispatchCommand(Server &server, User &user) {
 	std::string command = Parser::getCommand();
 	Parser::buildPrefix(user);
 
-	switch (Parser::getCommandListId())
+	try
 	{
+		switch (Parser::getCommandListId())
+		{
 		case 1:
-			channelCommandsDispatch(command, user);
+			channelCommandsDispatch(server, command, user);
 			break ;
 		case 2:
 			messageCommandsDispatch(command, user);
@@ -82,5 +89,11 @@ void dispatchCommand(User &user) {
 		default:
 			throw Parser::InvalidCommandException();
 			break ;
+		}
+	}
+
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
 	}
 }

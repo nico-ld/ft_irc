@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:49:37 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/20 16:22:12 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/22 14:53:53 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ public:
 
     long               getUserLimit() const;
     void               setUserLimit(long limit);
-    size_t             getMemberCount() const;
+    long             getMemberCount() const;
 };
 
 #endif
