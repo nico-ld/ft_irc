@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/22 08:38:32 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/22 15:15:51 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,12 +154,22 @@ void Server::startLoop() {
                     std::cout << "Client disconnected on fd: " << currentFd << std::endl;
                     removeUser(currentFd);
                 } else {
-                    // -> Hand off buffer string to BufferManager here! <-
-                    // (e.g., BufferManager::append(currentFd, std::string(buffer, bytesRead)))
-                }
-            }
-        }
-    }
+    				// Append the newly read bytes to the client's buffer
+					// Then process all complete commands (so closed with either \r\n or \n) in the buffer
+    				_users[currentFd].inputBuffer.append(buffer, bytesRead);
+    				size_t pos;
+    				while ((pos = _users[currentFd].inputBuffer.find("\r\n")) != std::string::npos) {
+        				// Extract the complete command string (excluding the \r\n)
+						// Then erase the extracted command and the \r\n delim from the client's buffer
+						// To finally execute the command, such as IRC PASS, NICK or JOIN
+        				std::string command = _users[currentFd].inputBuffer.substr(0, pos);
+        				_users[currentFd].inputBuffer.erase(0, pos + 2);
+        				if (!command.empty())
+            				executeCommand(currentFd, command);
+            		}
+        		}
+    		}
+		}
 }
 
 void Server::stopServer() {
@@ -173,10 +183,6 @@ void Server::stopServer() {
     if (_serverFd != -1) close(_serverFd);
     if (_epollFd != -1) close(_epollFd);
 }
-
-// ==========================================
-// 2. USER/DATABASE MANAGEMENT (Person A, B, & C)
-// ==========================================
 
 void Server::addUnauthenticatedUser(int clientFd) {
     // Inserts a blank User object mapping to the socket FD
