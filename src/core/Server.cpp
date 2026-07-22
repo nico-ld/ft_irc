@@ -6,13 +6,13 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/20 13:08:45 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/22 08:38:32 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include "User.hpp"      // Assuming Person A/B writes this
-#include "Channel.hpp"   // Assuming Person A/C writes this
+#include "User.hpp"
+#include "Channel.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <string.h>
@@ -22,7 +22,9 @@
 
 #define MAX_EVENTS 64
 #define BUFFER_SIZE 512
+#define loop while(1)
 
+//serverFd and epollFd are set at -1, because that's a Unix convention saying the fd is closed / not init
 Server::Server(int port, const std::string& password) 
     : _port(port), _password(password), _serverFd(-1), _epollFd(-1) {}
 
@@ -68,24 +70,34 @@ void Server::initServer() {
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(_port);
 
+	// 	The bind function is used to claim a port, in order to receive traffic
     if (bind(_serverFd, (struct sockaddr*)&address, sizeof(address)) < 0)
-        throw std::runtime_error("Bind failed");
+        throw std::runtime_error("Bind error: unable to bind the server to a port");
 
-    // Start listening
+	// Listen takes to args, the socket that receive packets, and the size of the queue 
+    // SOMAXCONN means we give maximum size allowed by the OS for the queue
     if (listen(_serverFd, SOMAXCONN) < 0)
-        throw std::runtime_error("Listen failed");
+        throw std::runtime_error("Listen error : unable to set the server to listen");
 
-    // Create epoll instance
+    // Create epoll instance, and instance is a monitoring tool that warns if there's
+	// a change in the monitored socket (more efficient memory-wise that multi-threading)
+	// The parameter is a flag, 0 means standart behavior for an epoll instance
     _epollFd = epoll_create1(0);
-    if (_epollFd < 0) throw std::runtime_error("Failed to create epoll instance");
+    if (_epollFd < 0) throw std::runtime_error("Epoll_create1 error : failed to create epoll instance");
 
     // Add master server socket to epoll
+	// The struct tells the kernel what to watch for (EPOLLIN = read data) 
+	// and which file descriptor is associated with that event (data.fd = _serverFd)
     struct epoll_event ev;
     memset(&ev, 0, sizeof(ev));
-    ev.events = EPOLLIN; // Watch for incoming connections
+    ev.events = EPOLLIN;
     ev.data.fd = _serverFd;
+
+	// epoll_ctl is the API to control the dashboard built by epoll_create1
+	// 4 args: dashboard, operation to do, target of the operation, pointer to the epoll_event struct
+	// Here, we're _serverFd to the watchlist
     if (epoll_ctl(_epollFd, EPOLL_CTL_ADD, _serverFd, &ev) < 0)
-        throw std::runtime_error("epoll_ctl failed for master socket");
+        throw std::runtime_error("epoll_ctl error : failed to add master socket to watchlist");
 
     std::cout << "IRC Server successfully launched on port " << _port << std::endl;
 }
@@ -93,48 +105,52 @@ void Server::initServer() {
 void Server::startLoop() {
     struct epoll_event events[MAX_EVENTS];
 
-    while (true) {
-        // Wait for OS network events (Blocks here until something happens)
+    loop {
+        // Pause the socket until an event happens
+		// _epollFd = the socket to watch over, events = An array of struct epoll_event
+		// MAX_EVENTS = the size of the events array
+		// -1 = it's the timeout arg, -1 means the socket is under sleep indefinitely until an event happen
         int numEvents = epoll_wait(_epollFd, events, MAX_EVENTS, -1);
         if (numEvents < 0) {
-            std::cerr << "epoll_wait error" << std::endl;
+            std::cerr << "epoll_wait error: unable to pause the socket" << std::endl;
             break; 
         }
 
+		// Pulls out the currentFd that triggered an event
         for (int i = 0; i < numEvents; ++i) {
             int currentFd = events[i].data.fd;
 
-            // Scenario A: New Connection coming in on the listening socket
+            // Case A: currentFd == _serverFd, meaning currentFd is a new client
+			// The OS picks up the new connection, create a socket for the client
+			// then adds it to the epoll list and register it as Unauthenticated User for now
             if (currentFd == _serverFd) {
                 struct sockaddr_in clientAddr;
                 socklen_t addrLen = sizeof(clientAddr);
                 int clientFd = accept(_serverFd, (struct sockaddr*)&clientAddr, &addrLen);
                 if (clientFd >= 0) {
-                    // Set new client socket to non-blocking
                     fcntl(clientFd, F_SETFL, O_NONBLOCK);
 
-                    // Add new client to epoll list
                     struct epoll_event ev;
                     memset(&ev, 0, sizeof(ev));
-                    ev.events = EPOLLIN; // Watch for readable data from client
+                    ev.events = EPOLLIN;
                     ev.data.fd = clientFd;
                     epoll_ctl(_epollFd, EPOLL_CTL_ADD, clientFd, &ev);
 
-                    // Instantiate a User in core memory
                     addUnauthenticatedUser(clientFd);
                     std::cout << "New client connected on fd: " << clientFd << std::endl;
                 }
             } 
-            // Scenario B: Read event on an existing client's socket
+            // Case B: the incoming client is already connected and registered through epoll
+			// events[i].events & EPOLLIN means there are incoming bytes waiting from currentFd
+			// We therefore create a buffer in which we'll receive all the incoming bytes
             else if (events[i].events & EPOLLIN) {
                 char buffer[BUFFER_SIZE];
                 memset(buffer, 0, BUFFER_SIZE);
                 
-                // Read exactly once (No loops checking errno, as per the subject!)
                 int bytesRead = recv(currentFd, buffer, BUFFER_SIZE - 1, 0);
 
+				// if <= 0, it means the network disconnected during the process
                 if (bytesRead <= 0) {
-                    // Client disconnected or read error
                     std::cout << "Client disconnected on fd: " << currentFd << std::endl;
                     removeUser(currentFd);
                 } else {
