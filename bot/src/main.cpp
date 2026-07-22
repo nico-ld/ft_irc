@@ -1,28 +1,33 @@
 #include "Bot.hpp"
 
 int main(int ac, char **av) {
-	if (ac != 2) {
-		std::cerr << "ERROR : wrong amount of argument, please enter only USER name." << std::endl;
+	if (ac != 3) {
+		std::cout << RED BOLD "ERROR: " RESET
+				<< ((ac < 3) ? "not enought parameters" : "too many parameters")
+				<< std::endl;
+		std::cout << BOLD "Usage: " RESET "<server_port> <server_password>" << std::endl;
 		return (1);
 	}
-	try {
-		// Start Bot
-		Bot RouxBot;
+	(void)av;
 
-		// Set USER for personnal behavior
-		RouxBot.setUser(av[1]);
-		
-		std::string line = "";
-		std::cout << "Type 'EXIT' to end communication." << std::endl;
-		while(line != "EXIT") {
-			std::cout << "> ";
-			std::getline(std::cin, line);
-			if (line != "EXIT" && RouxBot.processMessage(line) == 1 && !line.empty())
-				std::cout << line << std::endl;
-		}
+	Bot rouxbot;
+
+	rouxbot.setUser("nico");
+	std::string line = "";
+	std::cout << "Type 'EXIT' to end communication." << std::endl;
+	while(line != "EXIT") {
+		std::cout << "> ";
+		std::getline(std::cin, line);
+		if (line != "EXIT" && rouxbot.processMessage(line) == 1 && !line.empty())
+			std::cout << line << std::endl;
 	}
-	catch (std::exception &e) {
-		std::cerr << e.what() << std::endl;
-		return (1);
-	}
+
+	// User rouxbotProfil(0);
+	// rouxbotProfil.setUsername("rouxbot");
+	// rouxbotProfil.setNickname("RouxBot");
+	// rouxbotProfil.setPrefix("rouxbot!RouxBot@localhost");
+	// rouxbotProfil.setProvidedNick(true);
+	// rouxbotProfil.setProvidedUser(true);
+	// rouxbotProfil.setProvidedPassword(true);
+	// rouxbotProfil.setAuthenticated(true);
 }

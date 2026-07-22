@@ -1,19 +1,7 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Bot.hpp                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/22 09:05:15 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/22 09:05:49 by nile-dai         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #pragma once
 
 #include "../../includes/ft_irc.hpp"
-#include <string>
+
 #include <fstream>
 #include <vector>
 #include <map>
@@ -21,6 +9,9 @@
 
 // === Text decoration ===
 #define RESET "\033[0m"
+
+# define ORANGE	"\033[38;2;255;153;0m"
+
 #define BOLD "\033[1m"
 #define DIM "\033[2m"
 #define ITALIC "\033[3m"
@@ -56,7 +47,7 @@ class Bot
 		void addUser(std::string userName);
 		void deleteUser(std::string userName);
 		std::string getUserInfo(std::string userName) const;
-
+		
 		// === Exceptions ===
 		class CannotOpenFileException: public std::exception {
 			public:
@@ -94,6 +85,7 @@ class Bot
 		// ~~ Messages methods ~~
 		void tokenizeMessage(std::string message);
 		void executeCommand( void );
+		void answerMessage( void );
 };
 
 std::ostream &operator<<(std::ostream &out, std::vector<std::pair<std::string, e_intent> > content);

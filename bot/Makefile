@@ -10,7 +10,8 @@ SRC			:= \
 				$(BOT_DIR)Bot.cpp \
 				$(BOT_DIR)BotUser.cpp \
 				$(BOT_DIR)BotMessage.cpp \
-				$(BOT_DIR)BotVocabulary.cpp
+				$(BOT_DIR)BotVocabulary.cpp \
+				$(BOT_DIR)BotAnswer.cpp
 
 OBJ_DIR		:= obj/
 OBJ			:= $(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)%.o,$(SRC))

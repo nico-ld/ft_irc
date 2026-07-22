@@ -26,7 +26,7 @@ int Bot::processMessage(std::string &message) {
 	std::cout << ROUXBOT DIM " received : " << _tokens << RESET << std::endl;
 
 	int scores[INTENT_UNKNOW] = {0};
-	int best = INTENT_UNKNOW;
+	int best = INTENT_UNKNOW - 1;
 	for (it = _tokens.begin(); it != _tokens.end(); it++) {
 		scores[it->second] += 1;
 		if (scores[best] < scores[it->second])
@@ -35,6 +35,8 @@ int Bot::processMessage(std::string &message) {
 	_messageType = static_cast<e_intent>(best);
 
 	std::cout << DIM "Message type is " << _messageType << RESET << std::endl;
+	
+	answerMessage();
 
 	// Check for command in the message to execute them
 	executeCommand();
@@ -56,7 +58,7 @@ void Bot::tokenizeMessage(std::string message) {
 	std::map<std::string, void (Bot::*)(std::string)>::iterator itAction;
 
 	while (ss >> word) {
-		// Lowrecase
+		// Lowercase
 		std::transform(word.begin(), word.end(), word.begin(), ::tolower);
 
 		// Remove punctuation (not '!' in case of command)
