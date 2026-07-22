@@ -3,19 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 21:20:20 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/15 21:20:54 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/22 07:53:47 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.hpp"
-#include <algorithm> // For std::find
-
-// ==========================================
-// 1. CONSTRUCTORS & DESTRUCTOR
-// ==========================================
+#include <algorithm>
 
 User::User(int fd) 
     : _fd(fd), 
@@ -30,12 +26,10 @@ User::User(int fd)
 
 User::~User() {}
 
-// Orthodox Canonical Form: Copy Constructor
 User::User(const User& src) {
     *this = src;
 }
 
-// Orthodox Canonical Form: Copy Assignment Operator
 User& User::operator=(const User& src) {
     if (this != &src) {
         _fd = src._fd;
@@ -50,48 +44,6 @@ User& User::operator=(const User& src) {
         _joinedChannels = src._joinedChannels;
     }
     return *this;
-}
-
-// ==========================================
-// 2. GETTERS & SETTERS (Person A, B, & C)
-// ==========================================
-
-int User::getFd() const { return _fd; }
-
-const std::string& User::getHostname() const { return _hostname; }
-void User::setHostname(const std::string& hostname) { _hostname = hostname; }
-
-const std::string& User::getNickname() const { return _nickname; }
-void User::setNickname(const std::string& nickname) { _nickname = nickname; }
-
-const std::string& User::getUsername() const { return _username; }
-void User::setUsername(const std::string& username) { _username = username; }
-
-const std::string& User::getRealname() const { return _realname; }
-void User::setRealname(const std::string& realname) { _realname = realname; }
-
-// ==========================================
-// 3. STATE HANDLERS (Person B)
-// ==========================================
-
-bool User::hasProvidedPassword() const { return _hasProvidedPassword; }
-void User::setProvidedPassword(bool state) { _hasProvidedPassword = state; }
-
-bool User::hasProvidedNick() const { return _hasProvidedNick; }
-void User::setProvidedNick(bool state) { _hasProvidedNick = state; }
-
-bool User::hasProvidedUser() const { return _hasProvidedUser; }
-void User::setProvidedUser(bool state) { _hasProvidedUser = state; }
-
-bool User::isAuthenticated() const { return _isAuthenticated; }
-void User::setAuthenticated(bool state) { _isAuthenticated = state; }
-
-// ==========================================
-// 4. CHANNEL HELPERS (Person C)
-// ==========================================
-
-const std::vector<std::string>& User::getJoinedChannels() const { 
-    return _joinedChannels; 
 }
 
 void User::joinChannel(const std::string& channelName) {

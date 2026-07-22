@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 21:19:09 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/15 21:19:21 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/22 08:04:52 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,66 +17,83 @@
 #include <vector>
 
 class User {
-private:
-    // 1. Hardware Connection Details (Person A)
-    int         _fd;
-    std::string _hostname; // Client's IP or hostname (useful for welcome messages)
+	public:
+		// == Constructors & Destructor ==
+		User(int fd);
+		User(const User& src);
+		~User();
+		
+		// == Overload ==
+		User& operator=(const User& src);
 
-    // 2. Identity Information (Person B)
-    std::string _nickname;
-    std::string _username;
-    std::string _realname;
+		// === GETTERS & SETTERS ===
+		/* > Return user's fd */
+		int                getFd() const { return (_fd); }
 
-    // 3. State Flags for Authentication Handshake (Person B)
-    bool _hasProvidedPassword;
-    bool _hasProvidedNick;
-    bool _hasProvidedUser;
-    bool _isAuthenticated; // Becomes true only when the top three are true
+		/* > Return user's hostname */
+		const std::string& getHostname() const { return (_hostname); }
+		/* > Set user's hostname */
+		void               setHostname(const std::string& hostname) { _hostname = hostname; }
 
-    // 4. Channel Tracking (Person C)
-    // Stores names of channels this user is currently in
-    std::vector<std::string> _joinedChannels; 
+		/* > Return user's nickname */
+		const std::string& getNickname() const { return (_nickname); }
+		/* > Set user's nickname */
+		void               setNickname(const std::string& nickname) { _nickname = nickname; }
 
-public:
-    // Constructor / Destructor
-    explicit User(int fd); // Explicit prevents accidental conversions
-    ~User();
+		/* > Return user's name*/
+		const std::string& getUsername() const { return (_username); }
+		/* > Set user's name */
+		void               setUsername(const std::string& username) { _username = username; }
 
-    // Copy Constructor & Assignment Operator (Orthodox Canonical Form)
-    User(const User& src);
-    User& operator=(const User& src);
+		/* > Return user's realname */
+		const std::string& getRealname() const { return (_realname); }
+		/* > Set user's realname*/
+		void               setRealname(const std::string& realname) { _realname = realname; }
 
-    // --- Getters & Setters ---
-    int                getFd() const;
-    const std::string& getHostname() const;
-    void               setHostname(const std::string& hostname);
+		/* > Return user's prefix */
+		const std::string& getPrefix() const { return (_userPrefix); }
+		/* > Set user's prefix */
+		void			   setPrefix(const std::string& prefix) { _userPrefix = prefix; }
 
-    const std::string& getNickname() const;
-    void               setNickname(const std::string& nickname);
+		// === STATE HANDLERS ===
+		bool hasProvidedPassword() const { return (_hasProvidedPassword); }
+		void setProvidedPassword(bool state) { _hasProvidedPassword = state; }
 
-    const std::string& getUsername() const;
-    void               setUsername(const std::string& username);
+		bool hasProvidedNick() const { return (_hasProvidedNick); }
+		void setProvidedNick(bool state) { _hasProvidedNick = state; }
 
-    const std::string& getRealname() const;
-    void               setRealname(const std::string& realname);
+		bool hasProvidedUser() const { return (_hasProvidedUser); }
+		void setProvidedUser(bool state) { _hasProvidedUser = state; }
 
-    // --- State Handlers (Crucial for Person B's Authentication Logic) ---
-    bool hasProvidedPassword() const;
-    void setProvidedPassword(bool state);
+		bool isAuthenticated() const { return (_isAuthenticated); }
+		void setAuthenticated(bool state) { _isAuthenticated = state; }
 
-    bool hasProvidedNick() const;
-    void setProvidedNick(bool state);
+		// === CHANNEL HELPERS ===
+		/* > Return the list of channels joined by the user */
+		const std::vector<std::string>& getJoinedChannels() const { return (_joinedChannels); }
+		
+		void joinChannel(const std::string& channelName);
+		void leaveChannel(const std::string& channelName);
 
-    bool hasProvidedUser() const;
-    void setProvidedUser(bool state);
+	private:
+		// Hardware Connection Details
+		int         _fd;
+		std::string _hostname;
 
-    bool isAuthenticated() const;
-    void setAuthenticated(bool state);
+		// Identity Information
+		std::string _nickname;
+		std::string _username;
+		std::string _realname;
+		std::string _userPrefix;
 
-    // --- Channel Helpers (Crucial for Person C's Logic) ---
-    const std::vector<std::string>& getJoinedChannels() const;
-    void joinChannel(const std::string& channelName);
-    void leaveChannel(const std::string& channelName);
+		//State Flags for Authentication Handshake
+		bool _hasProvidedPassword;
+		bool _hasProvidedNick;
+		bool _hasProvidedUser;
+		bool _isAuthenticated; // Becomes true only when the top three are true
+
+		// Channel Tracking
+		std::vector<std::string> _joinedChannels; // Stores names of channels this user is currently in
 };
 
 #endif
