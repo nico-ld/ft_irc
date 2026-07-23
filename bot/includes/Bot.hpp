@@ -66,6 +66,8 @@ class Bot
 		int				_userBehavior;
 
 		// === Message ===
+		bool _badBotName;
+		std::string _invalidBotName;
 		e_intent _messageType;
 		std::vector<std::pair<std::string, e_intent> > _tokens;
 

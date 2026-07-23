@@ -51,6 +51,7 @@ int Bot::processMessage(std::string &message) {
  */
 void Bot::tokenizeMessage(std::string message) {
 	_tokens.clear();
+	_badBotName = false;
 
 	std::string word;
 	std::stringstream ss(message);
@@ -74,15 +75,12 @@ void Bot::tokenizeMessage(std::string message) {
 			}
 		}
 
-		std::cout << DIM ITALIC "current word : " << word << RESET << std::endl;
-
 		// Search the word inside _vocabulary with Levenshtein Distance Algorithme
 		int bestDistance = INT_MAX;
 		std::pair<std::string, e_intent> bestMatch;
 		for (itVoc = _vocabulary.begin(); itVoc != _vocabulary.end(); ++itVoc) {
 			int distance = LevenshteinDistance(word, itVoc->first);
 			if (distance < bestDistance) {
-				std::cout << DIM ITALIC "match with " << itVoc->first << " distance : " << distance << RESET << std::endl;
 				bestMatch.first = itVoc->first;
 				bestMatch.second = itVoc->second;
 				bestDistance = distance;
@@ -96,13 +94,16 @@ void Bot::tokenizeMessage(std::string message) {
 		double maxLength = std::max(word.length(), bestMatch.first.length());
 		double threshold = maxLength * maxErrorRatio;
 
-		std::cout << DIM ITALIC << ((bestDistance <= threshold) ? "founded" : "not founded") << RESET << std::endl;
-
 		// Then if there is enought similarities, the bot know the word
 		if (bestDistance <= threshold)
 			_tokens.push_back(bestMatch);
 		else
 			_tokens.push_back(std::make_pair(word, INTENT_UNKNOW));
+
+		if (bestMatch.second == INTENT_NAME && bestDistance != 0) {
+			_badBotName = true;
+			_invalidBotName = bestMatch.first;
+		}
 	}
 }
 
