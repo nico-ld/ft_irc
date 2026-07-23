@@ -12,15 +12,17 @@ int Bot::processMessage(std::string &message) {
 
 	// Check for the presence of 'rouxbot', if not the method end here
 	std::vector<std::pair<std::string, e_intent> >::iterator it;
-	size_t oldSize = _tokens.size();
-	for (it = _tokens.begin(); it != _tokens.end(); ++it) {
-		if (it->first == "rouxbot") {
-			_tokens.erase(it);
-			break ;
+	if (_tokens.size() > 1) {
+		size_t oldSize = _tokens.size();
+		for (it = _tokens.begin(); it != _tokens.end(); ++it) {
+			if (it->first == "rouxbot") {
+				_tokens.erase(it);
+				break ;
+			}
 		}
+		if (oldSize == _tokens.size())
+			return (1);
 	}
-	if (oldSize == _tokens.size())
-		return (1);
 	
 	// System output
 	std::cout << ROUXBOT DIM " received : " << _tokens << RESET << std::endl;
@@ -75,6 +77,9 @@ void Bot::tokenizeMessage(std::string message) {
 			}
 		}
 
+		if (word.empty())
+			continue ;
+
 		// Search the word inside _vocabulary with Levenshtein Distance Algorithme
 		int bestDistance = INT_MAX;
 		std::pair<std::string, e_intent> bestMatch;
@@ -102,7 +107,7 @@ void Bot::tokenizeMessage(std::string message) {
 
 		if (bestMatch.second == INTENT_NAME && bestDistance != 0) {
 			_badBotName = true;
-			_invalidBotName = bestMatch.first;
+			_invalidBotName = word;
 		}
 	}
 }
