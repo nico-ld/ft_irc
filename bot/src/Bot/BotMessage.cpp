@@ -13,8 +13,8 @@ int Bot::processMessage(std::string &message) {
 	// Check for the presence of 'rouxbot', if not the method end here
 	std::vector<std::pair<std::string, e_intent> >::iterator it;
 	size_t oldSize = _tokens.size();
-	for (it = _tokens.begin(); it != _tokens.end(); it++) {
-		if ((*it).first == "rouxbot") {
+	for (it = _tokens.begin(); it != _tokens.end(); ++it) {
+		if (it->first == "rouxbot") {
 			_tokens.erase(it);
 			break ;
 		}
@@ -27,7 +27,7 @@ int Bot::processMessage(std::string &message) {
 
 	int scores[INTENT_UNKNOW] = {0};
 	int best = INTENT_UNKNOW - 1;
-	for (it = _tokens.begin(); it != _tokens.end(); it++) {
+	for (it = _tokens.begin(); it != _tokens.end(); ++it) {
 		scores[it->second] += 1;
 		if (scores[best] < scores[it->second])
 			best = it->second;
@@ -62,7 +62,7 @@ void Bot::tokenizeMessage(std::string message) {
 		std::transform(word.begin(), word.end(), word.begin(), ::tolower);
 
 		// Remove punctuation (not '!' in case of command)
-		for (size_t i = 0; i < word.size(); i++) {
+		for (size_t i = 0; i < word.size(); ++i) {
 			if (std::ispunct(word[i])) {
 				if (word[i] == '!' && i == 0) {
 					itAction = _actionUser.find(word);
@@ -74,10 +74,33 @@ void Bot::tokenizeMessage(std::string message) {
 			}
 		}
 
-		// Search the word inside _vocabulary to intentify it
-		itVoc = _vocabulary.find(word);
-		if (itVoc != _vocabulary.end())
-			_tokens.push_back(std::make_pair(word, itVoc->second));
+		std::cout << DIM ITALIC "current word : " << word << RESET << std::endl;
+
+		// Search the word inside _vocabulary with Levenshtein Distance Algorithme
+		int bestDistance = INT_MAX;
+		std::pair<std::string, e_intent> bestMatch;
+		for (itVoc = _vocabulary.begin(); itVoc != _vocabulary.end(); ++itVoc) {
+			int distance = LevenshteinDistance(word, itVoc->first);
+			if (distance < bestDistance) {
+				std::cout << DIM ITALIC "match with " << itVoc->first << " distance : " << distance << RESET << std::endl;
+				bestMatch.first = itVoc->first;
+				bestMatch.second = itVoc->second;
+				bestDistance = distance;
+			}
+			if (bestDistance == 0)
+				break ;
+		}
+
+		// Determine the threshold
+		double maxErrorRatio = 0.2; // this value determine the accuracy of the algorithm
+		double maxLength = std::max(word.length(), bestMatch.first.length());
+		double threshold = maxLength * maxErrorRatio;
+
+		std::cout << DIM ITALIC << ((bestDistance <= threshold) ? "founded" : "not founded") << RESET << std::endl;
+
+		// Then if there is enought similarities, the bot know the word
+		if (bestDistance <= threshold)
+			_tokens.push_back(bestMatch);
 		else
 			_tokens.push_back(std::make_pair(word, INTENT_UNKNOW));
 	}
@@ -104,7 +127,7 @@ void Bot::executeCommand(void) {
 
 	std::vector<std::pair<std::string, e_intent> >::iterator it;
 	std::map<std::string, void (Bot::*)(std::string)>::iterator itAction;
-	for (it = _tokens.begin(); it != _tokens.end(); it++) {
+	for (it = _tokens.begin(); it != _tokens.end(); ++it) {
 		if (it->second == INTENT_ACTION && (it + 1) == _tokens.end()) {
 			std::cerr << DIM "Target error : no target given." RESET << std::endl;
 			break ;

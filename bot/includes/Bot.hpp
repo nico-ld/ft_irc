@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <utility>
+#include <climits>
 
 // === Text decoration ===
 #define RESET "\033[0m"
@@ -90,3 +91,5 @@ class Bot
 
 std::ostream &operator<<(std::ostream &out, std::vector<std::pair<std::string, e_intent> > content);
 std::ostream &operator<<(std::ostream &out, e_intent &type);
+
+int LevenshteinDistance(std::string s1, std::string s2);
