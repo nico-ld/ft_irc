@@ -6,16 +6,11 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/24 09:46:12 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/24 09:53:51 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
-
-
-#define MAX_EVENTS 64
-#define BUFFER_SIZE 512
-#define loop while(1)
 
 //serverFd and epollFd are set at -1, because that's a Unix convention saying the fd is closed / not init
 Server::Server(int port, const std::string& password) 

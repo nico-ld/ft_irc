@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/24 09:41:12 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/24 09:53:55 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <stdexcept>
+
+#define MAX_EVENTS 64
+#define BUFFER_SIZE 512
+#define loop while(1)
 
 // Forward declarations to avoid circular dependency
 class User;
