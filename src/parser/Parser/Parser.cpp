@@ -6,13 +6,13 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/21 12:56:45 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/24 08:49:47 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
 
-void Parser::parse(std::string &input) {
+int Parser::parse(std::string &input) {
 	std::stringstream ss(input);
 	std::string word;
 
@@ -50,7 +50,9 @@ void Parser::parse(std::string &input) {
 		}
 	} catch (std::exception &e) {
 		std::cerr << e.what() << std::flush << std::endl;
+		return (-1);
 	}
+	return (0);
 }
 
 void Parser::parseCommand(std::string &input) {

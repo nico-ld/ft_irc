@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 21:19:09 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/22 08:04:52 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/24 08:48:43 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,9 @@ class User {
 		
 		void joinChannel(const std::string& channelName);
 		void leaveChannel(const std::string& channelName);
+
+		// === SERVER INPUT ===
+		std::string inputBuffer;
 
 	private:
 		// Hardware Connection Details

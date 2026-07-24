@@ -3,67 +3,96 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/16 04:42:17 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/24 09:41:12 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
-#define SERVER_HPP
+# define SERVER_HPP
 
 #include <string>
 #include <map>
 #include <vector>
 #include <sys/epoll.h>
+#include <iostream>
+#include <cstring>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <stdexcept>
 
 // Forward declarations to avoid circular dependency
 class User;
 class Channel;
 
-class Server {
-private:
-    int         _port;
-    std::string _password;
+class Server
+{
+	private:
+		int _port;
+		std::string _password;
 
-    int         _serverFd;
-    int         _epollFd;
+		int _serverFd;
+		int _epollFd;
 
-    // 3. Central Memory Storage (The "Database")
-    std::map<int, User>            _users;    // Key: client socket FD -> Value: User object
-    std::map<std::string, Channel> _channels; // Key: Channel Name -> Value: Channel object
+		// Central Memory Storage (The "Database")
+		std::map<int, User> _users;				  // Key: client socket FD -> Value: User object
+		std::map<std::string, Channel> _channels; // Key: Channel Name -> Value: Channel object
 
-    // Prevent copying (Rule of Three in C++98)
-    Server(const Server& src);
-    Server& operator=(const Server& src);
+		// Prevent copying
+		Server(const Server &src) { (void)src; }
+		Server &operator=(const Server &src) { (void)src; return (*this);}
 
-public:
-    // Constructor / Destructor
-    Server(int port, const std::string& password);
-    ~Server();
+	public:
+		// == Constructor & Destructor == 
+		Server(int port, const std::string &password);
+		~Server();
 
-    // --- Core Server Lifecycle (Person A) ---
-    void initServer(); // Set up sockets & epoll
-    void startLoop();  // The infinite epoll_wait loop
-    void stopServer(); // Clean up all FDs and memory
+		
+		// === 	CORE SERVER LIFECYCLE ===
+		/* > Set up sockets & epoll */
+		void initServer();
+		
+		/* > The infinite epoll_wait loop */
+		void startLoop();
 
-    // --- User Management (For Person A, B, & C) ---
-    void  addUnauthenticatedUser(int clientFd);
-    void  removeUser(int clientFd); // Handles socket close & cleanup from _users
-    
-    // Lookups (Crucial for Person B and C)
-    User* getUserById(int fd);
-    User* getUserByNickname(const std::string& nickname);
+		/* > Clean up all FDs and memory */
+		void stopServer();
 
-    // --- Channel Management (For Person C) ---
-    void     createChannel(const std::string& name, User* creator);
-    void     removeChannel(const std::string& name);
-    Channel* getChannelByName(const std::string& name);
 
-    // --- Getters / Setters ---
-    int                getPort() const;
-    const std::string& getPassword() const;
+		// === USER MANAGEMENT ===
+		/* > Inserts a blank User object mapping to the socket FD */
+		void addUnauthenticatedUser(int clientFd);
+		
+		/* > Remove client FD from epoll tracking & delete user */
+		void removeUser(int clientFd);
+
+
+		// === CHANNEL MANAGEMENT ===
+		/* > Create a new Channel and add it to channel list */
+		void createChannel(const std::string &name, User *creator);
+
+		/* > Delete the channel */
+		void removeChannel(const std::string &name);
+		
+		// === GETTERS & SETTERS ===
+		/* > Return the server port */
+		int getPort() const { return (_port); }
+		
+		/* > Return the server password */
+		const std::string &getPassword() const { return (_password); }
+		
+		/* > Return an User object */
+		User *getUserById(int fd);
+		
+		/* > Return an User object */
+		User *getUserByNickname(const std::string& nickname);
+		
+		/* > Return a Channel object */
+		Channel *getChannelByName(const std::string &name);
 };
 
 #endif
