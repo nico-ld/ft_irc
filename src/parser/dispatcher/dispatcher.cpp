@@ -6,30 +6,45 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/22 15:42:42 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/24 17:41:57 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
+#include <stdexcept>
 
 /* Commands to manage channel and user */
 static void	channelCommandsDispatch(Server &server, std::string command, User &user) {
 	// std::cout << command << " is no handled for the moment." << std::endl;
-	
+
 	std::vector<std::string> parameters = Parser::getParameters();
-	
+	std::vector<Channel> listChannel;
+	std::vector<std::string> listKey;
 	std::cout << command << std::endl;
 	if (command == "join") {
+		listChannel = Parser::getlistChannel(parameters[0]);
+		listKey = Parser::getlistKey(parameters[1]);
 		if (parameters.size() > 1)
-			server.join(parameters[0], parameters[1], &user);
+		
+			server.join(listChannel, listKey, &user);
+		else if (parameters.size() == 0)
+			throw std::runtime_error("Need a channel name.");
 		else
-			server.join(parameters[0], &user);
+			server.join(listChannel, &user);
 	}
 	if (command == "kick") {
+		Channel *channel = server.getChannelByName(parameters[0]);
+		User *kicked = server.getUserByNickname(parameters[1]);
 		if (parameters.size() > 2)
-			server.kick(parameters[0], parameters[1], parameters[2], &user);
-		else 
-			server.kick(parameters[0], parameters[1], &user);
+			server.kick(*channel, kicked, parameters[2], &user);
+		else if (parameters.size() == 0)
+			throw std::runtime_error("Need a channel name.");
+		else if (parameters.size() == 1)
+			throw std::runtime_error("Need a nickname.");
+		else {
+			std::cout << parameters[0] << std::endl;
+			server.kick(*channel, kicked, &user);
+		}
 	}
 }
 

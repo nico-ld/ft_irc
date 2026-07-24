@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/22 15:56:23 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/24 17:16:30 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ public:
 
     // --- Channel Management (For Person C) ---
     void     createChannel(const std::string& name, User* creator);
+    void     createChannel(const Channel &channel);
     void     removeChannel(const std::string& name);
     Channel* getChannelByName(const std::string& name);
 
@@ -66,10 +67,10 @@ public:
     const std::string& getPassword() const;
 
     // COMMANDES 
-    void join(std::string nameChannel, std::string key, User *client);
-    void join(std::string channel, User *client);
-    void kick(std::string nameChannel, std::string kicked, const User *op);
-    void kick(std::string nameChannel, std::string kicked, std::string reason, const User *op);
+    void join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client);
+    void join(std::vector<Channel> &listChannel, User *client);
+    void kick(Channel &channel, User *kicked, const User *op);
+    void kick(Channel &channel, User *kicked, std::string reason, const User *op);
 
     // Message
     void broadcast(const Channel &channel, std::string message);

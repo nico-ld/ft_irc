@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/07/22 16:47:16 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/24 17:15:27 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,16 @@
 #include "../core/Channel.hpp"
 #include "../core/User.hpp"
 #include <stdexcept>
+#include <iostream>
 
-void Server::kick(std::string nameChannel, std::string kicked, const User *op) {
-	std::map<std::string, Channel>::iterator findChannel = _channels.find(nameChannel);
+void Server::kick(Channel &channel, User *kicked, const User *op) {
+	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
 	if (findChannel == _channels.end())
 		throw std::runtime_error("ERR_NOSUCHCHANNEL");
 
 	std::map<int, User *>::const_iterator findUser = findChannel->second.getMembers().begin();
 	for (; findUser != findChannel->second.getMembers().end(); ++findUser) {
-		if (findUser->second->getNickname() == kicked)
+		if (findUser->second->getNickname() == kicked->getNickname())
 			break;
 	}
 	if (findUser == findChannel->second.getMembers().end())
@@ -40,14 +41,14 @@ void Server::kick(std::string nameChannel, std::string kicked, const User *op) {
 	broadcast(findChannel->second, findUser->second, message);
 }
 
-void Server::kick(std::string nameChannel, std::string kicked, std::string reason, const User *op) {
-	std::map<std::string, Channel>::iterator findChannel = _channels.find(nameChannel);
+void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {
+	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
 	if (findChannel == _channels.end())
 		throw std::runtime_error("ERR_NOSUCHCHANNEL");
 
 	std::map<int, User *>::const_iterator findUser = findChannel->second.getMembers().begin();
 	for (; findUser != findChannel->second.getMembers().end(); ++findUser) {
-		if (findUser->second->getNickname() == kicked)
+		if (findUser->second->getNickname() == kicked->getNickname())
 			break;
 	}
 	if (findUser == findChannel->second.getMembers().end())
