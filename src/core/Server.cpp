@@ -6,19 +6,12 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/22 15:15:51 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/24 09:46:12 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
-#include "User.hpp"
-#include "Channel.hpp"
-#include <iostream>
-#include <unistd.h>
-#include <string.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include "ft_irc.hpp"
+
 
 #define MAX_EVENTS 64
 #define BUFFER_SIZE 512
@@ -154,22 +147,29 @@ void Server::startLoop() {
                     std::cout << "Client disconnected on fd: " << currentFd << std::endl;
                     removeUser(currentFd);
                 } else {
+					std::map<int, User>::iterator currentUser = _users.find(currentFd);
+					if (currentUser == _users.end())
+						throw std::runtime_error("Error: User not found");
+					
     				// Append the newly read bytes to the client's buffer
 					// Then process all complete commands (so closed with either \r\n or \n) in the buffer
-    				_users[currentFd].inputBuffer.append(buffer, bytesRead);
+					currentUser->second.inputBuffer.append(buffer, bytesRead);
     				size_t pos;
-    				while ((pos = _users[currentFd].inputBuffer.find("\r\n")) != std::string::npos) {
+    				while ((pos = currentUser->second.inputBuffer.find("\r\n")) != std::string::npos) {
         				// Extract the complete command string (excluding the \r\n)
 						// Then erase the extracted command and the \r\n delim from the client's buffer
 						// To finally execute the command, such as IRC PASS, NICK or JOIN
-        				std::string command = _users[currentFd].inputBuffer.substr(0, pos);
-        				_users[currentFd].inputBuffer.erase(0, pos + 2);
-        				if (!command.empty())
-            				executeCommand(currentFd, command);
+        				std::string command = currentUser->second.inputBuffer.substr(0, pos);
+        				currentUser->second.inputBuffer.erase(0, pos + 2);
+        				if (!command.empty()) {
+							if (Parser::parse(command) == 0)
+								dispatchCommand(currentUser->second);
+						}
             		}
         		}
     		}
 		}
+	}
 }
 
 void Server::stopServer() {
@@ -185,27 +185,19 @@ void Server::stopServer() {
 }
 
 void Server::addUnauthenticatedUser(int clientFd) {
-    // Inserts a blank User object mapping to the socket FD
     _users.insert(std::make_pair(clientFd, User(clientFd)));
 }
 
 void Server::removeUser(int clientFd) {
-    // 1. Remove client FD from epoll tracking
     epoll_ctl(_epollFd, EPOLL_CTL_DEL, clientFd, NULL);
-    
-    // 2. Close socket
     close(clientFd);
-
-    // 3. Remove from local memory map
     _users.erase(clientFd);
-
-    // Note: Person C will also need to clean up this user from any Channels!
 }
 
 User* Server::getUserById(int fd) {
     std::map<int, User>::iterator it = _users.find(fd);
     if (it != _users.end()) {
-        return &(it->second); // Return memory address of existing object
+        return &(it->second);
     }
     return NULL;
 }
@@ -218,9 +210,3 @@ User* Server::getUserByNickname(const std::string& nickname) {
     }
     return NULL;
 }
-
-// ==========================================
-// 3. GETTERS
-// ==========================================
-int Server::getPort() const { return _port; }
-const std::string& Server::getPassword() const { return _password; }
