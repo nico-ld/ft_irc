@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/26 15:36:16 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/26 16:53:22 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ public:
     void kick(Channel &channel, User *kicked, std::string reason, const User *op);
     void topic(const Channel &channel, User *user);
     void topic(Channel &channel, std::string newTopic, User *user);
-
+    void part(std::vector<Channel> &channels, User *user);
+    void part(std::vector<Channel> &channels, std::string reason, User *user);
 
     // Message
     void broadcastServer(std::string message);
