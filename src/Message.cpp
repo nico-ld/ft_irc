@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 15:07:48 by afons             #+#    #+#             */
-/*   Updated: 2026/07/21 15:07:11 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/26 15:27:06 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 #include "core/Server.hpp"
 #include <sys/socket.h>
 #include <cstdio>
+
+void Server::broadcastServer(std::string message) {
+	std::map<int, User>::const_iterator it = _users.begin();
+	for (; it != _users.end(); ++it) {
+    	if (send(it->second.getFd(), message.c_str(), message.size(), MSG_NOSIGNAL) == -1)
+        	std::perror("Send crashed.");
+	}
+}
 
 void Server::broadcast(const Channel &channel, std::string message) {
 	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
