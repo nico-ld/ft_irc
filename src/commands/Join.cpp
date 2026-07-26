@@ -58,8 +58,11 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 				broadcast(channel, client, message);
 			}
 		}
-		else
-			join(listChannel, client);
+		else {
+			std::vector<Channel> restOfListChannel(getChan, listChannel.end()); 
+			join(restOfListChannel, client);
+			return ;
+		}
 		++i;
 	}
 }
