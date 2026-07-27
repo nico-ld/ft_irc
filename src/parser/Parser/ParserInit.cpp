@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 17:37:06 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/20 13:25:06 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/27 18:33:49 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void Parser::initCommandList() {
 	if (_listInit)
 		return ;
 
+	// Channel management command
 	_commandsChannel.push_back("join");
 	_commandsChannel.push_back("kick");
 	_commandsChannel.push_back("invite");
@@ -34,9 +35,11 @@ void Parser::initCommandList() {
 	_commandsChannel.push_back("mode");
 	_commandsChannel.push_back("part");
 
+	// Messaging command
 	_commandsMessage.push_back("privmsg");
 	_commandsMessage.push_back("notice");
 
+	// User and connection commands
 	_commandsUser.push_back("user");
 	_commandsUser.push_back("nick");
 	_commandsUser.push_back("pass");
