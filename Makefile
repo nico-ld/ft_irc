@@ -6,7 +6,7 @@
 #    By: afons <afons@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/07/26 17:13:43 by afons            ###   ########.fr        #
+#    Updated: 2026/07/27 17:02:07 by afons            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ CORE_DIR	:= $(SRC_DIR)core/
 
 # ~~ Sources files ~~
 SRC			:= \
-				$(SRC_DIR)maintest.cpp \
+				$(SRC_DIR)main.cpp \
 				$(PARS_DIR)Parser/Parser.cpp \
 				$(PARS_DIR)Parser/ParserInit.cpp \
 				$(PARS_DIR)dispatcher/dispatcher.cpp \
@@ -44,7 +44,8 @@ SRC			:= \
 				$(SRC_DIR)commands/Join.cpp \
 				$(SRC_DIR)commands/Kick.cpp \
 				$(SRC_DIR)commands/Topic.cpp \
-				$(SRC_DIR)commands/Part.cpp
+				$(SRC_DIR)commands/Part.cpp \
+				$(SRC_DIR)commands/Invite.cpp
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/

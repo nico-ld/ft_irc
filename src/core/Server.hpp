@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/26 16:53:22 by afons            ###   ########.fr       */
+/*   Updated: 2026/07/27 16:26:27 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ public:
     void topic(Channel &channel, std::string newTopic, User *user);
     void part(std::vector<Channel> &channels, User *user);
     void part(std::vector<Channel> &channels, std::string reason, User *user);
+    void invite(const std::string &nickname, Channel &channel, const User *user);
 
     // Message
     void broadcastServer(std::string message);
