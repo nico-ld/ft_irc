@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/24 09:53:51 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/29 15:20:22 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ Server::Server(int port, const std::string& password)
     : _port(port), _password(password), _serverFd(-1), _epollFd(-1) {}
 
 Server::~Server() {
-    stopServer();
+    stop();
 }
 
-void Server::initServer() {
+void Server::init() {
     // Turn _serverFd into a the master socket, meaning the first socket created (usually to listen)
 	// AF_INET = IPv4, SOCK_STREAM = TCP, 0 = default protocol for those params
     _serverFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -167,7 +167,7 @@ void Server::startLoop() {
 	}
 }
 
-void Server::stopServer() {
+void Server::stop() {
     // Clean up connections
     for (std::map<int, User>::iterator it = _users.begin(); it != _users.end(); ++it) {
         close(it->first);

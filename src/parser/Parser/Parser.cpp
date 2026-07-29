@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/27 18:30:32 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/07/29 15:09:10 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int Parser::parse(std::string &input) {
 		// so we save it then break ; if we don't, we keep getting the regular params
 		for (int i = 0; i < 14; i++) {
 			ss >> std::ws; // Consume leading whitespace
-			if (ss.peek() == EOF)
+			if (ss.peek())
 				break;
 
 			// Check for trailing parameter start (':')
@@ -94,7 +94,7 @@ void Parser::parseCommand(std::string &input) {
 		}
 	}
 
-	throw InvalidCommandException();
+	throw std::runtime_error("Unknow command");
 }
 
 void Parser::clearParser(void) {

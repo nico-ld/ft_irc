@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/24 09:53:55 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/29 15:19:58 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,13 @@ class Server
 		
 		// === 	CORE SERVER LIFECYCLE ===
 		/* > Set up sockets & epoll */
-		void initServer();
+		void init();
 		
 		/* > The infinite epoll_wait loop */
 		void startLoop();
 
 		/* > Clean up all FDs and memory */
-		void stopServer();
+		void stop();
 
 
 		// === USER MANAGEMENT ===

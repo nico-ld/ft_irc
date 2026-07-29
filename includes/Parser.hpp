@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/24 08:50:03 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/29 15:06:29 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,6 @@ class Parser
 		/* Return the trailing parameter as vector */
 		static std::vector<std::string> getTrailing( void ) {return (_trailing);}
 
-		
-		// === EXCEPTION ===
-		class InvalidCommandException: public std::exception {
-			public: virtual const char *what() const throw() {return ("Error: invalid command.");}
-		};
 		
 	private:
 		Parser() {}
