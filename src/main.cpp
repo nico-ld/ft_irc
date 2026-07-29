@@ -12,13 +12,19 @@ int main(int ac, char **av) {
 	}
 
 	char	*ptrEnd;
-	int		port = (int)strtod(av[1], &ptrEnd);
-	if (ptrEnd) {
+	int		port = (int)strtol(av[1], &ptrEnd, 10);
+	if (*ptrEnd) {
 		std::cerr << "Error: invalid value for server port." << std::endl;
 		return (1);
 	}
 
-	Server server(port, av[2]);
-	server.init();
-	server.startLoop();
+	if (port < 6665 || port > 6669) {
+		std::cerr << "Error: invalid port, please port in a valid range [6665 - 6669]" << std::endl;
+		return (1);
+	}
+
+	// Server server(port, av[2]);
+	// server.init();
+	// server.startLoop();
+	std::cout << "Server will start on port " << port << ", with '" << av[2] << "' as password." << std::endl;
 }

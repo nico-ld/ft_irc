@@ -6,7 +6,7 @@
 /*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/29 15:20:22 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/07/29 15:34:33 by nile-dai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,8 +157,9 @@ void Server::startLoop() {
         				std::string command = currentUser->second.inputBuffer.substr(0, pos);
         				currentUser->second.inputBuffer.erase(0, pos + 2);
         				if (!command.empty()) {
-							if (Parser::parse(command) == 0)
-								dispatchCommand(currentUser->second);
+							// if (Parser::parse(command) == 0)
+							// 	dispatchCommand(currentUser->second);
+							std::cout << "not handle" << std::endl;
 						}
             		}
         		}
