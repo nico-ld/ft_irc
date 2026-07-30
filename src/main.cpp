@@ -1,4 +1,5 @@
 #include "ft_irc.hpp"
+#include "Replies.hpp"
 #include <cstdlib>
 
 int main(int ac, char **av) {
@@ -26,5 +27,7 @@ int main(int ac, char **av) {
 	// Server server(port, av[2]);
 	// server.init();
 	// server.startLoop();
+
 	std::cout << "Server will start on port " << port << ", with '" << av[2] << "' as password." << std::endl;
+	std::cout << Reply::welcome("testServ", "leRoux", "nico", "localhost") << std::endl;
 }
