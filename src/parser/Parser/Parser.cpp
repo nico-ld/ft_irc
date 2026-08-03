@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/29 15:09:10 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/08/03 18:41:34 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,36 @@ void Parser::buildPrefix(User &user) {
 
 	if (user.isAuthenticated())
 		_prefix = user.getNickname() + "!" + user.getRealname() + "@" + user.getHostname();
+}
+
+std::vector<Channel> Parser::getlistChannel(std::string parameter) {
+	std::vector<Channel> listChannel;
+	int search = 0;
+	size_t pos;
+	while ((pos = parameter.find(',', search) != parameter.size())) {
+		std::string str = parameter.substr(search, pos - search);
+		listChannel.push_back(Channel(str));
+		search = pos + 1;
+	}
+	if (pos < parameter.size()) {
+		std::string str = parameter.substr(search, pos - search);
+		listChannel.push_back(Channel(str));
+	}
+	return listChannel;
+}
+
+std::vector<std::string> Parser::getlistKey(std::string parameter) {
+	std::vector<std::string> listKey;
+	int search = 0;
+	size_t pos;
+	while ((pos = parameter.find(',', search) != parameter.size())) {
+		std::string str = parameter.substr(search, pos - search);
+		listKey.push_back(str);
+		search = pos + 1;
+	}
+	if (pos < parameter.size()) {
+		std::string str = parameter.substr(search, pos - search);
+		listKey.push_back(str);
+	}
+	return listKey;
 }
