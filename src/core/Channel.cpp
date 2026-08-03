@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:50:45 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/20 13:06:24 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/08/03 17:15:27 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,13 @@ Channel::Channel(const std::string& name)
       _key(""),
       _userLimit(-1) {} // -1 means no limit is enforced
 
+Channel::Channel(const std::string& name, const std::string& key)
+    : _name(name),
+      _topic(""),
+      _isInviteOnly(false),
+      _isTopicRestricted(true), // Standard IRC default: usually only ops change topic (+t)
+      _key(key),
+      _userLimit(-1) {}
 Channel::~Channel() {}
 
 // Orthodox Canonical Form: Copy Constructor
@@ -84,7 +91,7 @@ const std::map<int, User*>& Channel::getMembers() const {
     return _members;
 }
 
-size_t Channel::getMemberCount() const {
+int Channel::getMemberCount() const {
     return _members.size();
 }
 
@@ -139,5 +146,5 @@ void Channel::setTopicRestricted(bool state) { _isTopicRestricted = state; }
 const std::string& Channel::getKey() const { return _key; }
 void Channel::setKey(const std::string& key) { _key = key; }
 
-long Channel::getUserLimit() const { return _userLimit; }
+int Channel::getUserLimit() const { return _userLimit; }
 void Channel::setUserLimit(long limit) { _userLimit = limit; }

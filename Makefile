@@ -38,7 +38,14 @@ SRC			:= \
 				$(PARS_DIR)Parser/ParserInit.cpp \
 				$(CORE_DIR)Channel.cpp \
 				$(CORE_DIR)Server.cpp \
-				$(CORE_DIR)User.cpp
+				$(CORE_DIR)User.cpp \
+				$(SRC_DIR)Message.cpp \
+				$(SRC_DIR)commands/Join.cpp \
+				$(SRC_DIR)commands/Kick.cpp \
+				$(SRC_DIR)commands/Topic.cpp \
+				$(SRC_DIR)commands/Part.cpp \
+				$(SRC_DIR)commands/Invite.cpp \
+				$(SRC_DIR)commands/Mode.cpp
 
 # 				$(PARS_DIR)dispatcher/dispatcher.cpp 
 

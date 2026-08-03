@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:49:37 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/19 19:50:38 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/08/03 17:15:38 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ private:
 public:
     // Constructor / Destructor
     Channel(const std::string& name);
+    Channel(const std::string& name, const std::string& key);
     ~Channel();
 
     // Orthodox Canonical Form
@@ -75,9 +76,9 @@ public:
     const std::string& getKey() const;
     void               setKey(const std::string& key);
 
-    long               getUserLimit() const;
+    int               getUserLimit() const;
     void               setUserLimit(long limit);
-    size_t             getMemberCount() const;
+    int             getMemberCount() const;
 };
 
 #endif
