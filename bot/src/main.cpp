@@ -1,33 +1,40 @@
 #include "Bot.hpp"
+#include <arpa/inet.h>
 
 int main(int ac, char **av) {
-	if (ac != 3) {
-		std::cout << RED BOLD "ERROR: " RESET
-				<< ((ac < 3) ? "not enought parameters" : "too many parameters")
+	if (ac != 4) {
+		std::cerr << ERROR
+				<< ((ac < 4) ? "not enought parameters" : "too many parameters")
 				<< std::endl;
-		std::cout << BOLD "Usage: " RESET "<server_port> <server_password>" << std::endl;
+		std::cerr << BOLD "Usage: " RESET "<host> <server_port> <server_password>" << std::endl;
 		return (1);
 	}
-	(void)av;
 
-	Bot rouxbot;
+	std::string host = av[1];
+	std::string password = av[3];
+	char	*end;
+	int		port = std::strtol(av[2], &end, 10);
 
-	rouxbot.setUser("nico");
-	std::string line = "";
-	std::cout << "Type 'EXIT' to end communication." << std::endl;
-	while(line != "EXIT") {
-		std::cout << "> ";
-		std::getline(std::cin, line);
-		if (line != "EXIT" && rouxbot.processMessage(line) == 1 && !line.empty())
-			std::cout << line << std::endl;
+	if (*end) {
+		std::cerr << ERROR "Invalid port value" << std::endl;
+		return (1);
+	} else if (port < 6665 || port > 6669) {
+		std::cerr << ERROR "port value not in range (must be in interval [6665 - 6669])" << std::endl;
+		return (1); 
 	}
 
-	// User rouxbotProfil(0);
-	// rouxbotProfil.setUsername("rouxbot");
-	// rouxbotProfil.setNickname("RouxBot");
-	// rouxbotProfil.setPrefix("rouxbot!RouxBot@localhost");
-	// rouxbotProfil.setProvidedNick(true);
-	// rouxbotProfil.setProvidedUser(true);
-	// rouxbotProfil.setProvidedPassword(true);
-	// rouxbotProfil.setAuthenticated(true);
+	int sock = socket(AF_INET, SOCK_STREAM, 0);
+
+	struct sockaddr_in serverAddr;
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(port);
+	inet_pton(AF_INET, host.c_str(), &serverAddr.sin_addr);
+
+	if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
+		std::cerr << ERROR "connection impossible to " << host << std::endl;
+		close (sock);
+		return (errno);
+	}
+
+	close (sock);
 }

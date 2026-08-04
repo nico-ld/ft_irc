@@ -4,15 +4,8 @@ CXX			:= c++
 INC			:= -Iincludes
 
 SRC_DIR		:= src/
-BOT_DIR		:= src/Bot/
 SRC			:= \
-				$(SRC_DIR)main.cpp \
-				$(BOT_DIR)Bot.cpp \
-				$(BOT_DIR)BotUser.cpp \
-				$(BOT_DIR)BotMessage.cpp \
-				$(BOT_DIR)BotVocabulary.cpp \
-				$(BOT_DIR)BotAnswer.cpp \
-				$(BOT_DIR)LevenshteinDistance.cpp
+				$(SRC_DIR)main.cpp
 
 OBJ_DIR		:= obj/
 OBJ			:= $(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)%.o,$(SRC))
