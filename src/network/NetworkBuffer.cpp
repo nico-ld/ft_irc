@@ -6,7 +6,7 @@
 /*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 17:46:48 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/28 20:25:50 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/08/04 20:16:19 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,8 @@ void NetworkBuffer::appendReadBuffer(const char* data, size_t length)
 		_readBuffer.append(data, length);
 }
 
-// Scans stored incoming text to pull out one complete, fully formed instruction.
-// Chat commands are finished with line breaks (like pressing "Enter" on a keyboard).
-// This function checks if a full sentence has arrived, extracts it, and removes it from storage.
-// It returns true if a valid sentence was found, or false if it is still waiting for more text.
+// Scans stored text for newline breaks and extracts one full completed instruction.
+// Removes the extracted command from storage and returns true if a line was found.
 bool NetworkBuffer::extractLine(std::string& line)
 {
 	size_t pos = _readBuffer.find('\n');
@@ -39,53 +37,39 @@ bool NetworkBuffer::extractLine(std::string& line)
 
 	// Clean up trailing carriage returns ('\r') if present
 	if (!line.empty() && line[line.size() - 1] == '\r')
-	{
 		line.erase(line.size() - 1);
-	}
 
 	// Remove the extracted line and newline character from the read buffer
 	_readBuffer.erase(0, pos + 1);
 	return true;
 }
 
-// Places outgoing server messages into a waiting line to be sent to the client.
-// If the server tries to speak to a user too fast, the connection can get overwhelmed.
-// This function queues up outgoing text safely so it can be delivered piece by piece.
-// It prevents the server from freezing or dropping messages during heavy traffic.
+// Places outgoing server messages into a queue to be sent to the user safely.
+// Prevents server freezes by storing response text until the network is ready.
 void NetworkBuffer::queueWriteData(const std::string& data)
 {
 	_writeBuffer.append(data);
 }
 
-// Provides a look at the current queue of outgoing messages waiting to be delivered.
-// The network supervisor needs to see what text is waiting before attempting to send it.
-// This function grants read-only access to the outgoing text without modifying it.
-// It allows the sending system to know exactly what bytes to process next.
+// Grants read-only access to inspect the outgoing text queue waiting to be sent.
+// Lets the system check exactly which pending bytes need to be transmitted next.
 const std::string& NetworkBuffer::getWriteBuffer() const
 {
 	return _writeBuffer;
 }
 
-// Removes a specific number of bytes from the outgoing queue after successful delivery.
-// Once part of a message travels through the internet, it no longer needs to be stored.
-// This function trims away the front portion of the message buffer that was just delivered.
-// It ensures the server never resends the same piece of text twice.
+// Erases successfully delivered bytes from the front of the outgoing message queue.
+// Prevents the server from sending duplicate data after a successful network transmission.
 void NetworkBuffer::consumeWriteData(size_t bytesSent)
 {
 	if (bytesSent >= _writeBuffer.size())
-	{
 		_writeBuffer.clear();
-	}
 	else
-	{
 		_writeBuffer.erase(0, bytesSent);
-	}
 }
 
-// Checks whether there is still unsent text remaining in the client's outgoing queue.
-// The server needs to know if a connection still has pending work to deliver.
-// This function returns true if there are messages waiting, and false if everything was sent.
-// It helps the event monitor know when to pause or resume watching a user's connection.
+// Checks if any unsent server responses are still waiting in the outgoing queue.
+// Returns true if unsent text remains, helping the system track pending work.
 bool NetworkBuffer::hasPendingWrite() const
 {
 	return !_writeBuffer.empty();
