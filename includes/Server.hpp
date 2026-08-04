@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/29 15:19:58 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/08/04 10:02:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,10 @@ class Server
 		
 		/* > Return a Channel object */
 		Channel *getChannelByName(const std::string &name);
+
+		// === NULERIC REPLIES ===
+		/* > Send to User a numeric reply of last command */
+		void	sendReply(User &user, const std::string &code, const std::string &rest);
 };
 
 #endif
