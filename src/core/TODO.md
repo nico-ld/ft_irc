@@ -1,8 +1,8 @@
 RULE : WORK IN PROGRESS, DONE, VERIFIED
 
-User.hpp : WORK IN PROGRESS
+User.hpp : DONE
 
-User.cpp : WORK IN PROGRESS
+User.cpp : DONE
 
 Channel.hpp : WORK IN PROGRESS
 

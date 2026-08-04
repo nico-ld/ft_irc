@@ -6,7 +6,7 @@
 #    By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/07/20 11:25:58 by nile-dai         ###   ########.fr        #
+#    Updated: 2026/07/29 15:34:02 by nile-dai         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,10 +36,11 @@ SRC			:= \
 				$(SRC_DIR)main.cpp \
 				$(PARS_DIR)Parser/Parser.cpp \
 				$(PARS_DIR)Parser/ParserInit.cpp \
-				$(PARS_DIR)dispatcher/dispatcher.cpp \
 				$(CORE_DIR)Channel.cpp \
 				$(CORE_DIR)Server.cpp \
 				$(CORE_DIR)User.cpp
+
+# 				$(PARS_DIR)dispatcher/dispatcher.cpp 
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/
