@@ -14,3 +14,6 @@
 // === Text patern ===
 #define ROUXBOT DIM ITALIC "RouxBot" RESET
 #define ERROR  RED BOLD "ERROR: " RESET
+
+/* > Create a user for the bot on the server, return 1 on error */
+int	registerBot(int sock, std::string password);
