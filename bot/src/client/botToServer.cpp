@@ -6,11 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:43 by nico              #+#    #+#             */
-/*   Updated: 2026/08/05 09:02:32 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/05 10:07:17 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
+#include <sys/socket.h>
+#include <cstring>
 
 int	registerBot(int sock, std::string password)
 {
@@ -55,6 +57,7 @@ int	registerBot(int sock, std::string password)
 void serverLoop(int sock)
 {
 	std::string buf;
+	Bot rouxbot;
 
 	while (true) {
 		char tmp[BUFFER_SIZE];
@@ -72,7 +75,9 @@ void serverLoop(int sock)
 			std::string line = buf.substr(0, pos);
 			buf.erase(0, pos + 2);
 
-			// processLine(line);
+			Parser::parse(line);
+			rouxbot.setCommand(Parser::getCommand());
+			rouxbot.setParameters(Parser::getParameters());
 		}
 	}
 }

@@ -6,11 +6,12 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/04 14:39:35 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/05 09:46:30 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
+#include <unistd.h>
 #include <arpa/inet.h>
 
 int main(int ac, char **av) {
