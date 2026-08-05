@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:43 by nico              #+#    #+#             */
-/*   Updated: 2026/08/04 14:39:23 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/05 09:02:32 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@ int	registerBot(int sock, std::string password)
 	std::string buf;
 
 	while (!registered) {
-		char tmp[512];
-		int n = recv(sock, tmp, sizeof(tmp), 0);
+		char tmp[BUFFER_SIZE];
+		memset(tmp, 0, BUFFER_SIZE);
+		
+		int n = recv(sock, tmp, BUFFER_SIZE - 1, 0);
 		if (n <= 0) {
 			std::cerr << "Server connection is closed" << std::endl;
 			return (1);
@@ -48,4 +50,29 @@ int	registerBot(int sock, std::string password)
 	}
 	
 	return (0);
+}
+
+void serverLoop(int sock)
+{
+	std::string buf;
+
+	while (true) {
+		char tmp[BUFFER_SIZE];
+		memset(tmp, 0, BUFFER_SIZE);
+
+		int n = recv(sock, tmp, BUFFER_SIZE - 1, 0);
+		if (n <= 0) {
+			std::cerr << "Server connection is closed" << std::endl;
+			return ;
+		}
+
+		buf.append(tmp, n);
+		size_t pos;
+		while ((pos = buf.find("\r\n")) != std::string::npos) {
+			std::string line = buf.substr(0, pos);
+			buf.erase(0, pos + 2);
+
+			// processLine(line);
+		}
+	}
 }
