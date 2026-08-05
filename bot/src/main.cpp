@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/05 09:46:30 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/05 10:09:55 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int main(int ac, char **av) {
 	}
 
 	if (registerBot(sock, password) == 0) {
-		// code
+		serverLoop(sock);
 	}
 
 	close (sock);

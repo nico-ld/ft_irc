@@ -13,6 +13,9 @@
 /* > Create a user for the bot on the server, return 1 on error */
 int	registerBot(int sock, std::string password);
 
+/* > Start the loop that read server output */
+void serverLoop(int sock);
+
 class Bot
 {
 	private:
