@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:23:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/05 10:42:20 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/05 10:45:19 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void Game::removePlayer(std::string playerName) {
 	if (it != _playerList.end())
 		_playerList.erase(it);
 	else
-		std::cerr << "Player not found" << std::endl;
+		std::cerr << ERROR "Player not found" << std::endl;
 }
 
 // == Game state ==

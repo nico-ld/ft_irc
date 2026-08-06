@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/05 10:38:23 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/05 10:50:08 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+
 
 enum e_state {
 	STARTED,
@@ -33,7 +34,7 @@ class Game
 		// == Constructor & destructor ==
 		Game();
 		Game(const Game &other);
-		~Game();
+		virtual ~Game();
 
 		
 		// === OVERLOADS ===

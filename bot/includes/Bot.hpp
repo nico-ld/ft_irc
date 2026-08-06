@@ -5,7 +5,6 @@
 
 // === Text patern ===
 #define ROUXBOT DIM ITALIC "RouxBot" RESET
-#define ERROR  RED BOLD "ERROR: " RESET
 
 // === Buffer ===
 #define BUFFER_SIZE 512

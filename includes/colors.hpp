@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 09:43:24 by nico              #+#    #+#             */
-/*   Updated: 2026/08/05 09:43:40 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/05 10:50:30 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,3 +34,6 @@
 #define MAGENTA		"\033[95m"
 #define CYAN		"\033[96m"
 #define WHITE		"\033[97m"
+
+// > Pattern
+#define ERROR RED BOLD "ERROR: " RESET
