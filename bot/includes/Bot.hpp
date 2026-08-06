@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../includes/Parser.hpp"
-#include "../../includes/colors.hpp"
+#include "../../includes/ansi.hpp"
 
 // === Text patern ===
 #define ROUXBOT DIM ITALIC "RouxBot" RESET

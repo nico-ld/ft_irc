@@ -6,13 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/05 10:50:08 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/06 17:32:53 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "../../includes/colors.hpp"
+#include "../../includes/ansi.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
