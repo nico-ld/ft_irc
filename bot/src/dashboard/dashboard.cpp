@@ -17,6 +17,10 @@ Dashboard::Dashboard(const std::string &botName, const std::string &logPath)
 	_logFile.open(_logPath.c_str(), std::ios::app);
 	if (!_logFile.is_open())
 		std::cerr << "[ERROR] could not open log file " << _logPath << "\n";
+
+	_logFile << std::endl;
+	log(SYSTEM, "Starting log");
+	_logFile << std::endl;
 }
 
 Dashboard::~Dashboard()
@@ -29,17 +33,18 @@ void Dashboard::log(const std::string &level, const std::string &message)
 {
 	if (!_logFile.is_open())
 		return;
-	_logFile << "[" << timestamp() << "] [" << level << "] "
-			 << message << std::endl; // flush so tail -f sees it live
+	_logFile << DIM "[" << timestamp() << "]" RESET BOLD " [" << level << BOLD "] " RESET
+			 << message << std::endl;
 }
 
 void Dashboard::render()
 {
 	std::cout << SCREEN_CLEAR << setCursor(1, 1);
 
-	std::cout << _botName << " Dashboard\n";
+	std::cout << _botName << CYAN " Dashboard" RESET << std::endl;
 	printTopBorder();
 
+	// === SECTION SERVER ===
 	printSectionHeader("SERVER", "Mode : " + _server.mode);
 	printRow("");
 	printRow(std::string("Connection : ") + (_server.connected ? "OK" : "DOWN"));
@@ -49,9 +54,10 @@ void Dashboard::render()
 
 	printThinSeparator();
 
+	// === SECTION BOT ===
 	printSectionHeader("BOT", "State : " + _bot.state);
 	printTwoCol("", "");
-	printTwoCol("Global :", "Current task :");
+	printTwoCol("Global :", "Last task :");
 	printTwoCol("Channel joined : " + toStr(_bot.channelsJoined),
 				"Command : " + _bot.currentTask.command);
 	printTwoCol("Games : " + toStr(_bot.gamesAmount),
@@ -61,6 +67,7 @@ void Dashboard::render()
 
 	printThinSeparator();
 
+	// === SECTION GAME ===
 	printSectionHeader("GAME", "");
 	printTwoCol("", "");
 
@@ -139,7 +146,7 @@ std::string Dashboard::centerText(const std::string &s, size_t width)
 }
 
 void Dashboard::printSectionHeader(const std::string &title,
-									const std::string &rightLabel) const
+								   const std::string &rightLabel) const
 {
 	size_t used = title.size() + rightLabel.size();
 	size_t space = (INNER_WIDTH - 2 > used) ? (INNER_WIDTH - 2 - used) : 1;

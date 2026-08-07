@@ -2,6 +2,7 @@
 
 #include "../../includes/Parser.hpp"
 #include "../../includes/ansi.hpp"
+#include "Dashboard.hpp"
 
 // === Text patern ===
 #define ROUXBOT DIM ITALIC "RouxBot" RESET

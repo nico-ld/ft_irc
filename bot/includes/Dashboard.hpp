@@ -54,6 +54,13 @@ struct GameTypeInfo
 	std::vector<GameChannelInfo> channels; // usually one, but supports more
 };
 
+struct DashData
+{
+	ServerInfo	server;
+	BotInfo		bot;
+	std::vector<GameTypeInfo> games;
+};
+
 // ---------------------------------------------------------------------
 // Dashboard
 // ---------------------------------------------------------------------
@@ -119,8 +126,7 @@ private:
 		std::cout << "│" << std::string(INNER_WIDTH, '-')
 				  << "│\n";
 	}
-	void printRow(const std::string &text) const
-	{
+	void printRow(const std::string &text) {
 		std::cout << "│ " << std::left << std::setw(INNER_WIDTH - 2) << text
 				  << " │\n";
 	}
@@ -130,3 +136,5 @@ private:
 
 	void printTwoCol(const std::string &left, const std::string &right) const;
 };
+
+void initData(DashData &data);

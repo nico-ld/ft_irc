@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 09:43:24 by nico              #+#    #+#             */
-/*   Updated: 2026/08/07 10:45:12 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/07 13:55:20 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,5 +92,11 @@ inline std::string setCursor(int row, int column) {
 /* === PATERNS === */
 #define ERROR RED BOLD "ERROR: " RESET
 #define ROUXBOT BOLD ORANGE "Roux" PURPLE "Bot" RESET
+
+#define INFO CYAN "INFO" RESET
+#define DEBUG YELLOW "DEBUG" RESET
+#define ERROR_LVL RED "ERROR" RESET
+#define SUCCESS GREEN "SUCCESS" RESET
+#define SYSTEM BLUE "SYSTEM" RESET
 
 #endif
