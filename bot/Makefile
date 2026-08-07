@@ -6,12 +6,24 @@ INC			:= -Iincludes
 # ~~ Source directories ~~
 SRC_DIR		:= src/
 LOG_DIR		:= $(SRC_DIR)dashboard/
+CLT_DIR		:= $(SRC_DIR)client/
+PARS_DIR	:= ../src/parser/Parser/
 
 # ~~ Source files ~~
 LOG			:= \
-				$(LOG_DIR)dashboard.cpp
+				$(LOG_DIR)dashboard.cpp \
+				$(LOG_DIR)dahsboardInit.cpp
+
+PARSER		:= \
+				$(PARS_DIR)Parser.cpp \
+				$(PARS_DIR)ParserInit.cpp
+
+CLIENT		:= \
+				$(CLT_DIR)botToServer.cpp
 
 SRC			:= \
+				$(CLIENT) \
+				$(PARSER) \
 				$(LOG) \
 				$(SRC_DIR)main.cpp
 
@@ -83,7 +95,7 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@printf "$(RED) ✘$(RESET)  $(NAME) removed\n"
-	@rm -f users.json
+	@rm -f bot.log
 
 re: fclean all
 

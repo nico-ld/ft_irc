@@ -1,13 +1,14 @@
-// dashboard.cpp
-// Terminal dashboard + file logger for RouxBot — plain text, no color.
-//
-// Logs are written "aside", to a plain text file (bot.log), with a
-// timestamp — stdout is owned by the redrawing dashboard, so logs can't
-// live there too. Watch them live in a second terminal with:
-//     tail -f bot.log
-//
-// Compile (ft_irc requires C++98):
-//   g++ -std=c++98 -Wall -Wextra -Werror dashboard.cpp -o dashboard
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dashboard.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/07 15:59:07 by nico              #+#    #+#             */
+/*   Updated: 2026/08/07 15:59:08 by nico             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "Dashboard.hpp"
 

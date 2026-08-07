@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:43 by nico              #+#    #+#             */
-/*   Updated: 2026/08/07 14:41:46 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/07 16:16:25 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,11 @@
 int	registerBot(int sock, std::string password, DashData &data, Dashboard &dash)
 {
 	send(sock, ("PASS " + password + "\r\n").c_str(), password.size() + 2, 0);
+	dash.log(CLIENT, ":RouxBot PASS " + password);
 	send(sock, "NICK RouxBot\r\n", 14, 0);
+	dash.log(CLIENT, ":RouxBot NICK RouxBot");
 	send(sock, "USER rouxbot . . rouxbot\r\n", 26, 0);
+	dash.log(CLIENT, ":RouxBot USER rouxbot . . rouxbot");
 	
 	bool registered = false;
 	std::string buf;
@@ -60,7 +63,6 @@ int	registerBot(int sock, std::string password, DashData &data, Dashboard &dash)
 void serverLoop(int sock, DashData &data, Dashboard &dash)
 {
 	std::string buf;
-	Bot rouxbot;
 	
 	while (true) {
 		char tmp[BUFFER_SIZE];
@@ -80,9 +82,6 @@ void serverLoop(int sock, DashData &data, Dashboard &dash)
 
 			dash.log(SERVER, line);
 
-			Parser::parse(line);
-			rouxbot.setCommand(Parser::getCommand());
-			rouxbot.setParameters(Parser::getParameters());
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 09:43:24 by nico              #+#    #+#             */
-/*   Updated: 2026/08/07 14:41:11 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/07 16:15:04 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,6 @@ inline std::string setCursor(int row, int column) {
 #define SUCCESS GREEN "SUCCESS" RESET
 #define SYSTEM BLUE "SYSTEM" RESET
 #define SERVER DIM "SERVER" RESET
+#define CLIENT DIM "CLIENT" RESET
 
 #endif

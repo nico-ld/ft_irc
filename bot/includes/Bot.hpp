@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Bot.hpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/07 15:58:02 by nico              #+#    #+#             */
+/*   Updated: 2026/08/07 16:18:05 by nico             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
 
 #include "../../includes/Parser.hpp"
@@ -15,29 +27,3 @@ int	registerBot(int sock, std::string password, DashData &data, Dashboard &dash)
 
 /* > Start the loop that read server output */
 void serverLoop(int sock, DashData &data, Dashboard &Dashboard);
-
-/* > Display Bot dashboard & logs */
-void display_dashboard( void );
-
-class Bot
-{
-	private:
-		std::string _command;
-		std::vector<std::string> _parameters;
-
-	public:
-		// == Constructor and destructor ==
-		Bot();
-		Bot(const Bot &other);
-		~Bot();
-
-		// === OVERLOADS === 
-		Bot &operator=(const Bot &other);
-
-		// === GETTERS / SETTERS ===
-		const std::string	&getCommand( void ) const;
-		void				setCommand(std::string command);
-
-		const std::vector<std::string>	&getParameters( void ) const;
-		void							setParameters(std::vector<std::string> parameters);
-};
