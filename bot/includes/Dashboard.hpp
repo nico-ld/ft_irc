@@ -137,4 +137,4 @@ private:
 	void printTwoCol(const std::string &left, const std::string &right) const;
 };
 
-void initData(DashData &data);
+void initData(DashData &data, std::string host, int port);

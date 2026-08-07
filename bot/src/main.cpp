@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/07 14:22:20 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/07 14:36:58 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,25 @@ int main(int ac, char **av) {
 	serverAddr.sin_port = htons(port);
 	inet_pton(AF_INET, host.c_str(), &serverAddr.sin_addr);
 	
-	DashData data;
-	initData(data);
-
 	if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
 		std::cerr << ERROR "connection impossible to " << host << std::endl;
 		close (sock);
 		return (errno);
 	}
+	
+	// Set value for dashboard
+	DashData data;
+	initData(data, host, port);
 
-	if (registerBot(sock, password) == 0) {
-		serverLoop(sock);
+	// Set & display Dashboard
+	Dashboard dash(ROUXBOT, "bot.log");
+	dash.setServerInfo(data.server);
+	dash.setBotInfo(data.bot);
+	dash.setGames(data.games);
+	dash.render();
+
+	if (registerBot(sock, password, data, dash) == 0) {
+		serverLoop(sock, data, dash);
 	}
 
 	close (sock);

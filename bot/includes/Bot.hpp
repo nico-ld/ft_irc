@@ -11,10 +11,10 @@
 #define BUFFER_SIZE 512
 
 /* > Create a user for the bot on the server, return 1 on error */
-int	registerBot(int sock, std::string password);
+int	registerBot(int sock, std::string password, DashData &data, Dashboard &dash);
 
 /* > Start the loop that read server output */
-void serverLoop(int sock);
+void serverLoop(int sock, DashData &data, Dashboard &Dashboard);
 
 /* > Display Bot dashboard & logs */
 void display_dashboard( void );
