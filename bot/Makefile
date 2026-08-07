@@ -3,14 +3,22 @@ CXXFLAGS	:= -Wall -Wextra -Werror -g -std=c++98
 CXX			:= c++
 INC			:= -Iincludes
 
+# ~~ Source directories ~~
 SRC_DIR		:= src/
+LOG_DIR		:= $(SRC_DIR)dashboard/
+
+# ~~ Source files ~~
+LOG			:= \
+				$(LOG_DIR)dashboard.cpp
+
 SRC			:= \
+				$(LOG) \
 				$(SRC_DIR)main.cpp
 
 OBJ_DIR		:= obj/
 OBJ			:= $(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)%.o,$(SRC))
 
-# ~~ AINSI code ~~
+# ~~ ANSI code ~~
 RESET		:= \033[0m
 
 BOLD		:= \033[1m

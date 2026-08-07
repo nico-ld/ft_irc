@@ -6,11 +6,14 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 09:43:24 by nico              #+#    #+#             */
-/*   Updated: 2026/08/06 17:48:19 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/07 10:45:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#ifndef ANSI_HPP
+# define ANSI_HPP
 
 #define RESET		"\033[0m"
 
@@ -37,37 +40,38 @@
 
 /* === CURSOR MOVES === */
 #include <string>
+#include <sstream>
 
 // Move cursor up N lines
-std::string moveUp(int n) {
+inline std::string moveUp(int n) {
 	std::ostringstream oss;
 	oss << "\033[" << n << "A";
 	return (oss.str());
 }
 
 // Move cursor down N lines
-std::string moveDown(int n) {
+inline std::string moveDown(int n) {
 	std::ostringstream oss;
 	oss << "\033[" << n << "B";
 	return (oss.str());
 }
 
 // Move cursor right N columns
-std::string moveRight(int n) {
+inline std::string moveRight(int n) {
 	std::ostringstream oss;
 	oss << "\033[" << n << "C";
 	return (oss.str());
 }
 
 // Move cursor left N columns
-std::string moveLeft(int n) {
+inline std::string moveLeft(int n) {
 	std::ostringstream oss;
 	oss << "\033[" << n << "D";
 	return (oss.str());
 }
 
 // Set cursor to position X (column) and Y (row)
-std::string setCursor(int row, int column) {
+inline std::string setCursor(int row, int column) {
 	std::ostringstream oss;
 	oss << "\033[" << row << ";" << column << "H";
 	return (oss.str());
@@ -87,3 +91,6 @@ std::string setCursor(int row, int column) {
 
 /* === PATERNS === */
 #define ERROR RED BOLD "ERROR: " RESET
+#define ROUXBOT BOLD ORANGE "Roux" PURPLE "Bot" RESET
+
+#endif

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/05 10:09:55 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/07 09:40:53 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,44 +14,48 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-int main(int ac, char **av) {
-	if (ac != 4) {
-		std::cerr << ERROR
-				<< ((ac < 4) ? "not enought parameters" : "too many parameters")
-				<< std::endl;
-		std::cerr << BOLD "Usage: " RESET "<host> <server_port> <server_password>" << std::endl;
-		return (1);
-	}
+// int main(int ac, char **av) {
+// 	if (ac != 4) {
+// 		std::cerr << ERROR
+// 				<< ((ac < 4) ? "not enought parameters" : "too many parameters")
+// 				<< std::endl;
+// 		std::cerr << BOLD "Usage: " RESET "<host> <server_port> <server_password>" << std::endl;
+// 		return (1);
+// 	}
 
-	std::string host = av[1];
-	std::string password = av[3];
-	char	*end;
-	int		port = std::strtol(av[2], &end, 10);
+// 	std::string host = av[1];
+// 	std::string password = av[3];
+// 	char	*end;
+// 	int		port = std::strtol(av[2], &end, 10);
 
-	if (*end) {
-		std::cerr << ERROR "Invalid port value" << std::endl;
-		return (1);
-	} else if (port < 6665 || port > 6669) {
-		std::cerr << ERROR "port value not in range (must be in interval [6665 - 6669])" << std::endl;
-		return (1); 
-	}
+// 	if (*end) {
+// 		std::cerr << ERROR "Invalid port value" << std::endl;
+// 		return (1);
+// 	} else if (port < 6665 || port > 6669) {
+// 		std::cerr << ERROR "port value not in range (must be in interval [6665 - 6669])" << std::endl;
+// 		return (1); 
+// 	}
 
-	int sock = socket(AF_INET, SOCK_STREAM, 0);
+// 	int sock = socket(AF_INET, SOCK_STREAM, 0);
 
-	struct sockaddr_in serverAddr;
-	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(port);
-	inet_pton(AF_INET, host.c_str(), &serverAddr.sin_addr);
+// 	struct sockaddr_in serverAddr;
+// 	serverAddr.sin_family = AF_INET;
+// 	serverAddr.sin_port = htons(port);
+// 	inet_pton(AF_INET, host.c_str(), &serverAddr.sin_addr);
 
-	if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
-		std::cerr << ERROR "connection impossible to " << host << std::endl;
-		close (sock);
-		return (errno);
-	}
+// 	if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
+// 		std::cerr << ERROR "connection impossible to " << host << std::endl;
+// 		close (sock);
+// 		return (errno);
+// 	}
 
-	if (registerBot(sock, password) == 0) {
-		serverLoop(sock);
-	}
+// 	if (registerBot(sock, password) == 0) {
+// 		serverLoop(sock);
+// 	}
 
-	close (sock);
+// 	close (sock);
+// }
+
+int main(void) {
+	display_dashboard();
 }

@@ -15,6 +15,9 @@ int	registerBot(int sock, std::string password);
 /* > Start the loop that read server output */
 void serverLoop(int sock);
 
+/* > Display Bot dashboard & logs */
+void display_dashboard( void );
+
 class Bot
 {
 	private:
