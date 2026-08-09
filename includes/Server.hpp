@@ -97,6 +97,25 @@ class Server
 		
 		/* > Return a Channel object */
 		Channel *getChannelByName(const std::string &name);
+		
+		// COMMANDES 
+		void join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client);
+		void join(std::vector<Channel> &listChannel, User *client);
+		void kick(Channel &channel, User *kicked, const User *op);
+		void kick(Channel &channel, User *kicked, std::string reason, const User *op);
+		void topic(const Channel &channel, User *user);
+		void topic(Channel &channel, std::string newTopic, User *user);
+		void part(std::vector<Channel> &channels, User *user);
+		void part(std::vector<Channel> &channels, std::string reason, User *user);
+		void invite(const std::string &nickname, Channel &channel, const User *user);
+		void mode(Channel &channel, std::string listMode, std::vector<std::string> params = std::vector<std::string>());
+
+		// Message
+		void broadcastServer(std::string message);
+		void broadcast(const Channel &channel, std::string message);
+		void broadcast(const Channel &channel, const User *user, std::string message);
+		void notification(const User *user, std::string message);
+		void privateMessage(const User *src, const User *dest, std::string message);
 
 		// === NULERIC REPLIES ===
 		/* > Send to User a numeric reply of last command */

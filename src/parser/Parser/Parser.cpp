@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/29 15:09:10 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/08/03 18:41:34 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int Parser::parse(std::string &input) {
 		// so we save it then break ; if we don't, we keep getting the regular params
 		for (int i = 0; i < 14; i++) {
 			ss >> std::ws; // Consume leading whitespace
-			if (ss.peek())
+			if (ss.eof())
 				break;
 
 			// Check for trailing parameter start (':')
@@ -111,4 +111,47 @@ void Parser::buildPrefix(User &user) {
 
 	if (user.isAuthenticated())
 		_prefix = user.getNickname() + "!" + user.getRealname() + "@" + user.getHostname();
+}
+
+std::vector<Channel> Parser::getlistChannel(std::string parameter) {
+	std::vector<Channel> listChannel;
+	size_t search = 0;
+	size_t pos;
+	while ((pos = parameter.find(',', search)) != std::string::npos) {
+		std::string str = parameter.substr(search, pos - search);
+		listChannel.push_back(Channel(str));
+		search = pos + 1;
+	}
+	if (search < parameter.size()) {
+		std::string str = parameter.substr(search);
+		listChannel.push_back(Channel(str));
+	}
+	return listChannel;
+}
+
+std::vector<std::string> Parser::getlistKey(std::string parameter) {
+	std::vector<std::string> listKey;
+	size_t search = 0;
+	size_t pos;
+	while ((pos = parameter.find(',', search)) != std::string::npos) {
+		std::string str = parameter.substr(search, pos - search);
+		listKey.push_back(str);
+		search = pos + 1;
+	}
+	if (search < parameter.size()) {
+		std::string str = parameter.substr(search);
+		listKey.push_back(str);
+	}
+	return listKey;
+}
+
+std::vector<std::string> Parser::split_params(std::vector<std::string> parameters) {
+	std::vector<std::string> getParams;
+	std::vector<std::string>::iterator it = parameters.begin();
+	it += 2;
+	
+	for(; it != parameters.end(); ++it) {
+		getParams.push_back(*it);
+	}
+	return getParams;
 }

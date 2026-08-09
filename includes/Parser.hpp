@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/29 15:06:29 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/08/03 18:44:29 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <vector>
 
 class User;
+class Channel;
+class Server;
 
 class Parser
 {
@@ -50,10 +52,19 @@ class Parser
 		/* Return the list of paramaters (no trailing) as vector */
 		static std::vector<std::string> getParameters( void ) {return (_parameters);}
 
+		static std::vector<Channel> getlistChannel(std::string parameter);
+		static std::vector<std::string> getlistKey(std::string parameter);
+		static std::vector<std::string> split_params(std::vector<std::string> parameters);
+
+
 		/* Return the trailing parameter as vector */
 		static std::vector<std::string> getTrailing( void ) {return (_trailing);}
 
-		
+		// === EXCEPTION ===
+		class InvalidCommandException: public std::exception {
+			public: virtual const char *what() const throw() {return ("Error: invalid command.");}
+		};
+
 	private:
 		Parser() {}
 		~Parser() {}
@@ -82,4 +93,4 @@ class Parser
 std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content);
 
 /* After parsing the user input, this function take the targer user and call the good command */
-void dispatchCommand(User &user);
+void dispatchCommand(Server &server, User &user);
