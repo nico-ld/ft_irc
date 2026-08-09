@@ -36,14 +36,21 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 		if (i < listKey.size()) {
 			std::map<std::string, Channel>::iterator it = _channels.find(getChan->getName());
 			if (it != _channels.end()) {
+
+				if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd()))
+					throw std::runtime_error("ERR_INVITEONLYCHAN");
+				if (it->second.getUserLimit() != -1 && it->second.getMemberCount() > it->second.getUserLimit())
+					throw std::runtime_error("ERR_CHANNELISFULL");
 				if (it->second.getKey() != listKey[i]) {
 					notification(client, " cannot join the channel : key error\n");
 					throw std::runtime_error("ERR_BADCHANNELKEY");
 				}
+
 				std::string message = " JOIN " + getChan->getName() + '\n';
 				broadcast(it->second, client, message);
 				it->second.addMember(client);
 				}
+
 			else {
 				Channel channel(getChan->getName(), listKey[i]);
 				channel.addMember(client);
@@ -51,13 +58,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 				std::string message = " JOIN " + getChan->getName() + '\n';
 				broadcast(channel, client, message);
 				continue;
-			}
-			if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd())) {
-			throw std::runtime_error("ERR_INVITEONLYCHAN");
-			}
-			if (it->second.getUserLimit() != -1 && it->second.getMemberCount() > it->second.getUserLimit()) {
-				throw std::runtime_error("ERR_CHANNELISFULL");
-			}
+			}	
 		}
 		else {
 			std::vector<Channel> restOfListChannel(getChan, listChannel.end()); 
