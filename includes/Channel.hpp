@@ -77,8 +77,8 @@ public:
     void               setKey(const std::string& key);
 
     int               getUserLimit() const;
-    void               setUserLimit(long limit);
-    int             getMemberCount() const;
+    void              setUserLimit(long limit);
+    int               getMemberCount() const;
 };
 
 #endif

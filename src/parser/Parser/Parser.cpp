@@ -155,3 +155,14 @@ std::vector<std::string> Parser::split_params(std::vector<std::string> parameter
 	}
 	return getParams;
 }
+
+std::string Parser::getMessage(std::vector<std::string> parameters) {
+	std::vector<std::string>::iterator it = parameters.begin();
+	it++;
+
+	std::string message;
+	for (; it != parameters.end(); ++it) {
+		message+=" " + *it;
+	}
+	return message;
+}

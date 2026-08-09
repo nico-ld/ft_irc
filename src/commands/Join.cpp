@@ -14,14 +14,14 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 				throw std::runtime_error("ERR_CHANNELISFULL");
 
 			it->second.addMember(client);
-			std::string message = " JOIN " + getChan->getName() + '\n';
+			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 			broadcast(it->second, client, message);
 		}
 		else {
 			Channel channel(getChan->getName());
 			channel.addMember(client);
 			_channels.insert(std::make_pair(getChan->getName(), channel));
-			std::string message = " JOIN " + getChan->getName() + '\n';
+			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 			broadcast(channel, client, message);
 			continue;
 		}
@@ -44,7 +44,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 					throw std::runtime_error("ERR_BADCHANNELKEY");
 				}
 
-				std::string message = " JOIN " + getChan->getName() + '\n';
+				std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 				broadcast(it->second, client, message);
 				it->second.addMember(client);
 				}
@@ -53,7 +53,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 				Channel channel(getChan->getName(), listKey[i]);
 				channel.addMember(client);
 				_channels.insert(std::make_pair(getChan->getName(), channel));
-				std::string message = " JOIN " + getChan->getName() + '\n';
+				std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 				broadcast(channel, client, message);
 				continue;
 			}	

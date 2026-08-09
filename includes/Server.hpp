@@ -115,7 +115,9 @@ class Server
 		void broadcast(const Channel &channel, std::string message);
 		void broadcast(const Channel &channel, const User *user, std::string message);
 		void notification(const User *user, std::string message);
-		void privateMessage(const User *src, const User *dest, std::string message);
+		void privateMessageUser(const User *src, const User *dest, std::string message);
+		void privateMessageChannel(const User *src, const Channel &channel, std::string message);
+
 
 		// === NULERIC REPLIES ===
 		/* > Send to User a numeric reply of last command */
