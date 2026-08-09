@@ -42,7 +42,7 @@ int Parser::parse(std::string &input) {
 		// so we save it then break ; if we don't, we keep getting the regular params
 		for (int i = 0; i < 14; i++) {
 			ss >> std::ws; // Consume leading whitespace
-			if (ss.peek())
+			if (ss.eof())
 				break;
 
 			// Check for trailing parameter start (':')
@@ -115,15 +115,15 @@ void Parser::buildPrefix(User &user) {
 
 std::vector<Channel> Parser::getlistChannel(std::string parameter) {
 	std::vector<Channel> listChannel;
-	int search = 0;
+	size_t search = 0;
 	size_t pos;
-	while ((pos = parameter.find(',', search) != parameter.size())) {
+	while ((pos = parameter.find(',', search)) != std::string::npos) {
 		std::string str = parameter.substr(search, pos - search);
 		listChannel.push_back(Channel(str));
 		search = pos + 1;
 	}
-	if (pos < parameter.size()) {
-		std::string str = parameter.substr(search, pos - search);
+	if (search < parameter.size()) {
+		std::string str = parameter.substr(search);
 		listChannel.push_back(Channel(str));
 	}
 	return listChannel;
@@ -133,7 +133,7 @@ std::vector<std::string> Parser::getlistKey(std::string parameter) {
 	std::vector<std::string> listKey;
 	int search = 0;
 	size_t pos;
-	while ((pos = parameter.find(',', search) != parameter.size())) {
+	while ((pos = parameter.find(',', search)) != std::string::npos) {
 		std::string str = parameter.substr(search, pos - search);
 		listKey.push_back(str);
 		search = pos + 1;
@@ -143,4 +143,15 @@ std::vector<std::string> Parser::getlistKey(std::string parameter) {
 		listKey.push_back(str);
 	}
 	return listKey;
+}
+
+std::vector<std::string> Parser::split_params(std::vector<std::string> parameters) {
+	std::vector<std::string> getParams;
+	std::vector<std::string>::iterator it = parameters.begin();
+	it += 2;
+	
+	for(; it != parameters.end(); ++it) {
+		getParams.push_back(*it);
+	}
+	return getParams;
 }

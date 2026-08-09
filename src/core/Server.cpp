@@ -206,3 +206,10 @@ User* Server::getUserByNickname(const std::string& nickname) {
     }
     return NULL;
 }
+
+Channel *Server::getChannelByName(const std::string &name) {
+    std::map<std::string, Channel>::iterator it = _channels.find(name);
+    if (it != _channels.end())
+        return &it->second;
+    return NULL;
+}

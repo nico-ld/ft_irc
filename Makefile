@@ -33,9 +33,10 @@ CORE_DIR	:= $(SRC_DIR)core/
 
 # ~~ Sources files ~~
 SRC			:= \
-				$(SRC_DIR)main.cpp \
+				$(SRC_DIR)maintest.cpp \
 				$(PARS_DIR)Parser/Parser.cpp \
 				$(PARS_DIR)Parser/ParserInit.cpp \
+				$(PARS_DIR)dispatcher/dispatcher.cpp \
 				$(CORE_DIR)Channel.cpp \
 				$(CORE_DIR)Server.cpp \
 				$(CORE_DIR)User.cpp \
@@ -46,8 +47,6 @@ SRC			:= \
 				$(SRC_DIR)commands/Part.cpp \
 				$(SRC_DIR)commands/Invite.cpp \
 				$(SRC_DIR)commands/Mode.cpp
-
-# 				$(PARS_DIR)dispatcher/dispatcher.cpp 
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/

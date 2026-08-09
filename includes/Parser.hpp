@@ -20,6 +20,7 @@
 
 class User;
 class Channel;
+class Server;
 
 class Parser
 {
@@ -53,6 +54,8 @@ class Parser
 
 		static std::vector<Channel> getlistChannel(std::string parameter);
 		static std::vector<std::string> getlistKey(std::string parameter);
+		static std::vector<std::string> split_params(std::vector<std::string> parameters);
+
 
 		/* Return the trailing parameter as vector */
 		static std::vector<std::string> getTrailing( void ) {return (_trailing);}
@@ -90,4 +93,4 @@ class Parser
 std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content);
 
 /* After parsing the user input, this function take the targer user and call the good command */
-void dispatchCommand(User &user);
+void dispatchCommand(Server &server, User &user);
