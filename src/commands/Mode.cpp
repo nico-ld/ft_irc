@@ -42,21 +42,22 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 		it_params = params.begin();
 
 	for(; it_modestring != modestring.end(); ++it_modestring) {
-		if (*it_modestring == "+") {
-			*it_modestring++;
+		size_t i = 0;
+		if ((*it_modestring)[i] == '+') {
+			i++;
 
-			if (*it_modestring == "i")
+			if ((*it_modestring)[i] == 'i')
 				channel.setInviteOnly(true);
-			else if (*it_modestring == "t")
+			else if ((*it_modestring)[i] == 't')
 				channel.setTopicRestricted(true);
-			else if (*it_modestring == "k") {
+			else if ((*it_modestring)[i] == 'k') {
 				if (params.size() <= 0)
 					throw std::runtime_error("need argument");
 	
 				channel.setKey(*it_params);
 				it_params++;
 			}
-			else if (*it_modestring == "l") {
+			else if ((*it_modestring)[i] == 'l') {
 				if (params.size() <= 0)
 					throw std::runtime_error("need argument");
 
@@ -69,12 +70,24 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 			else
 				throw std::runtime_error("This mode doesn't existe");
 		}
+		else if ((*it_modestring)[i] == '-') {
+			i++;
+
+			if ((*it_modestring)[i] == 'i')
+				channel.setInviteOnly(false);
+			else if ((*it_modestring)[i] == 't')
+				channel.setTopicRestricted(false);
+			else if ((*it_modestring)[i] == 'k')
+				channel.setKey("");
+			else if ((*it_modestring)[i] == 'l')
+				channel.setUserLimit(-1);
+			else
+				throw std::runtime_error("This mode doesn't existe");
+		}
 	}
 }
 
-void Server::mode(Channel &channel, std::string listMode, std::vector<std::string> params, User *user) {
-	(void)user;
-
+void Server::mode(Channel &channel, std::string listMode, std::vector<std::string> params) {
 	std::map<std::string, Channel>::iterator it = _channels.find(channel.getName());
 	if (it == _channels.end())
 		throw std::runtime_error("ERR_NOSUCHCHANNEL");
@@ -84,18 +97,4 @@ void Server::mode(Channel &channel, std::string listMode, std::vector<std::strin
 
 	// LAUNCH MODE
 	launchMode(channel, modestring, params);
-}
-
-void Server::mode(Channel &channel, std::string listMode, User *user) {
-	(void)user;
-
-	std::map<std::string, Channel>::iterator it = _channels.find(channel.getName());
-	if (it == _channels.end())
-		throw std::runtime_error("ERR_NOSUCHCHANNEL");
-
-	//PARSING
-	std::vector<std::string> modestring = split_mode(listMode);
-	std::vector<std::string> params;
-	// LAUNCH MODE
-		launchMode(channel, modestring, params);
 }

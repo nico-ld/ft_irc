@@ -92,10 +92,8 @@ static void	channelCommandsDispatch(Server &server, std::string command, User &u
 			throw std::runtime_error("Need a channel name.");
 		else if (parameters.size() == 1)
 			throw std::runtime_error("Need a list of modes");
-		else if (parameters.size() == 2)
-			server.mode(*channel, parameters[1], &user);
 		else
-			server.mode(*channel, parameters[1], params, &user);
+			server.mode(*channel, parameters[1], params);
 	}
 }
 
