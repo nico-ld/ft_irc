@@ -131,15 +131,15 @@ std::vector<Channel> Parser::getlistChannel(std::string parameter) {
 
 std::vector<std::string> Parser::getlistKey(std::string parameter) {
 	std::vector<std::string> listKey;
-	int search = 0;
+	size_t search = 0;
 	size_t pos;
 	while ((pos = parameter.find(',', search)) != std::string::npos) {
 		std::string str = parameter.substr(search, pos - search);
 		listKey.push_back(str);
 		search = pos + 1;
 	}
-	if (pos < parameter.size()) {
-		std::string str = parameter.substr(search, pos - search);
+	if (search < parameter.size()) {
+		std::string str = parameter.substr(search);
 		listKey.push_back(str);
 	}
 	return listKey;
