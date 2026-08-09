@@ -12,9 +12,12 @@
 
 #include "ft_irc.hpp"
 #include "Server.hpp"
+<<<<<<< Updated upstream
 #include "User.hpp"
 #include "Channel.hpp"
 
+=======
+>>>>>>> Stashed changes
 #include <stdexcept>
 
 /* Commands to manage channel and user */
@@ -25,16 +28,29 @@ static void	channelCommandsDispatch(Server &server, std::string command, User &u
 	std::cout << command << std::endl;
 	if (command == "join") {
 		listChannel = Parser::getlistChannel(parameters[0]);
+<<<<<<< Updated upstream
 		if (parameters.size() > 1) {
 			listKey = Parser::getlistKey(parameters[1]);
 			server.join(listChannel, listKey, &user);
 		}
+=======
+		
+		std::cout << listChannel.size() << std::endl;
+		for (std::vector<Channel>::iterator it_listChannel = listChannel.begin(); it_listChannel != listChannel.end(); ++it_listChannel) {
+			std::cout << it_listChannel->getName() << std::endl;
+		}
+
+		listKey = Parser::getlistKey(parameters[1]);
+		if (parameters.size() > 1) {
+			server.join(listChannel, listKey, &user); }
+>>>>>>> Stashed changes
 		else if (parameters.size() == 0)
 			throw std::runtime_error("Need a channel name.");
 		else
 			server.join(listChannel, &user);
 	}
 	else if (command == "kick") {
+<<<<<<< Updated upstream
 		if (parameters.size() == 0)
 			throw std::runtime_error("Need a channel name.");
 		else if (parameters.size() == 1)
@@ -94,6 +110,50 @@ static void	channelCommandsDispatch(Server &server, std::string command, User &u
 			throw std::runtime_error("Need a list of modes");
 		else
 			server.mode(*channel, parameters[1], params);
+=======
+		Channel *channel = server.getChannelByName(parameters[0]);
+		User *kicked = server.getUserByNickname(parameters[1]);
+		if (parameters.size() > 2)
+			server.kick(*channel, kicked, parameters[2], &user);
+		else if (parameters.size() == 0)
+			throw std::runtime_error("Need a channel name.");
+		else if (parameters.size() == 1)
+			throw std::runtime_error("Need a nickname.");
+		else
+			server.kick(*channel, kicked, &user);
+	}
+	else if (command == "part") {
+		listChannel = Parser::getlistChannel(parameters[0]);
+		if (parameters.size() > 1)
+			server.part(listChannel, parameters[1], &user);
+		else if (parameters.size() == 0)
+			throw std::runtime_error("Need a channel name.");
+		else
+			server.part(listChannel, parameters[1], &user);
+	}
+	else if (command == "invite") {
+		Channel *channel = server.getChannelByName(parameters[1]);
+		if (parameters.size() != 2)
+			server.invite(parameters[0], *channel, &user);
+		else
+			throw std::runtime_error("Invalid command");
+	}
+	else if (command == "topic") {
+		Channel *channel = server.getChannelByName(parameters[0]);
+		if (parameters.size() > 1)
+			server.topic(*channel, parameters[1], &user);
+		else if (parameters.size() == 0)
+			throw std::runtime_error("Need a channel name.");
+		else
+			server.topic(*channel, &user);
+	}
+	else if (command == "mode") {
+		Channel *channel = server.getChannelByName(parameters[0]);
+		if (parameters.size() > 1)
+			server.topic(*channel, parameters[1], &user);
+		else
+			throw std::runtime_error("Error.");
+>>>>>>> Stashed changes
 	}
 }
 

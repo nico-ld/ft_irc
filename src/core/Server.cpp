@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
+#include "Channel.hpp"
 
 //serverFd and epollFd are set at -1, because that's a Unix convention saying the fd is closed / not init
 Server::Server(int port, const std::string& password) 
@@ -198,6 +199,15 @@ User* Server::getUserById(int fd) {
     return NULL;
 }
 
+Channel* Server::getChannelByName(const std::string &name){
+    for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+        if (it->second.getName() == name) {
+            return &(it->second);
+        }
+    }
+    return NULL;
+}
+ 
 User* Server::getUserByNickname(const std::string& nickname) {
     for (std::map<int, User>::iterator it = _users.begin(); it != _users.end(); ++it) {
         if (it->second.getNickname() == nickname) {
