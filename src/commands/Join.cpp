@@ -4,7 +4,6 @@
 #include <stdexcept>
 
 void Server::join(std::vector<Channel> &listChannel, User *client) {
-	std::cout << "JOIN called, listChannel.size()=" << listChannel.size() << std::endl;
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
 		std::map<std::string, Channel>::iterator it = _channels.find(getChan->getName());
 		if (it != _channels.end()) {
@@ -30,7 +29,6 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 }
 
 void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client) {
-
 	size_t i = 0;
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
 		if (i < listKey.size()) {
