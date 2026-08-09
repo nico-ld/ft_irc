@@ -98,10 +98,20 @@ static void	channelCommandsDispatch(Server &server, std::string command, User &u
 }
 
 /* Commands to send a message */
-static void messageCommandsDispatch(std::string command, User &user) {
-	(void)user;
-	std::cout << command << " is not handled for the moment." << std::endl;
-	/* code */
+static void messageCommandsDispatch(Server &server, std::string command, User &user) {
+	std::vector<std::string> parameters = Parser::getParameters();
+
+	if (command == "privmsg") {
+		if (parameters.size() == 0)
+			throw std::runtime_error("Need a name channel");
+		if (parameters.size() > 1) {
+			std::string message = Parser::getMessage(parameters);
+			if (parameters[0][0] == '#')
+				server.privateMessageChannel(&user, parameters[0], message);
+			else
+				server.privateMessageUser(&user, server.getUserByNickname(parameters[1]), message);
+		}
+	}
 }
 
 /* Commands to register a user */
@@ -144,7 +154,7 @@ void dispatchCommand(Server &server, User &user) {
 			channelCommandsDispatch(server, command, user);
 			break ;
 		case 2:
-			messageCommandsDispatch(command, user);
+			messageCommandsDispatch(server, command, user);
 			break ;
 		case 3:
 			userCommandsDispatch(command, user);

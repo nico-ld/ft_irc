@@ -47,7 +47,16 @@ void Server::notification(const User *user, std::string message) {
         std::perror("Send crashed.");
 }
 
-void Server::privateMessage(const User *src, const User *dest, std::string message) {
+void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message) {
+	std::string privateMessage = src->getUsername() + ": " + message;
+	for (std::map<int, User *>::const_iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); ++it)
+		if (send(it->second->getFd(), privateMessage.c_str(), privateMessage.size(), MSG_NOSIGNAL) == -1)
+        	std::perror("Send crashed.");
+}
+
+void Server::privateMessageUser(const User *src, const User *dest, std::string message) {
+	//security
+
 	std::string privateMessage = src->getUsername() + ": " + message;
 	if (send(dest->getFd(), privateMessage.c_str(), privateMessage.size(), MSG_NOSIGNAL) == -1)
         std::perror("Send crashed.");
