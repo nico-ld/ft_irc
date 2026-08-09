@@ -48,10 +48,15 @@ void Server::notification(const User *user, std::string message) {
 }
 
 void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message) {
-	std::string privateMessage = src->getUsername() + ": " + message;
-	for (std::map<int, User *>::const_iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); ++it)
-		if (send(it->second->getFd(), privateMessage.c_str(), privateMessage.size(), MSG_NOSIGNAL) == -1)
+	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
+	std::string privmessage = src->getNickname() + ":" + message + "\r\n";
+	std::cout << "Nombre de membres : " << channel.getMembers().size() << std::endl;
+	for (; it != channel.getMembers().end(); ++it) {
+		std::cout << "Sending to fd=" << it->second->getFd()
+          << " : " << privmessage << std::endl;
+    	if (send(it->second->getFd(), privmessage.c_str(), privmessage.size(), MSG_NOSIGNAL) == -1)
         	std::perror("Send crashed.");
+	}
 }
 
 void Server::privateMessageUser(const User *src, const User *dest, std::string message) {
