@@ -42,19 +42,10 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 		it_params = params.begin();
 
 	for(; it_modestring != modestring.end(); ++it_modestring) {
-<<<<<<< Updated upstream
 		size_t i = 0;
 		if ((*it_modestring)[i] == '+') {
-			i++;
-
+			(*it_modestring)[i]++;
 			if ((*it_modestring)[i] == 'i')
-=======
-		std::cout << "character :" << *it_modestring << std::endl;
-		if (*it_modestring == "+") {
-			*it_modestring++;
-			std::cout << "character :" << *it_modestring << std::endl;
-			if (*it_modestring == "i")
->>>>>>> Stashed changes
 				channel.setInviteOnly(true);
 			else if ((*it_modestring)[i] == 't')
 				channel.setTopicRestricted(true);

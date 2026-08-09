@@ -24,9 +24,9 @@ int main(int ac, char **av) {
 		return (1);
 	}
 
-	// Server server(port, av[2]);
-	// server.init();
-	// server.startLoop();
+	Server server(port, av[2]);
+	server.init();
+	server.startLoop();
 
 	std::cout << "Server will start on port " << port << ", with '" << av[2] << "' as password." << std::endl;
 }

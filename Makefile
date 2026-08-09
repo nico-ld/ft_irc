@@ -33,7 +33,7 @@ CORE_DIR	:= $(SRC_DIR)core/
 
 # ~~ Sources files ~~
 SRC			:= \
-				$(SRC_DIR)maintest.cpp \
+				$(SRC_DIR)main.cpp \
 				$(PARS_DIR)Parser/Parser.cpp \
 				$(PARS_DIR)Parser/ParserInit.cpp \
 				$(PARS_DIR)dispatcher/dispatcher.cpp \
