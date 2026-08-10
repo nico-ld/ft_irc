@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 15:06:32 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 15:31:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,7 @@ void catchCommand(int sock, std::string line, DashData &data, Dashboard &dash)
 		send(sock, ("JOIN " + channel + "\r\n").c_str(), 7 + channel.size(), 0);
 		dash.log(CLIENT, ":RouxBot JOIN " + channel);
 	}
-	else if (command == "PRIVMSG") {}
+	else if (command == "PRIVMSG") {
+		dash.log(DEBUG, parser.getUserName() + " send : " + parser.getTrailing());
+	}
 }

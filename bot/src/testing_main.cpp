@@ -28,6 +28,8 @@ int main(void) {
 	std::string secondPlayer = "Julien";
 	std::string thirdPlayer = "Amy";
 
+	catchCommand(27, ":leRoux!user@host PRIVMSG :hello world", data, dash);
+
 	try {
 		// init game
 		game1->initGame(player, data, dash);

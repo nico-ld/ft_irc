@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 14:24:08 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 15:05:14 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 15:31:49 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static bool unknowCommand(std::string command)
 {
-	std::transform(command.begin(), command.begin(), command.begin(), ::tolower);
+	std::transform(command.begin(), command.end(), command.begin(), ::tolower);
 
 	if (command == "invite" || command == "privmsg")
 		return (false);
@@ -34,27 +34,28 @@ int Parser::parse(std::string &line)
 	// then get rid of it so we only keep the command to parse
 	if (word[0] == ':')
 	{
+		_userName = word.substr(1, word.find('!') - 1);		
 		if (!(ss >> word) || word.empty())
 			return (0);
 	}
 
 	if (unknowCommand(word))
-		return (0);
+		return (1);
 	_command = word;
-
+	
 	// Get parameters, up to 14 according to the RFC 1459 convention
 	// if we find a :, it means it's a trailing parameter,
 	// so we save it then break ; if we don't, we keep getting the regular params
 	for (int i = 0; i < 14; i++) {
 		ss >> std::ws; // Consume leading whitespace
-		if (ss.peek())
+		if (ss.eof())
 			break;
 
 		// Check for trailing parameter start (':')
 		if (ss.peek() == ':') {
 			ss.get(); // Consume the ':'
 			std::getline(ss, _trailing);
-			break;
+			break ;
 		}
 
 		if (ss >> word)
