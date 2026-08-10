@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 12:20:07 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 12:35:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,18 +54,20 @@ void Uno::initGame(std::string &userName, DashData &data, Dashboard &dash) {
 }
 
 int Uno::addPlayer(std::string playerName, DashData &data, Dashboard &dash) {
-	if (_gameState != READY && _gameState != WAITING)
+	if (_gameState != READY && _gameState != WAITING) {
+		dash.log(WARNING, "Channel " + _channel + " is in " + convertState(_gameState) + " state. " + playerName + " Cannot join the game");
 		return (3);
+	}
 
 	std::vector<std::string>::iterator it = _playerList.begin();
 	for ( ; it != _playerList.end(); ++it) {
-		if (*it == playerName)
+		if (*it == playerName) {
+			dash.log(WARNING, playerName + " is already in the game");
 			return (1);
+		}
 	}
 	_playerList.push_back(playerName);
 	_gameState = READY;
-
-	dash.log(INFO, "Add a player for Uno in " + _channel);
 
 	// Update Dashboard
 	size_t index = 0;
@@ -74,9 +76,13 @@ int Uno::addPlayer(std::string playerName, DashData &data, Dashboard &dash) {
 		if (tmp[index].name == _channel)
 			break ;
 	}
-	if (index == tmp.size())
+	if (index == tmp.size()) {
+		dash.log(WARNING, _channel + " isn't registered in the dashboard");
 		return (2);
+	}
 	
+	dash.log(INFO, "Add a player for Uno in " + _channel);
+
 	data.games[0].channels[index].gameState = "READY";
 	data.games[0].channels[index].playerAmount += 1;
 	data.games[0].playerAmount += 1;
@@ -94,8 +100,10 @@ int Uno::removePlayer(std::string playerName, DashData &data, Dashboard &dash) {
 		if (*it == playerName)
 			break ;
 	}
-	if (it == _playerList.end())
+	if (it == _playerList.end()) {
+		dash.log(WARNING, playerName + " isn't in the game");
 		return (1);
+	}
 	_playerList.erase(it);
 
 	if (_playerList.size() == 1) {
@@ -108,8 +116,6 @@ int Uno::removePlayer(std::string playerName, DashData &data, Dashboard &dash) {
 		_gameState = ENDED;
 	}
 
-	dash.log(INFO, "Remove a user for Uno in " + _channel);
-
 	// Update dashboard
 	size_t index = 0;
 	std::vector<GameChannelInfo> tmp = data.games[0].channels;
@@ -117,8 +123,12 @@ int Uno::removePlayer(std::string playerName, DashData &data, Dashboard &dash) {
 		if (tmp[index].name == _channel)
 			break ;
 	}
-	if (index == tmp.size())
+	if (index == tmp.size()) {
+		dash.log(WARNING, _channel + " isn't registered in the dashboard");
 		return (2);
+	}
+
+	dash.log(INFO, "Remove a user for Uno in " + _channel);
 
 	data.games[0].channels[index].gameState = convertState(_gameState);
 	data.games[0].channels[index].playerAmount -= 1;
@@ -140,8 +150,10 @@ int Uno::setGameState(e_state state, DashData &data, Dashboard &dash) {
 		if (tmp[index].name == _channel)
 			break ;
 	}
-	if (index == tmp.size())
+	if (index == tmp.size()) {
+		dash.log(WARNING, _channel + " isn't registered in the dashboard");
 		return (1);
+	}
 	
 	data.games[0].channels[index].gameState = convertState(_gameState);
 	dash.setGames(data.games);
