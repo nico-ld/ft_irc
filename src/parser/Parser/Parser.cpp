@@ -166,3 +166,9 @@ std::string Parser::getMessage(std::vector<std::string> parameters) {
 	}
 	return message;
 }
+
+bool Parser::checkNameChannel(std::string nameChannel) {
+	if (nameChannel[0] == '#')
+		return true;
+	return false;
+}

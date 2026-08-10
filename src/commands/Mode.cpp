@@ -13,6 +13,7 @@
 #include "Server.hpp"
 #include "User.hpp"
 #include "Channel.hpp"
+#include "Parser.hpp"
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -87,6 +88,8 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 }
 
 void Server::mode(Channel &channel, std::string listMode, std::vector<std::string> params) {
+	if (!Parser::checkNameChannel(channel.getName()))
+			throw std::runtime_error("Name channel must start with #");
 	std::map<std::string, Channel>::iterator it = _channels.find(channel.getName());
 	if (it == _channels.end())
 		throw std::runtime_error("ERR_NOSUCHCHANNEL");

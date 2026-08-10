@@ -97,8 +97,11 @@ static void messageCommandsDispatch(Server &server, std::string command, User &u
 				Channel *channel = server.getChannelByName(parameters[0]);
 				server.privateMessageChannel(&user, *channel, message);
 			}
-			else
-				server.privateMessageUser(&user, server.getUserByNickname(parameters[1]), message);
+			else {
+				if (!server.getUserByNickname(parameters[0]))
+					throw std::runtime_error("USER DOESNT EXIST");
+				server.privateMessageUser(&user, server.getUserByNickname(parameters[0]), message);
+			}
 		}
 	}
 }

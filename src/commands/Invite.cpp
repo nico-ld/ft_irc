@@ -13,9 +13,13 @@
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
+#include "Parser.hpp"
 #include <stdexcept>
 
 void Server::invite(const std::string &nickname, Channel &channel, const User *user) {
+	if (!Parser::checkNameChannel(channel.getName()))
+		throw std::runtime_error("Name channel must start with #");
+
 	if (!channel.isMember(user->getFd()))
 		throw std::runtime_error("ERR_NOSUCHCHANNEL");
 	if (!getUserByNickname(nickname))

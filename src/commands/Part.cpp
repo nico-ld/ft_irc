@@ -13,10 +13,14 @@
 #include "Server.hpp"
 #include "User.hpp"
 #include "Channel.hpp"
+#include "Parser.hpp"
 #include <stdexcept>
 
 void Server::part(std::vector<Channel> &channels, User *user) {
+	
 	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		if (!Parser::checkNameChannel(it->getName()))
+				throw std::runtime_error("Name channel must start with #");
 		if (!it->isMember(user->getFd()))
 			throw std::runtime_error("ERR_USERNOTINCHANNEL");
 		it->removeMember(user);
@@ -32,6 +36,9 @@ void Server::part(std::vector<Channel> &channels, User *user) {
 
 void Server::part(std::vector<Channel> &channels, std::string reason, User *user) {
 	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		if (!Parser::checkNameChannel(it->getName()))
+				throw std::runtime_error("Name channel must start with #");
+
 		if (!it->isMember(user->getFd()))
 			throw std::runtime_error("ERR_USERNOTINCHANNEL");
 		it->removeMember(user);

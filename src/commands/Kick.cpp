@@ -13,10 +13,14 @@
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
+#include "Parser.hpp"
 #include <stdexcept>
 #include <iostream>
 
 void Server::kick(Channel &channel, User *kicked, const User *op) {
+	if (!Parser::checkNameChannel(channel.getName()))
+			throw std::runtime_error("Name channel must start with #");
+
 	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
 	if (findChannel == _channels.end())
 		throw std::runtime_error("ERR_NOSUCHCHANNEL");
@@ -42,6 +46,9 @@ void Server::kick(Channel &channel, User *kicked, const User *op) {
 }
 
 void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {
+	if (!Parser::checkNameChannel(channel.getName()))
+			throw std::runtime_error("Name channel must start with #");
+
 	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
 	if (findChannel == _channels.end())
 		throw std::runtime_error("ERR_NOSUCHCHANNEL");

@@ -13,9 +13,13 @@
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
+#include "Parser.hpp"
 #include <stdexcept>
 
 void Server::topic(const Channel &channel, User *user) {
+	if (!Parser::checkNameChannel(channel.getName()))
+			throw std::runtime_error("Name channel must start with #");
+
 	if (channel.getTopic().empty()) {
 		notification(user, "No topic on this channel");
 		return ;
@@ -24,6 +28,9 @@ void Server::topic(const Channel &channel, User *user) {
 }
 
 void Server::topic(Channel &channel, std::string newTopic, User *user) {
+	if (!Parser::checkNameChannel(channel.getName()))
+			throw std::runtime_error("Name channel must start with #");
+
 	if (channel.isTopicRestricted())
 		if (!channel.isOperator(user->getFd()))
 			throw std::runtime_error("ERR_CHANOPRIVSNEEDED");

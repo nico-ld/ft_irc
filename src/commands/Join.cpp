@@ -1,10 +1,14 @@
 #include "Server.hpp"
 #include "User.hpp"
 #include "Channel.hpp"
+#include "Parser.hpp"
 #include <stdexcept>
 
 void Server::join(std::vector<Channel> &listChannel, User *client) {
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
+		if (!Parser::checkNameChannel(getChan->getName()))
+			throw std::runtime_error("Name channel must start with #");
+
 		std::map<std::string, Channel>::iterator it = _channels.find(getChan->getName());
 		if (it != _channels.end()) {
 			if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd()))
@@ -31,6 +35,9 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client) {
 	size_t i = 0;
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
+		if (!Parser::checkNameChannel(getChan->getName()))
+			throw std::runtime_error("Name channel must start with #");
+
 		if (i < listKey.size()) {
 			std::map<std::string, Channel>::iterator it = _channels.find(getChan->getName());
 			if (it != _channels.end()) {
