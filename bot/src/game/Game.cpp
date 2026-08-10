@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:23:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 09:15:31 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 09:32:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,5 @@ int Game::getNbPlayer(void) const { return (_playerList.size()); }
 
 std::vector<std::string> Game::getPlayerList(void) const { return (_playerList); }
 
-void Game::addPlayer(std::string playerName) { _playerList.push_back(playerName); }
-
-void Game::removePlayer(std::string playerName) {
-	std::vector<std::string>::iterator it;
-	it = std::find(_playerList.begin(), _playerList.end(), playerName);
-	
-	if (it != _playerList.end())
-		_playerList.erase(it);
-	else
-		std::cerr << ERROR "Player not found" << std::endl;
-}
-
 // == Game state ==
 e_state Game::getGameState(void) const { return (_gameState); }
-
-void Game::setGameState(e_state state) { _gameState = state; }

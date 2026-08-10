@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 09:17:48 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 09:58:33 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,11 @@ class Uno: public Game
 		~Uno();
 
 		// === METHODS ===
+		/* > Init basic value and update dashboard */
 		void initGame(std::string &userName, DashData &data, Dashboard &dash);
+
+		// === GETTERS / SETTERS ===
+		// Player
+		
+		void addPlayer(std::string playerName, DashData &data, Dashboard &dash);
 };
