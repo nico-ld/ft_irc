@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/06 17:32:53 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 09:18:03 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,16 @@ class Game
 {
 	protected:
 		std::vector<std::string> _playerList;
-		e_state	_gameState;
+		std::string	_channel;
+		std::string _userHost;
+		e_state		_gameState;
+		int			_sock;
 		
 	public:
 		// == Constructor & destructor ==
 		Game();
-		Game(const Game &other);
+		Game(int sock, std::string &channel);
 		virtual ~Game();
-
-		
-		// === OVERLOADS ===
-		Game &operator=(const Game &other);
 
 		
 		// === GETTERS / SETTERS ===
@@ -54,6 +53,7 @@ class Game
 
 		/* > Remove a player from the game */
 		void removePlayer(std::string playerName);
+		
 		
 		// == Game state ==
 		/* > Return the current game state */
