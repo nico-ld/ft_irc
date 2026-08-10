@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 15:31:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 15:41:57 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void catchCommand(int sock, std::string line, DashData &data, Dashboard &dash)
 {
 	Parser parser;
 	
-	parser.parse(line);
+	parser.parseIRC(line);
 	
 	std::string command = parser.getCommand();
 	std::vector<std::string> parameters = parser.getParameters();
@@ -30,6 +30,6 @@ void catchCommand(int sock, std::string line, DashData &data, Dashboard &dash)
 		dash.log(CLIENT, ":RouxBot JOIN " + channel);
 	}
 	else if (command == "PRIVMSG") {
-		dash.log(DEBUG, parser.getUserName() + " send : " + parser.getTrailing());
+		
 	}
 }

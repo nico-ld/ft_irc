@@ -6,11 +6,11 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 14:24:08 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 15:31:49 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 16:28:45 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Parser.hpp"
+#include "../../includes/Parser.hpp"
 
 static bool unknowCommand(std::string command)
 {
@@ -22,7 +22,7 @@ static bool unknowCommand(std::string command)
 		return (true);
 }
 
-int Parser::parse(std::string &line)
+int Parser::parseIRC(std::string &line)
 {
 	std::stringstream ss(line);
 	std::string word;
@@ -34,7 +34,7 @@ int Parser::parse(std::string &line)
 	// then get rid of it so we only keep the command to parse
 	if (word[0] == ':')
 	{
-		_userName = word.substr(1, word.find('!') - 1);		
+		_userName = word.substr(1, word.find('!') - 1);
 		if (!(ss >> word) || word.empty())
 			return (0);
 	}
@@ -62,6 +62,27 @@ int Parser::parse(std::string &line)
 			_parameters.push_back(word);
 		else
 			break;
+	}
+	return (0);
+}
+
+int Parser::parseMessage(std::string &line) {
+	if (line.empty())
+		return (1);
+	
+	std::stringstream ss(line);
+	std::string word;
+
+	if (!(ss >> word) || word[0] != '!')
+		return (1);
+
+	if (word == "!help" || word == "!game" || word == "!uno")
+		_gameCmd = word;
+	else
+		return (1);
+		
+	while (ss >> word) {
+		_gameCmdParam.push_back(word);
 	}
 	return (0);
 }
