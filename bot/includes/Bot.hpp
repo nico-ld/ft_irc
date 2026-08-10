@@ -6,13 +6,12 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 15:58:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 10:55:52 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 15:04:10 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "../../includes/Parser.hpp"
 #include "../../includes/ansi.hpp"
 #include "Dashboard.hpp"
 

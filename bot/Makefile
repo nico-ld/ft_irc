@@ -8,7 +8,7 @@ SRC_DIR		:= src/
 LOG_DIR		:= $(SRC_DIR)dashboard/
 CLT_DIR		:= $(SRC_DIR)client/
 GAME_DIR	:= $(SRC_DIR)game/
-PARS_DIR	:= ../src/parser/Parser/
+PARS_DIR	:= $(SRC_DIR)parser/
 
 # ~~ Source files ~~
 LOG			:= \
@@ -17,7 +17,7 @@ LOG			:= \
 
 PARSER		:= \
 				$(PARS_DIR)Parser.cpp \
-				$(PARS_DIR)ParserInit.cpp
+				$(PARS_DIR)handleCommands.cpp
 
 CLIENT		:= \
 				$(CLT_DIR)botToServer.cpp
@@ -30,6 +30,7 @@ SRC			:= \
 				$(CLIENT) \
 				$(LOG) \
 				$(GAME) \
+				$(PARSER) \
 				$(SRC_DIR)testing_main.cpp
 # 				$(SRC_DIR)main.cpp
 

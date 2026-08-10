@@ -1,25 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.cpp                                         :+:      :+:    :+:   */
+/*   handleCommands.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/07 16:17:27 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 15:06:32 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
+#include "Parser.hpp"
 #include <sys/socket.h>
 
 void catchCommand(int sock, std::string line, DashData &data, Dashboard &dash)
 {
-	Parser::parse(line);
+	Parser parser;
+	
+	parser.parse(line);
+	
+	std::string command = parser.getCommand();
+	std::vector<std::string> parameters = parser.getParameters();
 
-	std::string command = Parser::getCommand();
-	std::vector<std::string> parameters = Parser::getParameters();
-
+	(void)data;
 	if (command == "INVITE") {
 		std::string channel = parameters[0];
 		send(sock, ("JOIN " + channel + "\r\n").c_str(), 7 + channel.size(), 0);
