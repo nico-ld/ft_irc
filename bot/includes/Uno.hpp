@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 09:58:33 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 10:00:42 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ class Uno: public Game
 
 		// === GETTERS / SETTERS ===
 		// Player
-		
 		void addPlayer(std::string playerName, DashData &data, Dashboard &dash);
+
+		// Game state
+		void setGameState(e_state state, DashData &data, Dashboard &dash);
 };

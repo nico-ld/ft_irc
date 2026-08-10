@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 09:58:28 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 10:02:11 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,24 @@ void Uno::addPlayer(std::string playerName, DashData &data, Dashboard &dash) {
 	itChan->playerAmount += 1;
 	data.games[0].playerAmount += 1;
 	
+	dash.setGames(data.games);
+	dash.render();
+}
+
+void Uno::setGameState(e_state state, DashData &data, Dashboard &dash) {
+	_gameState = state;
+	
+	// Update Dashboard
+	std::vector<GameChannelInfo>::iterator itChan = data.games[0].channels.begin();
+	for ( ; itChan != data.games[0].channels.end(); ++itChan) {
+		if (itChan->name == _channel)
+			break ;
+	}
+	if (itChan == data.games[0].channels.end()) {
+		return ;
+	}
+	
+	itChan->gameState = state;	
 	dash.setGames(data.games);
 	dash.render();
 }
