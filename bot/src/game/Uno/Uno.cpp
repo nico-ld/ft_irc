@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 10:35:03 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 11:36:16 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,11 @@
 #include <algorithm>
 #include <stdexcept>
 
-/*
-Username start a Uno game !
-	- to join it : !game join
-	- to start it : !game start
-	- to end it : !game end
-*/
+Uno::Uno(int sock, std::string &channel) {
+	_sock = sock;
+	_channel = channel;
+}
 
-Uno::Uno() {}
 Uno::~Uno() {}
 
 // === METHODS ===
@@ -35,7 +32,7 @@ void Uno::initGame(std::string &userName, DashData &data, Dashboard &dash) {
 	dash.log(CLIENT, ":RouxBot PRIVMSG :" + userName + " start a Uno game !");
 	
 	send(_sock, ("PRIVMSG :Join the game with '!game join', or start it with '!game start"), 72, 0);
-	dash.log(CLIENT, "PRIVMSG :Join the game with '!game join', or start it with '!game start");
+	dash.log(CLIENT, ":RouxBot PRIVMSG :Join the game with '!game join', or start it with '!game start");
 
 	// Update information in dashboard
 	GameChannelInfo info;
@@ -61,23 +58,24 @@ int Uno::addPlayer(std::string playerName, DashData &data, Dashboard &dash) {
 	_gameState = READY;
 
 	// Update Dashboard
-	std::vector<GameChannelInfo>::iterator itChan;
+	size_t index = 0;
 	std::vector<GameChannelInfo> tmp = data.games[0].channels;
-	for (itChan = tmp.begin() ; itChan != tmp.end(); ++itChan) {
-		if (itChan->name == _channel)
+	for ( ; index < tmp.size(); ++index) {
+		if (tmp[index].name == _channel)
 			break ;
 	}
-	if (itChan == tmp.end())
+	if (index == tmp.size())
 		return (2);
 	
-	itChan->gameState = "READY";
-	itChan->playerAmount += 1;
+	data.games[0].channels[index].gameState = "READY";
+	data.games[0].channels[index].playerAmount += 1;
 	data.games[0].playerAmount += 1;
-	
+		
 	dash.setGames(data.games);
 	dash.render();
 	return (0);
 }
+
 int Uno::removePlayer(std::string playerName, DashData &data, Dashboard &dash) {
 	std::vector<std::string>::iterator it = _playerList.begin();
 	for ( ; it != _playerList.end(); ++it) {
@@ -98,16 +96,19 @@ int Uno::removePlayer(std::string playerName, DashData &data, Dashboard &dash) {
 		_gameState = ENDED;
 	}
 
-	std::vector<GameChannelInfo>::iterator itChan;
+	// Update dashboard
+	size_t index = 0;
 	std::vector<GameChannelInfo> tmp = data.games[0].channels;
-	for (itChan = tmp.begin(); itChan != tmp.end(); ++it) {
-		if (itChan->name == _channel)
+	for ( ; index < tmp.size(); ++index) {
+		if (tmp[index].name == _channel)
 			break ;
 	}
-	if (itChan == tmp.end())
+	if (index == tmp.size())
 		return (2);
 
-	itChan->gameState = convertState(_gameState);
+	data.games[0].channels[index].gameState = convertState(_gameState);
+	data.games[0].channels[index].playerAmount -= 1;
+	data.games[0].playerAmount -= 1;
 	dash.setGames(data.games);
 	dash.render();
 	return (0);
@@ -117,15 +118,16 @@ int Uno::setGameState(e_state state, DashData &data, Dashboard &dash) {
 	_gameState = state;
 	
 	// Update Dashboard
-	std::vector<GameChannelInfo>::iterator itChan = data.games[0].channels.begin();
-	for ( ; itChan != data.games[0].channels.end(); ++itChan) {
-		if (itChan->name == _channel)
+	size_t index = 0;
+	std::vector<GameChannelInfo> tmp = data.games[0].channels;
+	for ( ; index < tmp.size(); ++index) {
+		if (tmp[index].name == _channel)
 			break ;
 	}
-	if (itChan == data.games[0].channels.end())
+	if (index == tmp.size())
 		return (1);
 	
-	itChan->gameState = convertState(_gameState);
+	data.games[0].channels[index].gameState = convertState(_gameState);
 	dash.setGames(data.games);
 	dash.render();
 	return (0);

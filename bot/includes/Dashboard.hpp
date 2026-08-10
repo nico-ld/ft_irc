@@ -6,11 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 15:58:08 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 10:31:34 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 11:00:41 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../includes/ansi.hpp"
+#pragma once
+
+#include "../../includes/ansi.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>

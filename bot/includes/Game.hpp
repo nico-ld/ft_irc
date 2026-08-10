@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 10:32:16 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 10:51:59 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,13 @@ class Game
 	public:
 		// == Constructor & destructor ==
 		Game();
-		Game(int sock, std::string &channel);
+		// Game(int sock, std::string &channel);
 		virtual ~Game();
 
+
+		// === METHODS ===
+		virtual void initGame(std::string &userName, DashData &data, Dashboard &dash) = 0;
+		
 		
 		// === GETTERS / SETTERS ===
 		// == Player ==

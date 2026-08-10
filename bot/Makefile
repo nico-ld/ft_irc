@@ -7,12 +7,13 @@ INC			:= -Iincludes
 SRC_DIR		:= src/
 LOG_DIR		:= $(SRC_DIR)dashboard/
 CLT_DIR		:= $(SRC_DIR)client/
+GAME_DIR	:= $(SRC_DIR)game/
 PARS_DIR	:= ../src/parser/Parser/
 
 # ~~ Source files ~~
 LOG			:= \
 				$(LOG_DIR)dashboard.cpp \
-				$(LOG_DIR)dahsboardInit.cpp
+				$(LOG_DIR)dashboardInit.cpp
 
 PARSER		:= \
 				$(PARS_DIR)Parser.cpp \
@@ -21,11 +22,16 @@ PARSER		:= \
 CLIENT		:= \
 				$(CLT_DIR)botToServer.cpp
 
+GAME		:= \
+				$(GAME_DIR)Game.cpp \
+				$(GAME_DIR)Uno/Uno.cpp
+
 SRC			:= \
 				$(CLIENT) \
-				$(PARSER) \
 				$(LOG) \
-				$(SRC_DIR)main.cpp
+				$(GAME) \
+				$(SRC_DIR)testing_main.cpp
+# 				$(SRC_DIR)main.cpp
 
 OBJ_DIR		:= obj/
 OBJ			:= $(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)%.o,$(SRC))

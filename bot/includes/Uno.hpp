@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 10:10:51 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 10:41:52 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Uno: public Game
 {
 	public:
 		// == Constuctor & destructor ==
-		Uno();
+		Uno(int sock, std::string &channel);
 		~Uno();
 
 		// === METHODS ===

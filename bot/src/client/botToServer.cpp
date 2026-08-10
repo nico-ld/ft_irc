@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:43 by nico              #+#    #+#             */
-/*   Updated: 2026/08/07 16:16:25 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 10:58:29 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,16 @@ int	registerBot(int sock, std::string password, DashData &data, Dashboard &dash)
 		}
 	}
 	
+	data.server.connected = true;
+	dash.setServerInfo(data.server);
+	dash.render();
 	return (0);
 }
 
 void serverLoop(int sock, DashData &data, Dashboard &dash)
 {
 	std::string buf;
+	(void)data;
 	
 	while (true) {
 		char tmp[BUFFER_SIZE];

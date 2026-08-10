@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 15:58:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/07 16:18:05 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 10:55:52 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 #include "../../includes/Parser.hpp"
 #include "../../includes/ansi.hpp"
 #include "Dashboard.hpp"
-
-// === Text patern ===
-#define ROUXBOT DIM ITALIC "RouxBot" RESET
 
 // === Buffer ===
 #define BUFFER_SIZE 512

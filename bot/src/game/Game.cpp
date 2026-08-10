@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:23:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 10:31:53 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 11:04:57 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,12 @@
 #include <stdexcept>
 
 // == Constructor & destructor ==
-Game::Game() {
-	throw std::runtime_error("Error: no socket and no channel given");
-}
+Game::Game() {}
 
-Game::Game(int sock, std::string &channel) {
-	_sock = sock;
-	_channel = channel;
-}
+// Game::Game(int sock, std::string &channel) {
+// 	_sock = sock;
+// 	_channel = channel;
+// }
 
 Game::~Game() {}
 
