@@ -95,6 +95,8 @@ static void messageCommandsDispatch(Server &server, std::string command, User &u
 			std::string message = Parser::getMessage(parameters);
 			if (parameters[0][0] == '#') {
 				Channel *channel = server.getChannelByName(parameters[0]);
+				if (!channel)
+					throw std::runtime_error("Channel doesn't exist");
 				server.privateMessageChannel(&user, *channel, message);
 			}
 			else {

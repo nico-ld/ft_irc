@@ -17,6 +17,9 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 			if (it->second.getUserLimit() != -1 && it->second.getMemberCount() >= it->second.getUserLimit())
 				throw std::runtime_error("ERR_CHANNELISFULL");
 
+			if (it->second.getKey().size() > 0)
+				throw std::runtime_error("This channel need a key");
+
 			it->second.addMember(client);
 			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 			broadcast(it->second, client, message);
