@@ -6,12 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 14:25:42 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 16:27:39 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 16:53:57 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "Dashboard.hpp"
 #include <sstream>
 #include <string>
 #include <vector>
@@ -26,7 +27,7 @@ class Parser
 		std::string _trailing;
 		std::vector<std::string> _parameters;
 
-		// > Message parser value
+		// > Game parser value
 		std::string _gameCmd;
 		std::vector<std::string> _gameCmdParam;
 
@@ -44,5 +45,11 @@ class Parser
 		std::string getCommand( void ) const { return (_command); }
 		std::string getTrailing( void ) const { return (_trailing); }
 		std::vector<std::string> getParameters( void ) const { return (_parameters);}
+
+		// === GAME GETTERS ===
+		std::string getGameCmd( void ) const { return (_gameCmd); }
+		std::vector<std::string> getGameCmdParam( void ) const { return (_gameCmdParam); }
 };
+
+void handleHelp(int sock, Dashboard &dash);
 

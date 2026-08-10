@@ -28,7 +28,7 @@ int main(void) {
 	std::string secondPlayer = "Julien";
 	std::string thirdPlayer = "Amy";
 
-	catchCommand(27, ":leRoux!user@host PRIVMSG :hello world", data, dash);
+	catchCommand(27, ":leRoux!user@host PRIVMSG :!help", data, dash);
 
 	try {
 		// init game
@@ -39,7 +39,7 @@ int main(void) {
 		// add player 
 		game1->addPlayer(secondPlayer, data, dash);
 		game2->addPlayer(secondPlayer, data, dash);
-		game2->addPlayer(secondPlayer, data, dash);
+		// game2->addPlayer(secondPlayer, data, dash);
 		sleep(1);
 		
 		game1->addPlayer(thirdPlayer, data, dash);
@@ -47,7 +47,7 @@ int main(void) {
 
 		// remove player
 		game1->removePlayer(secondPlayer, data, dash);
-		game1->removePlayer("Bob", data, dash);
+		// game1->removePlayer("Bob", data, dash);
 		sleep(1);
 		game1->removePlayer(player, data, dash);
 	} catch (std::exception &e) {
