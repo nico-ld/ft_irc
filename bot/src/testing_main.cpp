@@ -9,6 +9,7 @@ int main(void) {
 	initData(data, "127.0.0.1", 6667);
 	data.server.mode = "Simulation";
 	data.server.connected = true;
+	data.bot.channelsJoined = 1;
 
 	Dashboard dash(ROUXBOT, "bot.log");
 	dash.setServerInfo(data.server);
@@ -16,9 +17,11 @@ int main(void) {
 	dash.setGames(data.games);
 	dash.render();
 
-	// Create a game
-	std::string channel = "#general";
-	Game *uno = new Uno(27, channel);
+	// Create games
+	std::string channel1 = "#general";
+	std::string channel2 = "#UnoExperts";
+	Game *game1 = new Uno(27, channel1);
+	Game *game2 = new Uno(27, channel2);
 
 	// Create player
 	std::string player = "leRoux";
@@ -27,24 +30,28 @@ int main(void) {
 
 	try {
 		// init game
-		uno->initGame(player, data, dash);
+		game1->initGame(player, data, dash);
+		game2->initGame(player, data, dash);
 		sleep(1);
 		
 		// add player 
-		uno->addPlayer(secondPlayer, data, dash);
+		game1->addPlayer(secondPlayer, data, dash);
+		game2->addPlayer(secondPlayer, data, dash);
 		sleep(1);
-		uno->addPlayer(thirdPlayer, data, dash);
+		
+		game1->addPlayer(thirdPlayer, data, dash);
 		sleep(1);
 
 		// remove player
-		uno->removePlayer(secondPlayer, data, dash);
+		game1->removePlayer(secondPlayer, data, dash);
 		sleep(1);
-		uno->removePlayer(player, data, dash);
+		game1->removePlayer(player, data, dash);
 	} catch (std::exception &e) {
 		std::cerr << e.what() << std::endl;
 	}
 
 	dash.log(SYSTEM, "Program ended");
 
-	delete uno;
+	delete game1;
+	delete game2;
 }

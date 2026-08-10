@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 15:59:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 10:32:39 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/10 12:19:47 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,9 @@ void Dashboard::render()
 			printTwoCol(lname, rname);
 			printTwoCol(lplayers, rplayers);
 			printTwoCol(lstate, rstate);
+
+			if (c + 1 < chanRows)
+				printTwoCol("", "");
 		}
 		printTwoCol("", "");
 	}
