@@ -18,25 +18,35 @@
 #include <iostream>
 
 void Server::kick(Channel &channel, User *kicked, const User *op) {
-	if (!Parser::checkNameChannel(channel.getName()))
-			throw std::runtime_error("Name channel must start with #");
+	if (!Parser::checkNameChannel(channel.getName())) {
+		notification(op, "Name channel must start with #");
+		throw std::runtime_error("[LOG] Name channel must start with #");
+	}
 
 	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
-	if (findChannel == _channels.end())
-		throw std::runtime_error("ERR_NOSUCHCHANNEL");
+	if (findChannel == _channels.end()) {
+		notification(op, "ERR_NOSUCHCHANNEL");
+		throw std::runtime_error("[LOG] Channel doesn't exist");
+	}
 
 	std::map<int, User *>::const_iterator findUser = findChannel->second.getMembers().begin();
 	for (; findUser != findChannel->second.getMembers().end(); ++findUser) {
 		if (findUser->second->getNickname() == kicked->getNickname())
 			break;
 	}
-	if (findUser == findChannel->second.getMembers().end())
-		throw std::runtime_error("ERR_NOTONCHANNEL");
+	if (findUser == findChannel->second.getMembers().end()) {
+		notification(op, "ERR_NOTONCHANNEL");
+		throw std::runtime_error("[LOG] User not on channel");
+	}
 
-	if (!findChannel->second.isOperator(op->getFd()))
-		throw std::runtime_error("ERR_CHANOPRIVSNEEDED");
-	if (!findChannel->second.isMember(findUser->second->getFd()))
-		throw std::runtime_error("ERR_USERNOTINCHANNEL");
+	if (!findChannel->second.isOperator(op->getFd())) {
+		notification(op, "ERR_CHANOPRIVSNEEDED");
+		throw std::runtime_error("[LOG] User is not operator");
+	}
+	if (!findChannel->second.isMember(findUser->second->getFd())) {
+		notification(op, "ERR_USERNOTINCHANNEL");
+		throw std::runtime_error("[LOG] User is not in channel");
+	}
 
 	findChannel->second.removeMember(findUser->second);
 	std::string id = ":" + op->getNickname() + "!" + op->getRealname() + "@" + op->getHostname();
@@ -46,25 +56,35 @@ void Server::kick(Channel &channel, User *kicked, const User *op) {
 }
 
 void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {
-	if (!Parser::checkNameChannel(channel.getName()))
-			throw std::runtime_error("Name channel must start with #");
+	if (!Parser::checkNameChannel(channel.getName())) {
+		notification(op, "Name channel must start with #");
+		throw std::runtime_error("[LOG] Name channel must start with #");
+	}
 
 	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
-	if (findChannel == _channels.end())
-		throw std::runtime_error("ERR_NOSUCHCHANNEL");
+	if (findChannel == _channels.end()) {
+		notification(op, "ERR_NOSUCHCHANNEL");
+		throw std::runtime_error("[LOG] Channel doesn't exist");
+	}
 
 	std::map<int, User *>::const_iterator findUser = findChannel->second.getMembers().begin();
 	for (; findUser != findChannel->second.getMembers().end(); ++findUser) {
 		if (findUser->second->getNickname() == kicked->getNickname())
 			break;
 	}
-	if (findUser == findChannel->second.getMembers().end())
-		throw std::runtime_error("ERR_NOTONCHANNEL");
+	if (findUser == findChannel->second.getMembers().end()) {
+		notification(op, "ERR_NOTONCHANNEL");
+		throw std::runtime_error("[LOG] User not on the channel.");
+	}
 
-	if (!findChannel->second.isOperator(op->getFd()))
-		throw std::runtime_error("ERR_CHANOPRIVSNEEDED");
-	if (!findChannel->second.isMember(findUser->second->getFd()))
-		throw std::runtime_error("ERR_USERNOTINCHANNEL");
+	if (!findChannel->second.isOperator(op->getFd())) {
+		notification(op, "ERR_CHANOPRIVSNEEDED");
+		throw std::runtime_error("[LOG] User is not operator");
+	}
+	if (!findChannel->second.isMember(findUser->second->getFd())) {
+		notification(op, "ERR_USERNOTINCHANNEL");
+		throw std::runtime_error("[LOG] User is not in channel");
+	}
 
 	findChannel->second.removeMember(findUser->second);
 	std::string id = ":" + op->getNickname() + "!" + op->getRealname() + "@" + op->getHostname();

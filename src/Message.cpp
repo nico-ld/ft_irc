@@ -42,7 +42,7 @@ void Server::broadcast(const Channel &channel, const User *user, std::string mes
 }
 
 void Server::notification(const User *user, std::string message) {
-	std::string messageError = user->getUsername() + message;
+	std::string messageError = message + "\r\n";
 	if (send(user->getFd(), messageError.c_str(), messageError.size(), MSG_NOSIGNAL) == -1)
         std::perror("Send crashed.");
 }

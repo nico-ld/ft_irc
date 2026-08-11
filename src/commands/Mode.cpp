@@ -52,14 +52,14 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 				channel.setTopicRestricted(true);
 			else if ((*it_modestring)[i] == 'k') {
 				if (params.size() <= 0)
-					throw std::runtime_error("need argument");
+					throw std::runtime_error("need argument"); //notification
 	
 				channel.setKey(*it_params);
 				it_params++;
 			}
 			else if ((*it_modestring)[i] == 'l') {
 				if (params.size() <= 0)
-					throw std::runtime_error("need argument");
+					throw std::runtime_error("need argument"); //notification
 
 				std::stringstream ss(*it_params);
 				int limit;
@@ -68,7 +68,7 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 				it_params++;
 			}
 			else
-				throw std::runtime_error("This mode doesn't existe");
+				throw std::runtime_error("This mode doesn't exist"); //notification
 		}
 		else if ((*it_modestring)[i] == '-') {
 			i++;
@@ -82,17 +82,21 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 			else if ((*it_modestring)[i] == 'l')
 				channel.setUserLimit(-1);
 			else
-				throw std::runtime_error("This mode doesn't existe");
+				throw std::runtime_error("This mode doesn't exist"); //notification
 		}
 	}
 }
 
-void Server::mode(Channel &channel, std::string listMode, std::vector<std::string> params) {
-	if (!Parser::checkNameChannel(channel.getName()))
-			throw std::runtime_error("Name channel must start with #");
+void Server::mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params) {
+	if (!Parser::checkNameChannel(channel.getName())) {
+		notification(user, "Name channel must start with #");
+		throw std::runtime_error("[LOG] Name channel must start with #");
+	}
 	std::map<std::string, Channel>::iterator it = _channels.find(channel.getName());
-	if (it == _channels.end())
-		throw std::runtime_error("ERR_NOSUCHCHANNEL");
+	if (it == _channels.end()) {
+		notification(user, "ERR_NOSUCHCHANNEL");
+		throw std::runtime_error("[LOG] Channel doesn't exist");
+	}
 
 	//PARSING
 	std::vector<std::string> modestring = split_mode(listMode);

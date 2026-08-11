@@ -19,10 +19,14 @@
 void Server::part(std::vector<Channel> &channels, User *user) {
 	
 	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
-		if (!Parser::checkNameChannel(it->getName()))
-				throw std::runtime_error("Name channel must start with #");
-		if (!it->isMember(user->getFd()))
-			throw std::runtime_error("ERR_USERNOTINCHANNEL");
+		if (!Parser::checkNameChannel(it->getName())) {
+			notification(user, "Name channel must start with #");
+			throw std::runtime_error("[LOG] Name channel must start with #");
+		}
+		if (!it->isMember(user->getFd())) {
+			notification(user, "ERR_USERNOTINCHANNEL");
+			throw std::runtime_error("[LOG] User is not in the channel");
+		}
 		it->removeMember(user);
 		std::string message = user->getNickname() + " left the channel.";
 		broadcast(*it, message);
@@ -36,11 +40,15 @@ void Server::part(std::vector<Channel> &channels, User *user) {
 
 void Server::part(std::vector<Channel> &channels, std::string reason, User *user) {
 	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
-		if (!Parser::checkNameChannel(it->getName()))
-				throw std::runtime_error("Name channel must start with #");
+		if (!Parser::checkNameChannel(it->getName())) {
+			notification(user, "Name channel must start with #");
+			throw std::runtime_error("[LOG] Name channel must start with #");
+		}
 
-		if (!it->isMember(user->getFd()))
-			throw std::runtime_error("ERR_USERNOTINCHANNEL");
+		if (!it->isMember(user->getFd())) {
+			notification(user, "ERR_USERNOTINCHANNEL");
+			throw std::runtime_error("[LOG] User is not in the channel");
+		}
 		it->removeMember(user);
 		std::string message = user->getNickname() + " left the channel.\n Reason: " + reason;
 		broadcast(*it, message);

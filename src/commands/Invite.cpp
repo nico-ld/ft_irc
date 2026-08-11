@@ -17,18 +17,28 @@
 #include <stdexcept>
 
 void Server::invite(const std::string &nickname, Channel &channel, const User *user) {
-	if (!Parser::checkNameChannel(channel.getName()))
-		throw std::runtime_error("Name channel must start with #");
+	if (!Parser::checkNameChannel(channel.getName())) {
+		notification(user, "Name channel must start with #.");
+		throw std::runtime_error("[LOG] Name channel must start with #.");
+	}
 
-	if (!channel.isMember(user->getFd()))
-		throw std::runtime_error("ERR_NOSUCHCHANNEL");
-	if (!getUserByNickname(nickname))
-		throw std::runtime_error("ERR_NOTONSERVER");
+	if (!channel.isMember(user->getFd())) {
+		notification(user, "ERR_NOSUCHCHANNEL");
+		throw std::runtime_error("[LOG] User are not on the channel.");
+	}
+	if (!getUserByNickname(nickname)) {
+		notification(user, "ERR_NOTONSERVER");
+		throw std::runtime_error("[LOG] User are not on the server.");
+	}
 	if (channel.isInviteOnly())
-		if (!channel.isOperator(user->getFd()))
-			throw std::runtime_error("ERR_CHANOPRIVSNEEDED");
-	if (channel.isInvited(getUserByNickname(nickname)->getFd()) || channel.isMember(getUserByNickname(nickname)->getFd()))
-		throw std::runtime_error("ERR_USERONCHANNEL");
+		if (!channel.isOperator(user->getFd())) {
+			notification(user, "ERR_CHANOPRIVSNEEDED");
+			throw std::runtime_error("[LOG] User is not operator");
+		}
+	if (channel.isInvited(getUserByNickname(nickname)->getFd()) || channel.isMember(getUserByNickname(nickname)->getFd())) {
+		notification(user, "ERR_USERONCHANNEL");
+		throw std::runtime_error("[LOG] User already on this channel");
+	}
 
 	channel.inviteUser(getUserByNickname(nickname));
 	std::string message = user->getNickname() + " invited you on the channel.";
