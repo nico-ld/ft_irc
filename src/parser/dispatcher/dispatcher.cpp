@@ -113,19 +113,23 @@ static void messageCommandsDispatch(Server &server, std::string command, User &u
 	std::vector<std::string> parameters = Parser::getParameters();
 
 	if (command == "privmsg") {
-		if (parameters.size() == 0)
-			throw std::runtime_error("Need a name channel");
+		if (parameters.size() == 0) {
+			notification(&user,"Need a name channel or a username");
 		if (parameters.size() > 1) {
 			std::string message = Parser::getMessage(parameters);
 			if (parameters[0][0] == '#') {
 				Channel *channel = server.getChannelByName(parameters[0]);
-				if (!channel)
+				if (!channel) {
+					notification(&user, "ERR_NOSUCHCHANNEL");
 					throw std::runtime_error("Channel doesn't exist");
+				}
 				server.privateMessageChannel(&user, *channel, message);
 			}
 			else {
-				if (!server.getUserByNickname(parameters[0]))
-					throw std::runtime_error("USER DOESNT EXIST");
+				if (!server.getUserByNickname(parameters[0])) {
+					server.notification(&user, "This user is not on the server");
+					throw std::runtime_error("[LOG] USER DOESNT EXIST");
+				}
 				server.privateMessageUser(&user, server.getUserByNickname(parameters[0]), message);
 			}
 		}
