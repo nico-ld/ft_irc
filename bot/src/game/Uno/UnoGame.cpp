@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 11:45:18 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 16:44:34 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void Uno::initGame(std::string userName, t_bot_data &botData) {
 	_playerList.push_back(userName);
 	_userHost = userName;
 	_gameState = WAITING;
-	_gameType = UNO;
 
 	std::string message = "PRIVMSG " + _channel + " :" + userName + " create a Uno game !\r\t";
 	send(_sock, (message).c_str(), message.size(), 0);
@@ -188,4 +187,18 @@ void Uno::startGame(t_bot_data &botData) {
 	botData.dash->log(CLIENT, message);
 
 	botData.dash->log(INFO, "The Uno in " + _channel + " has started");
+}
+
+void Uno::endGame(t_bot_data &botData) {
+	if (_gameState == ENDED)
+		return ;
+	setGameState(ENDED, botData);
+
+	_timeSinceEnd = std::time(NULL);
+
+	botData.data.bot.gamesAmount -= 1;
+	botData.data.bot.playerAmount -= 1;
+	botData.dash->setBotInfo(botData.data.bot);
+	botData.dash->render();
+	botData.dash->log(INFO, "Uno just end in " + _channel);
 }

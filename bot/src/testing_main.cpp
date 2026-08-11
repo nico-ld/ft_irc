@@ -1,7 +1,8 @@
 #include "Bot.hpp"
 #include "Game.hpp"
 #include "Uno.hpp"
-#include <unistd.h>
+
+#include <iostream>
 
 int main(void) {
 	// Init dashboard
@@ -10,6 +11,7 @@ int main(void) {
 	data.server.mode = "Simulation";
 	data.server.connected = true;
 	data.bot.channelsJoined = 1;
+	data.bot.state = "Up";
 
 	Dashboard dash(ROUXBOT, "bot.log");
 	dash.setServerInfo(data.server);
@@ -22,27 +24,18 @@ int main(void) {
 	botData.data = data;
 	botData.dash = &dash;
 
-	catchCommand(":LeRoux!User@host PRIVMSG #general :!help", botData);
-	sleep(1);
+	std::string line;
+	std::cout << " > ";
+	while (std::getline(std::cin, line)) {
+		if (line == "EXIT")
+			break ;
+		catchCommand(line, botData);
+		std::cout << " > ";
+	}
 
-	catchCommand(":LeRoux!User@host PRIVMSG #general :!game create uno", botData);
-	sleep(1);
-
-	catchCommand(":ElJulien!User@host PRIVMSG #general :!game join", botData);
-	sleep(1);
-
-	catchCommand(":AmyUnMax!User@host PRIVMSG #general :!game join", botData);
-	sleep(1);
-
-	catchCommand(":ElJulien!User@host PRIVMSG #general :!game leave", botData);
-	sleep(1);
-
-	catchCommand(":ElJulien!User@host PRIVMSG #general :!game join", botData);
-	sleep(1);
-
-	catchCommand(":ElJulien!User@host PRIVMSG #general :!game start", botData);
-	sleep(1);
-
-	dash.log(SYSTEM, "Program ended");
-
+	// free not ended games
+	std::vector<Game *>::iterator it;
+	for (it = botData.games.begin(); it != botData.games.end(); ++it) {
+		delete *it;
+	}
 }

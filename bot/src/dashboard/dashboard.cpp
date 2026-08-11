@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 15:59:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 12:19:47 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 14:31:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ Dashboard::Dashboard(const std::string &botName, const std::string &logPath)
 
 Dashboard::~Dashboard()
 {
+	_logFile << std::endl;
+	log(SYSTEM, "End of program");
+	_logFile << std::endl;
+	_logFile << "------------------------------------------" << std::endl;	
 	if (_logFile.is_open())
 		_logFile.close();
 }

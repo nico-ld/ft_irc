@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 11:19:53 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 14:49:36 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ struct	t_bot_data;
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
+#include <ctime>
 
 enum e_state {
 	STARTED,
@@ -37,8 +38,8 @@ class Game
 		std::vector<std::string> _playerList;
 		std::string	_channel;
 		std::string _userHost;
+		std::time_t	_timeSinceEnd;
 		e_state		_gameState;
-		e_type		_gameType;
 		int			_sock;
 		
 	public:
@@ -54,6 +55,8 @@ class Game
 
 		/* > Start the game in the current channel if there is enought player */
 		virtual void startGame(t_bot_data &botData) = 0;
+
+		virtual void endGame(t_bot_data &botData) = 0;
 		
 		
 		// === GETTERS / SETTERS ===
@@ -75,9 +78,6 @@ class Game
 		/* > Return the current game state */
 		e_state getGameState( void ) const;
 
-		/* > Return the game type */
-		e_type getGameType( void ) const;
-
 		/* > Set the game state (STARTED, ENDED or WAITING) */
 		virtual int setGameState(e_state state, t_bot_data &botData) = 0;
 
@@ -85,6 +85,9 @@ class Game
 		// == Other ==
 		/* > Return the channel of the game */
 		std::string getChannel( void ) const;
+
+		/* > Return the time since the game is over */
+		std::time_t getTimeSinceEnd( void ) const;
 };
 
 std::ostream &operator<<(std::ostream &out, e_state state);

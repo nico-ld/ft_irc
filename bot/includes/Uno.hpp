@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 11:20:25 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 14:43:39 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class Uno: public Game
 		// === METHODS ===
 		void initGame(std::string userName, t_bot_data &botData);
 		void startGame(t_bot_data &botData);
+		void endGame(t_bot_data &botData);
 
 		// === GETTERS / SETTERS ===
 		// Player
