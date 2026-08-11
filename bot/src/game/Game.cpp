@@ -6,15 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:23:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 14:50:41 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 21:59:59 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Game.hpp"
 
-// == Constructor & destructor ==
-Game::Game() {}
-Game::~Game() {}
+// === OVERLOADS ===
 
 std::ostream &operator<<(std::ostream &out, e_state state) {
 	out << ((state == STARTED) ? "started" : 
@@ -23,18 +21,7 @@ std::ostream &operator<<(std::ostream &out, e_state state) {
 	return (out);
 }
 
-
-// === GETTERS / SETTERS ===
-// == Player ==
-int Game::getNbPlayer(void) const { return (_playerList.size()); }
-
-std::vector<std::string> Game::getPlayerList(void) const { return (_playerList); }
-
-// == Game state ==
-e_state Game::getGameState(void) const { return (_gameState); }
-
-// == Other ==
-std::string Game::getChannel(void) const { return (_channel); }
+// === GETTERS ===
 
 std::time_t Game::getTimeSinceEnd(void) const {
 	if (_gameState == ENDED)
@@ -43,7 +30,8 @@ std::time_t Game::getTimeSinceEnd(void) const {
 		return (0);
 }
 
-// === HELPERS === 
+// === HELPERS ===
+
 std::string convertState(e_state state)
 {
 	switch (state)
@@ -59,3 +47,12 @@ std::string convertState(e_state state)
 			return ("ENDED");
 	}
 }
+
+bool isPlayerInGame(std::string playerName, std::vector<std::string> playerList) {
+	for (std::vector<std::string>::iterator it = playerList.begin(); it != playerList.end() ; ++it) {
+		if (playerName == *it)
+			return (true);
+	}
+	return (false);
+}
+

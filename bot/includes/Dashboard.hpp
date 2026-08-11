@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 15:58:08 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 11:00:41 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 22:57:34 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,3 +152,11 @@ private:
 };
 
 void initData(DashData &data, std::string host, int port);
+
+/* > Return an index to the wanted game or npos if channel not found */
+size_t findGameByChannel(std::vector<GameChannelInfo> &channels, std::string &target);
+
+struct t_bot_data;
+
+/* > Apply new data to dashboard and refresh it */
+void applyDashData(t_bot_data &botData);

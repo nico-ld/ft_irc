@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 17:19:04 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 22:02:17 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,47 +44,44 @@ class Game
 		
 	public:
 		// == Constructor & destructor ==
-		Game();
-		// Game(int sock, std::string &channel);
-		virtual ~Game();
+		Game() {}
+		virtual ~Game() {}
 
 
-		// === METHODS ===
+		// === PURE VIRTUAL METHODS ===
+		
 		/* > Init basic value and update dashboard */
 		virtual void initGame(std::string userName, t_bot_data &botData) = 0;
 
 		/* > Start the game in the current channel if there is enought player */
 		virtual void startGame(t_bot_data &botData) = 0;
 
+		/* > Set game state as ENDED */
 		virtual void endGame(t_bot_data &botData) = 0;
 		
+		/* > Set the game state (STARTED, ENDED or WAITING) */
+		virtual void setGameState(e_state state, t_bot_data &botData) = 0;
 		
-		// === GETTERS / SETTERS ===
-		// == Player ==
+		/* > Add a player to the game */
+		virtual void addPlayer(std::string playerName, t_bot_data &botData) = 0;
+		
+		/* > Remove a player from the game */
+		virtual void removePlayer(std::string playerName, t_bot_data &botData) = 0;
+		
+		
+		// === GLOBAL METHODS ===
+		
 		/* > Return the number of player in the game */
-		int getNbPlayer( void ) const;
+		int getNbPlayer( void ) const { return (_playerList.size()); }
 
 		/* > Return the list of player  */
-		std::vector<std::string> getPlayerList( void ) const;
-
-		/* > Add a player to the game */
-		virtual int addPlayer(std::string playerName, t_bot_data &botData) = 0;
-
-		/* > Remove a player from the game */
-		virtual int removePlayer(std::string playerName, t_bot_data &botData) = 0;
+		std::vector<std::string> getPlayerList( void ) const { return (_playerList); }
 		
-		
-		// == Game state ==
 		/* > Return the current game state */
-		e_state getGameState( void ) const;
-
-		/* > Set the game state (STARTED, ENDED or WAITING) */
-		virtual int setGameState(e_state state, t_bot_data &botData) = 0;
-
+		e_state getGameState( void ) const { return (_gameState); }
 		
-		// == Other ==
 		/* > Return the channel of the game */
-		std::string getChannel( void ) const;
+		std::string getChannel( void ) const { return (_channel); }
 
 		/* > Return the time since the game is over */
 		std::time_t getTimeSinceEnd( void ) const;

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 14:43:39 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 22:02:26 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,14 @@ class Uno: public Game
 		Uno(int sock, std::string &channel);
 		~Uno();
 
-		// === METHODS ===
+		// == Game management ==
 		void initGame(std::string userName, t_bot_data &botData);
 		void startGame(t_bot_data &botData);
 		void endGame(t_bot_data &botData);
+		void setGameState(e_state state, t_bot_data &botData);
 
-		// === GETTERS / SETTERS ===
-		// Player
-		int addPlayer(std::string playerName, t_bot_data &botData);
+		// == Player Management ==
+		void addPlayer(std::string playerName, t_bot_data &botData);
+		void removePlayer(std::string playerName, t_bot_data &botData);
 
-		int removePlayer(std::string playerName, t_bot_data &botData);
-
-		// Game state
-		int setGameState(e_state state, t_bot_data &botData);
 };

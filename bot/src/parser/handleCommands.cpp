@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 17:06:54 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 21:47:28 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@ static void clearEndedGame(t_bot_data &botData) {
 		if ((*it)->getGameState() == ENDED && currentTime - (*it)->getTimeSinceEnd() > 3) {
 			// Remove game from dashboard
 			for (size_t gameIndex = 0; gameIndex < botData.games.size(); ++gameIndex) {
+				
 				std::vector<GameChannelInfo> &channel = botData.data.games[gameIndex].channels;
 				std::vector<GameChannelInfo>::iterator itDash;
+				
 				for (itDash = channel.begin(); itDash != channel.end(); ++itDash) {
 					if ((*it)->getChannel() == itDash->name) {
 						channel.erase(itDash);
