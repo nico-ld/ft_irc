@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:23:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:23:39 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:40:00 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,13 @@ std::vector<std::string> Game::getPlayerList(void) const { return (_playerList);
 // == Game state ==
 e_state Game::getGameState(void) const { return (_gameState); }
 
+e_type Game::getGameType(void) const { return (_gameType); }
+
+// == Other ==
+std::string Game::getChannel(void) const { return (_channel); }
+
+
+// === HELPERS === 
 std::string convertState(e_state state)
 {
 	switch (state)

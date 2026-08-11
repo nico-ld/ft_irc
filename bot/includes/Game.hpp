@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:23:34 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:38:41 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ enum e_state {
 	READY
 };
 
+enum e_type {
+	UNO,
+	WEREWOLF	
+};
+
 class Game
 {
 	protected:
@@ -33,6 +38,7 @@ class Game
 		std::string	_channel;
 		std::string _userHost;
 		e_state		_gameState;
+		e_type		_gameType;
 		int			_sock;
 		
 	public:
@@ -65,8 +71,16 @@ class Game
 		/* > Return the current game state */
 		e_state getGameState( void ) const;
 
+		/* > Return the game type */
+		e_type getGameType( void ) const;
+
 		/* > Set the game state (STARTED, ENDED or WAITING) */
 		virtual int setGameState(e_state state, t_bot_data &botData) = 0;
+
+		
+		// == Other ==
+		/* > Return the channel of the game */
+		std::string getChannel( void ) const;
 };
 
 std::ostream &operator<<(std::ostream &out, e_state state);

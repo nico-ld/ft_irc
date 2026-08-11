@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:22:50 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:35:15 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void Uno::initGame(std::string userName, t_bot_data &botData) {
 	_playerList.push_back(userName);
 	_userHost = userName;
 	_gameState = WAITING;
+	_gameType = UNO;
 
 	std::string message = "PRIVMSG " + _channel + " :" + userName + " create a Uno game !\r\t";
 	send(_sock, (message).c_str(), message.size(), 0);
