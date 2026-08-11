@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 14:49:36 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 17:19:04 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,4 +92,8 @@ class Game
 
 std::ostream &operator<<(std::ostream &out, e_state state);
 
+/* > Convert Game state from enum to string */
 std::string convertState(e_state state);
+
+/* > Boolean function to check if a player is in the player list */
+bool isPlayerInGame(std::string playerName, std::vector<std::string> playerList);

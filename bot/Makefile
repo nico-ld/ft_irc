@@ -7,6 +7,7 @@ INC			:= -Iincludes
 SRC_DIR		:= src/
 LOG_DIR		:= $(SRC_DIR)dashboard/
 CLT_DIR		:= $(SRC_DIR)client/
+HELP_DIR	:= $(SRC_DIR)helper/
 GAME_DIR	:= $(SRC_DIR)game/
 PARS_DIR	:= $(SRC_DIR)parser/
 
@@ -28,11 +29,15 @@ GAME		:= \
 				$(GAME_DIR)Game.cpp \
 				$(GAME_DIR)Uno/UnoGame.cpp
 
+HELPER		:= \
+				$(HELP_DIR)gameDataUtils.cpp
+
 SRC			:= \
 				$(CLIENT) \
 				$(LOG) \
 				$(GAME) \
 				$(PARSER) \
+				$(HELPER) \
 				$(SRC_DIR)testing_main.cpp
 # 				$(SRC_DIR)main.cpp
 

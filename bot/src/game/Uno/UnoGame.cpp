@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 16:44:34 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 17:29:21 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,24 @@ void Uno::initGame(std::string userName, t_bot_data &botData) {
 }
 
 int Uno::addPlayer(std::string playerName, t_bot_data &botData) {
+	// Check if game accept new player
 	if (_gameState != READY && _gameState != WAITING) {
 		botData.dash->log(WARNING, "Channel " + _channel + " is in " + convertState(_gameState) + " state. " + playerName + " Cannot join the game");
 		return (3);
 	}
 
-	std::vector<std::string>::iterator it = _playerList.begin();
-	for ( ; it != _playerList.end(); ++it) {
-		if (*it == playerName) {
-			botData.dash->log(WARNING, playerName + " is already in the game");
-			return (1);
-		}
+	// Check if player is already in the game
+	if (isPlayerInGame(playerName, _playerList)) {
+		botData.dash->log(WARNING, playerName + " is already in the game");
+		return (1);
 	}
+	
+	// Add player in the game
 	_playerList.push_back(playerName);
 	_gameState = READY;
 
 	// Update Dashboard
+	// Find channel in dashboard data
 	size_t index = 0;
 	std::vector<GameChannelInfo> tmp = botData.data.games[0].channels;
 	for ( ; index < tmp.size(); ++index) {
@@ -79,13 +81,16 @@ int Uno::addPlayer(std::string playerName, t_bot_data &botData) {
 		return (2);
 	}
 	
+	// Log the new update
 	botData.dash->log(INFO, playerName + " join the Uno in " + _channel);
 
+	// Update dashboard data
 	botData.data.games[0].channels[index].gameState = "READY";
 	botData.data.games[0].channels[index].playerAmount += 1;
 	botData.data.games[0].playerAmount += 1;
 	botData.data.bot.playerAmount += 1;
 		
+	// Apply new data
 	botData.dash->setGames(botData.data.games);
 	botData.dash->setBotInfo(botData.data.bot);
 	botData.dash->render();
@@ -93,17 +98,23 @@ int Uno::addPlayer(std::string playerName, t_bot_data &botData) {
 }
 
 int Uno::removePlayer(std::string playerName, t_bot_data &botData) {
+	// Find player in the list
 	std::vector<std::string>::iterator it = _playerList.begin();
 	for ( ; it != _playerList.end(); ++it) {
 		if (*it == playerName)
 			break ;
 	}
+	
+	// If player not found, player has not joined the game 
 	if (it == _playerList.end()) {
 		botData.dash->log(WARNING, playerName + " isn't in the game");
 		return (1);
 	}
+	
+	// If player found, remove it 
 	_playerList.erase(it);
 
+	// If game state have to be updated
 	if (_playerList.size() == 1) {
 		if (_gameState == READY)
 			_gameState = WAITING;
@@ -115,6 +126,7 @@ int Uno::removePlayer(std::string playerName, t_bot_data &botData) {
 	}
 
 	// Update dashboard
+	// Find the channel in dashboard data
 	size_t index = 0;
 	std::vector<GameChannelInfo> tmp = botData.data.games[0].channels;
 	for ( ; index < tmp.size(); ++index) {
@@ -126,12 +138,16 @@ int Uno::removePlayer(std::string playerName, t_bot_data &botData) {
 		return (2);
 	}
 
+	// Log the update
 	botData.dash->log(INFO, playerName + " leave the Uno in " + _channel);
 
+	// Update dashboard data
 	botData.data.games[0].channels[index].gameState = convertState(_gameState);
 	botData.data.games[0].channels[index].playerAmount -= 1;
 	botData.data.games[0].playerAmount -= 1;
 	botData.data.bot.playerAmount -= 1;
+
+	// Apply new data
 	botData.dash->setGames(botData.data.games);
 	botData.dash->setBotInfo(botData.data.bot);
 	botData.dash->render();
@@ -160,6 +176,13 @@ int Uno::setGameState(e_state state, t_bot_data &botData) {
 }
 
 void Uno::startGame(t_bot_data &botData) {
+	if (!isPlayerInGame(botData.parser.getUserName(), _playerList)) {
+		std::string message = "PRIVMSG " + _channel + " :Sorry " + botData.parser.getUserName() + " you can't start a game in wich you're not.";
+		send(botData.sock, message.c_str(), message.size(), 0);
+		botData.dash->log(CLIENT, message);
+		return ;
+	}
+
 	if (_gameState != READY) {
 		if (_gameState == ENDED) {
 			std::string message = "PRIVMSG " + _channel + " :Cannot start a game that just end.";
@@ -190,6 +213,13 @@ void Uno::startGame(t_bot_data &botData) {
 }
 
 void Uno::endGame(t_bot_data &botData) {
+	if (!isPlayerInGame(botData.parser.getUserName(), _playerList)) {
+		std::string message = "PRIVMSG " + _channel + " :Sorry " + botData.parser.getUserName() + " you can't end a game in wich you're not.";
+		send(botData.sock, message.c_str(), message.size(), 0);
+		botData.dash->log(CLIENT, message);
+		return ;
+	}
+
 	if (_gameState == ENDED)
 		return ;
 	setGameState(ENDED, botData);
