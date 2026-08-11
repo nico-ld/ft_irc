@@ -26,7 +26,7 @@ CLIENT		:= \
 
 GAME		:= \
 				$(GAME_DIR)Game.cpp \
-				$(GAME_DIR)Uno/Uno.cpp
+				$(GAME_DIR)Uno/UnoGame.cpp
 
 SRC			:= \
 				$(CLIENT) \

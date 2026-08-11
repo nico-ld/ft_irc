@@ -34,7 +34,13 @@ int main(void) {
 	catchCommand(":AmyUnMax!User@host PRIVMSG #general :!game join", botData);
 	sleep(1);
 
-	catchCommand(":LeRoux!User@host PRIVMSG #general :!game leave", botData);
+	catchCommand(":ElJulien!User@host PRIVMSG #general :!game leave", botData);
+	sleep(1);
+
+	catchCommand(":ElJulien!User@host PRIVMSG #general :!game join", botData);
+	sleep(1);
+
+	catchCommand(":ElJulien!User@host PRIVMSG #general :!game start", botData);
 	sleep(1);
 
 	dash.log(SYSTEM, "Program ended");

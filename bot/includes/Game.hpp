@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:38:41 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 11:19:53 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,11 @@ class Game
 
 
 		// === METHODS ===
+		/* > Init basic value and update dashboard */
 		virtual void initGame(std::string userName, t_bot_data &botData) = 0;
+
+		/* > Start the game in the current channel if there is enought player */
+		virtual void startGame(t_bot_data &botData) = 0;
 		
 		
 		// === GETTERS / SETTERS ===

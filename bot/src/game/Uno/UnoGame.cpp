@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Uno.cpp                                            :+:      :+:    :+:   */
+/*   UnoGame.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:35:15 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 11:45:18 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int Uno::addPlayer(std::string playerName, t_bot_data &botData) {
 		return (2);
 	}
 	
-	botData.dash->log(INFO, "Add a player for Uno in " + _channel);
+	botData.dash->log(INFO, playerName + " join the Uno in " + _channel);
 
 	botData.data.games[0].channels[index].gameState = "READY";
 	botData.data.games[0].channels[index].playerAmount += 1;
@@ -127,7 +127,7 @@ int Uno::removePlayer(std::string playerName, t_bot_data &botData) {
 		return (2);
 	}
 
-	botData.dash->log(INFO, "Remove a user for Uno in " + _channel);
+	botData.dash->log(INFO, playerName + " leave the Uno in " + _channel);
 
 	botData.data.games[0].channels[index].gameState = convertState(_gameState);
 	botData.data.games[0].channels[index].playerAmount -= 1;
@@ -158,4 +158,34 @@ int Uno::setGameState(e_state state, t_bot_data &botData) {
 	botData.dash->setGames(botData.data.games);
 	botData.dash->render();
 	return (0);
+}
+
+void Uno::startGame(t_bot_data &botData) {
+	if (_gameState != READY) {
+		if (_gameState == ENDED) {
+			std::string message = "PRIVMSG " + _channel + " :Cannot start a game that just end.";
+			send(botData.sock, message.c_str(), message.size(), 0);
+			botData.dash->log(CLIENT, message);
+		}
+		else {
+			std::string message = "PRIVMSG " + _channel + " :Not enought player to start the game.";
+			send(botData.sock, message.c_str(), message.size(), 0);
+			botData.dash->log(CLIENT, message);
+		}
+	}
+
+	setGameState(STARTED, botData);
+
+	std::vector<std::string>::iterator it;
+	for (it = _playerList.begin(); it != _playerList.end(); ++it) {
+		std::string message = "PRIVMSG " + *it + " :This is your cards : not defined";
+		send(botData.sock, message.c_str(), message.size(), 0);
+		botData.dash->log(CLIENT, message);
+	}
+
+	std::string message = "PRIVMSG " + _channel + " :The game has started you get your cards in private message ! Good luck !";
+	send(botData.sock, message.c_str(), message.size(), 0);
+	botData.dash->log(CLIENT, message);
+
+	botData.dash->log(INFO, "The Uno in " + _channel + " has started");
 }
