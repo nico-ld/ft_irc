@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 17:17:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:49:08 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 11:12:36 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,10 @@ void handleGame(t_bot_data &botData)
 				// 	(*it)->startGame(botData);
 				// else
 				// 	(*it)->whoseTurn(botData);
-				break ;
+				return ;
 			}
 		}
+		botData.dash->log(WARNING, "the channel " + channel + "doesn't exist");
 	}
 	else
 		botData.dash->log(WARNING, "unknow command for !game : " + command);

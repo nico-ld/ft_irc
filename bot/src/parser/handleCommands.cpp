@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:24:24 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 11:03:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,18 @@ void catchCommand(std::string line, t_bot_data &botData)
 		std::string trailing = parser.getTrailing();
 		parser.parseMessage(trailing);
 
-		botData.dash->log(DEBUG, "Parser catch command " + parser.getGameCmd());
-		
 		command = parser.getGameCmd();
+		botData.parser = parser;
+		botData.dash->log(DEBUG, "Parser catch command " + command);
+		
 		if (command == "!help") {
-			handleHelp(botData.sock, botData.dash);
+			handleHelp(botData.sock, botData);
 		}
 		else if (command == "!game") {
 			handleGame(botData);
 		}
 		else if (command == "!uno") {
-			// handleUno
+			botData.dash->log(DEBUG, "command 'uno' is not handled for the moment.");
 		}
 	}
 }

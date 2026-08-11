@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 14:25:42 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:20:46 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:52:45 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ class Parser
 		std::vector<std::string> getGameCmdParam( void ) const { return (_gameCmdParam); }
 };
 
-void handleHelp(int sock, Dashboard *dash);
+void handleHelp(int sock, t_bot_data &botData);
 
 void handleGame(t_bot_data &botData);
 

@@ -22,7 +22,20 @@ int main(void) {
 	botData.data = data;
 	botData.dash = &dash;
 
+	catchCommand(":LeRoux!User@host PRIVMSG #general :!help", botData);
+	sleep(1);
+
 	catchCommand(":LeRoux!User@host PRIVMSG #general :!game create uno", botData);
+	sleep(1);
+
+	catchCommand(":ElJulien!User@host PRIVMSG #general :!game join", botData);
+	sleep(1);
+
+	catchCommand(":AmyUnMax!User@host PRIVMSG #general :!game join", botData);
+	sleep(1);
+
+	catchCommand(":LeRoux!User@host PRIVMSG #general :!game leave", botData);
+	sleep(1);
 
 	dash.log(SYSTEM, "Program ended");
 
