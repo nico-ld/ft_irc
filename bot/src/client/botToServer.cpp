@@ -6,12 +6,11 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:43 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 10:58:29 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:24:58 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
-#include <sys/socket.h>
 #include <cstring>
 
 int	registerBot(int sock, std::string password, DashData &data, Dashboard &dash)

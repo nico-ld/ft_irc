@@ -6,17 +6,18 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 16:52:12 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:23:34 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Dashboard.hpp"
+struct	t_bot_data;
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
+#include <stdexcept>
 
 enum e_state {
 	STARTED,
@@ -42,7 +43,7 @@ class Game
 
 
 		// === METHODS ===
-		virtual void initGame(std::string &userName, DashData &data, Dashboard &dash) = 0;
+		virtual void initGame(std::string userName, t_bot_data &botData) = 0;
 		
 		
 		// === GETTERS / SETTERS ===
@@ -54,10 +55,10 @@ class Game
 		std::vector<std::string> getPlayerList( void ) const;
 
 		/* > Add a player to the game */
-		virtual int addPlayer(std::string playerName, DashData &data, Dashboard &dash) = 0;
+		virtual int addPlayer(std::string playerName, t_bot_data &botData) = 0;
 
 		/* > Remove a player from the game */
-		virtual int removePlayer(std::string playerName, DashData &data, Dashboard &dash) = 0;
+		virtual int removePlayer(std::string playerName, t_bot_data &botData) = 0;
 		
 		
 		// == Game state ==
@@ -65,7 +66,7 @@ class Game
 		e_state getGameState( void ) const;
 
 		/* > Set the game state (STARTED, ENDED or WAITING) */
-		virtual int setGameState(e_state state, DashData &data, Dashboard &dash) = 0;
+		virtual int setGameState(e_state state, t_bot_data &botData) = 0;
 };
 
 std::ostream &operator<<(std::ostream &out, e_state state);

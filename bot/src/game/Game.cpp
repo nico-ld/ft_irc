@@ -6,21 +6,14 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:23:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 11:04:57 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:23:39 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Game.hpp"
-#include <stdexcept>
 
 // == Constructor & destructor ==
 Game::Game() {}
-
-// Game::Game(int sock, std::string &channel) {
-// 	_sock = sock;
-// 	_channel = channel;
-// }
-
 Game::~Game() {}
 
 std::ostream &operator<<(std::ostream &out, e_state state) {

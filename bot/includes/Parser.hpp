@@ -6,13 +6,15 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 14:25:42 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 16:53:57 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:20:46 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Dashboard.hpp"
+struct	t_bot_data;
+class	Dashboard;
+
 #include <sstream>
 #include <string>
 #include <vector>
@@ -51,5 +53,7 @@ class Parser
 		std::vector<std::string> getGameCmdParam( void ) const { return (_gameCmdParam); }
 };
 
-void handleHelp(int sock, Dashboard &dash);
+void handleHelp(int sock, Dashboard *dash);
+
+void handleGame(t_bot_data &botData);
 

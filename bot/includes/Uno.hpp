@@ -6,15 +6,18 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 10:41:52 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:22:42 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Dashboard.hpp"
+struct	t_bot_data;
+
 #include "Game.hpp"
-#include <iostream>
+#include <sys/socket.h>
+#include <algorithm>
+#include <stdexcept>
 
 enum e_card {
 	Y1, Y2, Y3, Y4, Y5, Y6, Y7, Y8, Y9, Y0, // Yellow
@@ -39,14 +42,14 @@ class Uno: public Game
 
 		// === METHODS ===
 		/* > Init basic value and update dashboard */
-		void initGame(std::string &userName, DashData &data, Dashboard &dash);
+		void initGame(std::string userName, t_bot_data &botData);
 
 		// === GETTERS / SETTERS ===
 		// Player
-		int addPlayer(std::string playerName, DashData &data, Dashboard &dash);
+		int addPlayer(std::string playerName, t_bot_data &botData);
 
-		int removePlayer(std::string playerName, DashData &data, Dashboard &dash);
+		int removePlayer(std::string playerName, t_bot_data &botData);
 
 		// Game state
-		int setGameState(e_state state, DashData &data, Dashboard &dash);
+		int setGameState(e_state state, t_bot_data &botData);
 };
