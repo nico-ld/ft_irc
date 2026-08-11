@@ -53,6 +53,7 @@ void Server::kick(Channel &channel, User *kicked, const User *op) {
 	std::string kickMessage = " KICK " + findChannel->second.getName() + " " + findUser->second->getNickname();
 	std::string message = id + kickMessage;
 	broadcast(findChannel->second, findUser->second, message);
+	notification(kicked, "You've been kicked from the channel");
 }
 
 void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {
@@ -88,7 +89,8 @@ void Server::kick(Channel &channel, User *kicked, std::string reason, const User
 
 	findChannel->second.removeMember(findUser->second);
 	std::string id = ":" + op->getNickname() + "!" + op->getRealname() + "@" + op->getHostname();
-	std::string kickMessage = " KICK " + findChannel->second.getName() + " " + findUser->second->getNickname() + " :" + reason;
+	std::string kickMessage = " KICK " + findChannel->second.getName() + " " + findUser->second->getNickname() + ": " + reason;
 	std::string message = id + kickMessage;
 	broadcast(findChannel->second, findUser->second, message);
+	notification(kicked, "You've been kicked from the channel");
 }

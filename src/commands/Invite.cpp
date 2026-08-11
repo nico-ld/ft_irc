@@ -42,5 +42,5 @@ void Server::invite(const std::string &nickname, Channel &channel, const User *u
 
 	channel.inviteUser(getUserByNickname(nickname));
 	std::string message = user->getNickname() + " invited you on the channel.";
-	broadcast(channel, message);
+	notification(getUserByNickname(nickname), message);
 }

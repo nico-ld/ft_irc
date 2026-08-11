@@ -33,6 +33,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 		else {
 			Channel channel(getChan->getName());
 			channel.addMember(client);
+			channel.addOperator(client);
 			_channels.insert(std::make_pair(getChan->getName(), channel));
 			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 			broadcast(channel, client, message);

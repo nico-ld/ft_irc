@@ -24,8 +24,6 @@ static void	channelCommandsDispatch(Server &server, std::string command, User &u
 	std::vector<std::string> listKey;
 	if (command == "join") {
 		listChannel = Parser::getlistChannel(parameters[0]);
-
-		std::cout << listChannel.size() << std::endl;
 		for (std::vector<Channel>::iterator it_listChannel = listChannel.begin(); it_listChannel != listChannel.end(); ++it_listChannel) {
 			std::cout << it_listChannel->getName() << std::endl;
 		}
@@ -44,7 +42,12 @@ static void	channelCommandsDispatch(Server &server, std::string command, User &u
 		else if (parameters.size() == 1)
 			throw std::runtime_error("Need a nickname.");
 		Channel *channel = server.getChannelByName(parameters[0]);
+		if (!channel) {
+			throw std::runtime_error("[LOG] channel doesn't exist");
+		}
 		User *kicked = server.getUserByNickname(parameters[1]);
+		if (!kicked)
+			throw std::runtime_error("[LOG] User doesn't exist");
 		if (parameters.size() > 2)
 			server.kick(*channel, kicked, parameters[2], &user);
 		else
@@ -57,28 +60,49 @@ static void	channelCommandsDispatch(Server &server, std::string command, User &u
 		if (parameters.size() > 1)
 			server.part(listChannel, parameters[1], &user);
 		else
-			server.part(listChannel, parameters[1], &user);
+			server.part(listChannel, &user);
 	}
 	else if (command == "invite") {
 		Channel *channel = server.getChannelByName(parameters[1]);
-		if (parameters.size() != 2)
+		if (!channel) {
+			throw std::runtime_error("[LOG] channel doesn't exist");
+		}
+		std::cout << "SIZE :" << parameters.size() << std::endl;
+		if (parameters.size() == 2)
 			server.invite(parameters[0], *channel, &user);
 		else
 			throw std::runtime_error("Invalid command");
 	}
 	else if (command == "topic") {
+		if (parameters.size() == 0) {
+			server.notification(&user, "Need a channel name");
+			throw std::runtime_error("Need a channel name.");
+		}
 		Channel *channel = server.getChannelByName(parameters[0]);
+		if (!channel) {
+			server.notification(&user, "ERR_NOSUCHCHANNEL");
+			throw std::runtime_error("This channel doesn't exist");
+		}
 		if (parameters.size() > 1)
 			server.topic(*channel, parameters[1], &user);
-		else if (parameters.size() == 0)
-			throw std::runtime_error("Need a channel name.");
 		else
 			server.topic(*channel, &user);
 	}
 	else if (command == "mode") {
+		if (parameters.size() == 0) {
+			server.notification(&user, "Need a channel name");
+			throw std::runtime_error("Need a channel name.");
+		}
 		Channel *channel = server.getChannelByName(parameters[0]);
+		if (!channel) {
+			throw std::runtime_error("[LOG] channel doesn't exist");
+		}
 		if (parameters.size() > 1)
-			server.topic(*channel, parameters[1], &user);
+			server.mode(*channel, parameters[1], &user);
+		else if (parameters.size() > 2) {
+			std::vector<std::string> params = Parser::split_params(parameters);
+			server.mode(*channel, parameters[1], &user, params);
+		}
 		else
 			throw std::runtime_error("Error.");
 	}

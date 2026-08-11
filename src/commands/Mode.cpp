@@ -36,7 +36,7 @@ static std::vector<std::string> split_mode(std::string listMode) {
 	return listString;
 }
 
-static void launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params) {
+static void launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user) {
 	std::vector<std::string>::iterator it_modestring = modestring.begin();
 	std::vector<std::string>::iterator it_params;
 	if (params.size() > 0)
@@ -45,7 +45,7 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 	for(; it_modestring != modestring.end(); ++it_modestring) {
 		size_t i = 0;
 		if ((*it_modestring)[i] == '+') {
-			(*it_modestring)[i]++;
+			i++;
 			if ((*it_modestring)[i] == 'i')
 				channel.setInviteOnly(true);
 			else if ((*it_modestring)[i] == 't')
@@ -66,6 +66,12 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 				ss >> limit;
 				channel.setUserLimit(limit);
 				it_params++;
+			}
+			else if ((*it_modestring)[i] == 'o') {
+				if (params.size() <= 0)
+					throw std::runtime_error("need argument"); //notification
+
+				channel.addOperator(user);
 			}
 			else
 				throw std::runtime_error("This mode doesn't exist"); //notification
@@ -102,5 +108,5 @@ void Server::mode(Channel &channel, std::string listMode, User *user, std::vecto
 	std::vector<std::string> modestring = split_mode(listMode);
 
 	// LAUNCH MODE
-	launchMode(channel, modestring, params);
+	launchMode(channel, modestring, params, user);
 }

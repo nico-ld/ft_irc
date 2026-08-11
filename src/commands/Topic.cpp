@@ -42,6 +42,6 @@ void Server::topic(Channel &channel, std::string newTopic, User *user) {
 		}
 
 	channel.setTopic(newTopic);
-	std::string message = "New topic of the channel: " + channel.getTopic();
+	std::string message = "New topic of the channel: " + channel.getTopic() + "\r\n";
 	broadcast(channel, message);
 }
