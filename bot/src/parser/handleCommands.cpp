@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 10:20:37 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:48:20 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void catchCommand(std::string line, t_bot_data &botData)
 		botData.parser = parser;
 		
 		if (command == "!help") {
-			handleHelp(botData.sock, botData);
+			handleHelp(botData);
 		}
 		else if (command == "!game") {
 			handleGame(botData);
