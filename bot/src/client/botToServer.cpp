@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:43 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:24:58 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:46:04 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 int	registerBot(int sock, std::string password, DashData &data, Dashboard &dash)
 {
 	send(sock, ("PASS " + password + "\r\n").c_str(), password.size() + 2, 0);
-	dash.log(CLIENT, ":RouxBot PASS " + password);
+	dash.log(CLIENT, "PASS " + password);
 	send(sock, "NICK RouxBot\r\n", 14, 0);
-	dash.log(CLIENT, ":RouxBot NICK RouxBot");
+	dash.log(CLIENT, "NICK RouxBot");
 	send(sock, "USER rouxbot . . rouxbot\r\n", 26, 0);
-	dash.log(CLIENT, ":RouxBot USER rouxbot . . rouxbot");
+	dash.log(CLIENT, "USER rouxbot . . rouxbot");
 	
 	bool registered = false;
 	std::string buf;

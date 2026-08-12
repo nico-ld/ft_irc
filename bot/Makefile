@@ -36,7 +36,7 @@ UNO			:= \
 				$(UNO_DIR)Uno.cpp
 
 HELPER		:= \
-				$(HELP_DIR)gameDataUtils.cpp
+				$(HELP_DIR)DashboardHelper.cpp
 
 SRC			:= \
 				$(CLIENT) \

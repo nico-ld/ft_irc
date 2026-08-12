@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 15:58:08 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 22:57:34 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:25:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,3 +160,6 @@ struct t_bot_data;
 
 /* > Apply new data to dashboard and refresh it */
 void applyDashData(t_bot_data &botData);
+
+/* > Send PRIVMSG to target on server */
+void sendMessage(t_bot_data &botData, std::string target, std::string content, std::string level);

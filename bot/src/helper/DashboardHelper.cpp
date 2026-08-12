@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gameDataUtils.cpp                                  :+:      :+:    :+:   */
+/*   DashboardHelper.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/11 17:14:20 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 22:27:01 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:25:25 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,15 @@ void applyDashData(t_bot_data &botData) {
 
 	// Refresh dashboard
 	botData.dash->render();
+}
+
+void sendMessage(t_bot_data &botData, std::string target, std::string content, std::string level) {
+	if (content.size() + target.size() > 500) {
+		botData.dash->log(ERROR_LVL, "Message too long");
+		return ;
+	}
+
+	std::string message = "PRIVMSG " + target + " :" + content + "\r\n";
+	send(botData.sock, message.c_str(), message.size(), MSG_NOSIGNAL);
+	botData.dash->log(level, message);
 }

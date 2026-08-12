@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 17:17:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 15:52:29 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:31:03 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ void handleGame(t_bot_data &botData)
 		// Check if there is already a game in this channel
 		for (std::vector<Game *>::iterator it = botData.games.begin(); it != botData.games.end(); ++it) {
 			if ((*it)->getChannel() == channel && (*it)->getGameState() != ENDED) {
-				botData.dash->log(WARNING, "There is already a game that running in this channel.");
+				sendMessage(botData, channel, "There is already a game that running in this channel.", WARNING);
 				return ;
 			}
 		}
 
 		// if wrong amount of parameter is given
 		if (param.size() != 2)
-			botData.dash->log(WARNING, (param.size() == 1 ) ? "Missing argument for !game create" : "Too many argument for !game create");
+			sendMessage(botData, channel, (param.size() == 1) ? "Missing argument for !game create" : "Too many argument for !game create", WARNING);
 		
 		// Uno case
 		else if (param[1] == "uno") {
@@ -42,7 +42,7 @@ void handleGame(t_bot_data &botData)
 
 		// Unknow parameter
 		else
-			botData.dash->log(WARNING, "Unknow parameter for !game create : " + param[1]);
+			sendMessage(botData, channel, "Unknow parameter for !game create : " + param[1], WARNING);
 	}
 
 	// Other commands, for a better code only one for loop instead of one loop by if
@@ -61,8 +61,8 @@ void handleGame(t_bot_data &botData)
 			}
 		}
 		// If the channel doesn't exist -> in fact this is impossible but handled
-		botData.dash->log(WARNING, "the channel " + channel + "doesn't exist");
+		botData.dash->log(ERROR_LVL, "the channel " + channel + "doesn't exist");
 	}
 	else
-		botData.dash->log(WARNING, "unknow command for !game : " + command);
+		sendMessage(botData, channel, "Unknow command for !game : " + command, WARNING);
 }

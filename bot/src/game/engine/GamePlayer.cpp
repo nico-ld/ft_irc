@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:05:05 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 09:58:15 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:45:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 void Game::addPlayer(std::string playerName, t_bot_data &botData) {
 	// Check if game accept new player
 	if (_gameState != READY && _gameState != WAITING) {
-		botData.dash->log(WARNING, "Channel " + _channel + " is in " + convertState(_gameState) + " state. " + playerName + " Cannot join the game");
+		sendMessage(botData, _channel, "Game is in " + convertState(_gameState) + " state. You can't join it anymore.", WARNING);
 		return ;
 	}
 
 	// Check if player is already in the game
 	if (isPlayerInGame(playerName, _playerList)) {
-		botData.dash->log(WARNING, playerName + " is already in the game");
+		sendMessage(botData, _channel, "You are already in the game.", WARNING);
 		return ;
 	}
 	
@@ -31,7 +31,7 @@ void Game::addPlayer(std::string playerName, t_bot_data &botData) {
 	_gameState = READY;
 	
 	// Log the new update
-	botData.dash->log(INFO, playerName + " join the " + convertType(_gameType) + " in " + _channel);
+	sendMessage(botData, _channel, playerName + "join the " + convertType(_gameType) + " !", INFO);
 
 	// Update Dashboard
 	// Find channel in dashboard data
@@ -60,7 +60,7 @@ void Game::removePlayer(std::string playerName, t_bot_data &botData) {
 	
 	// If player not found, player has not joined the game 
 	if (it == _playerList.end()) {
-		botData.dash->log(WARNING, playerName + " isn't in the game");
+		sendMessage(botData, _channel, "You're not in the game, you can't leave.", WARNING);
 		return ;
 	}
 	
@@ -68,7 +68,7 @@ void Game::removePlayer(std::string playerName, t_bot_data &botData) {
 	_playerList.erase(it);
 	
 	// Log the update
-	botData.dash->log(INFO, playerName + " leave the " + convertType(_gameType) + " in " + _channel);
+	sendMessage(botData, _channel, playerName + " leave the " + convertType(_gameType) + " !", INFO);
 
 	// If game state have to be updated
 	if (_playerList.size() == 1) {

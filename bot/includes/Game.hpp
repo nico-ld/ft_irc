@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 10:04:57 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:31:50 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ class Game
 	protected:
 		std::vector<std::string> _playerList;
 		std::string	_channel;
-		std::string _userHost; // Not used
 		std::time_t	_timeSinceEnd;
 		e_state		_gameState;
 		e_type		_gameType;

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:10:53 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 09:55:21 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:39:43 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,11 @@
 
 void Game::initGame(std::string userName, t_bot_data &botData) {
 	_playerList.push_back(userName);
-	_userHost = userName;
 	_gameState = WAITING;
 	_timeSinceEnd = -1;
 
-	std::string message = "PRIVMSG " + _channel + " :" + userName + " create a " + convertType(_gameType) +" game !\r\t";
-	send(_sock, (message).c_str(), message.size(), 0);
-	botData.dash->log(CLIENT, ":RouxBot " + message);
-	
-	message = "PRIVMSG " + _channel + " :Join the game with '!game join', or start it with '!game start'";
-	send(_sock, (message).c_str(), message.size(), 0);
-	botData.dash->log(CLIENT, ":RouxBot " + message);
+	sendMessage(botData, _channel, convertType(_gameType) + " has been created by " + userName + "!", CLIENT);
+	sendMessage(botData, _channel, "Join the game with '!game join', or start it with '!game start", CLIENT);
 
 	// Update information in dashboard
 	GameChannelInfo info;
@@ -59,24 +53,16 @@ void Game::setGameState(e_state state, t_bot_data &botData) {
 void Game::startGame(t_bot_data &botData) {
 	// Check if player is in the game
 	if (!isPlayerInGame(botData.parser.getUserName(), _playerList)) {
-		std::string message = "PRIVMSG " + _channel + " :Sorry " + botData.parser.getUserName() + " you can't start a game in wich you're not.";
-		send(_sock, message.c_str(), message.size(), 0);
-		botData.dash->log(CLIENT, message);
+		sendMessage(botData, _channel, "Sorry " + botData.parser.getUserName() + " you can't start a game in wich you're not.", CLIENT);
 		return ;
 	}
 
 	// Check if game can start
 	if (_gameState != READY) {
-		if (_gameState == ENDED) {
-			std::string message = "PRIVMSG " + _channel + " :Cannot start a game that just end.";
-			send(_sock, message.c_str(), message.size(), 0);
-			botData.dash->log(CLIENT, message);
-		}
-		else {
-			std::string message = "PRIVMSG " + _channel + " :Not enought player to start the game.";
-			send(_sock, message.c_str(), message.size(), 0);
-			botData.dash->log(CLIENT, message);
-		}
+		if (_gameState == ENDED)
+			sendMessage(botData, _channel, "Cannot start a game that just end.", CLIENT);
+		else
+			sendMessage(botData, _channel, "Not enought player to start the game.", CLIENT);
 	}
 
 	// Set the game as started
@@ -88,9 +74,7 @@ void Game::startGame(t_bot_data &botData) {
 
 void Game::endGame(t_bot_data &botData) {
 	if (!isPlayerInGame(botData.parser.getUserName(), _playerList)) {
-		std::string message = "PRIVMSG " + _channel + " :Sorry " + botData.parser.getUserName() + " you can't end a game in wich you're not.";
-		send(_sock, message.c_str(), message.size(), 0);
-		botData.dash->log(CLIENT, message);
+		sendMessage(botData, _channel, "Sorry " + botData.parser.getUserName() + " you can't start a game in wich you're not.", CLIENT);
 		return ;
 	}
 
