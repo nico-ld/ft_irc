@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 10:31:50 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 11:26:55 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ class Game
 		void addPlayer(std::string playerName, t_bot_data &botData);
 		
 		/* > Remove a player from the game */
-		void removePlayer(std::string playerName, t_bot_data &botData);
+		void removePlayer(std::string playerName, t_bot_data &botData, bool isKicked);
 		
 		
 		// === GETTERS ===

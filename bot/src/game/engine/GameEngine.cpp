@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:10:53 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 10:39:43 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 11:27:13 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ void Game::startGame(t_bot_data &botData) {
 }
 
 void Game::endGame(t_bot_data &botData) {
-	if (!isPlayerInGame(botData.parser.getUserName(), _playerList)) {
-		sendMessage(botData, _channel, "Sorry " + botData.parser.getUserName() + " you can't start a game in wich you're not.", CLIENT);
+	if (!_playerList.empty() && !isPlayerInGame(botData.parser.getUserName(), _playerList)) {
+		sendMessage(botData, _channel, "Sorry " + botData.parser.getUserName() + " you can't end a game in wich you're not.", CLIENT);
 		return ;
 	}
 

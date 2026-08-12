@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 17:17:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 10:31:03 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 11:18:52 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,15 @@ void handleGame(t_bot_data &botData)
 	}
 
 	// Other commands, for a better code only one for loop instead of one loop by if
-	else if (command == "join" || command == "leave" || command == "start" || command == "end") {
+	else if (command == "join" || command == "leave" || command == "start" || command == "end" || command == "kick") {
 		for (std::vector<Game *>::iterator it = botData.games.begin(); it != botData.games.end(); ++it) {
 			if (channel == (*it)->getChannel()) {
 				if (command == "join")
 					(*it)->addPlayer(botData.parser.getUserName(), botData);
 				else if (command == "leave")
-					(*it)->removePlayer(botData.parser.getUserName(), botData);
+					(*it)->removePlayer(botData.parser.getUserName(), botData, false);
+				else if (command == "kick")
+					(*it)->removePlayer(param[1], botData, true);
 				else if (command == "start")
 					(*it)->startGame(botData);
 				else

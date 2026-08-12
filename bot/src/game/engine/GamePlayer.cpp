@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:05:05 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 10:45:35 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 11:21:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void Game::addPlayer(std::string playerName, t_bot_data &botData) {
 	applyDashData(botData);
 }
 
-void Game::removePlayer(std::string playerName, t_bot_data &botData) {
+void Game::removePlayer(std::string playerName, t_bot_data &botData, bool isKicked) {
 	// Find player in the list
 	std::vector<std::string>::iterator it = _playerList.begin();
 	for ( ; it != _playerList.end(); ++it) {
@@ -60,7 +60,7 @@ void Game::removePlayer(std::string playerName, t_bot_data &botData) {
 	
 	// If player not found, player has not joined the game 
 	if (it == _playerList.end()) {
-		sendMessage(botData, _channel, "You're not in the game, you can't leave.", WARNING);
+		sendMessage(botData, _channel, (isKicked) ? "You can't kick who is not in the game" : "You're not in the game, you can't leave.", WARNING);
 		return ;
 	}
 	
@@ -68,8 +68,8 @@ void Game::removePlayer(std::string playerName, t_bot_data &botData) {
 	_playerList.erase(it);
 	
 	// Log the update
-	sendMessage(botData, _channel, playerName + " leave the " + convertType(_gameType) + " !", INFO);
-
+	sendMessage(botData, _channel, (isKicked) ? playerName + " has been kicked of the game." : playerName + " leave the " + convertType(_gameType) + " !", INFO);
+	
 	// If game state have to be updated
 	if (_playerList.size() == 1) {
 		if (_gameState == READY)
@@ -79,11 +79,11 @@ void Game::removePlayer(std::string playerName, t_bot_data &botData) {
 			return ;
 		}
 	}
-	else if (_playerList.size() <= 0) {
+	else if (_playerList.empty()) {
 		endGame(botData);
 		return ;
 	}
-
+	
 	// Update dashboard
 	// Find the channel in dashboard data
 	size_t index = findGameByChannel(botData.data.games[_gameType].channels, _channel);

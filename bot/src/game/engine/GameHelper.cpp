@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:11:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 09:28:52 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 11:26:57 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ std::string convertType(e_type type)
 }
 
 bool isPlayerInGame(std::string playerName, std::vector<std::string> playerList) {
+	if (playerList.empty())
+		return (false);
+	
 	for (std::vector<std::string>::iterator it = playerList.begin(); it != playerList.end() ; ++it) {
 		if (playerName == *it)
 			return (true);
