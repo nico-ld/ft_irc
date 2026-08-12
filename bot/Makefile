@@ -7,8 +7,9 @@ INC			:= -Iincludes
 SRC_DIR		:= src/
 LOG_DIR		:= $(SRC_DIR)dashboard/
 CLT_DIR		:= $(SRC_DIR)client/
+ENG_DIR		:= $(SRC_DIR)game/engine/
+UNO_DIR		:= $(SRC_DIR)game/Uno/
 HELP_DIR	:= $(SRC_DIR)helper/
-GAME_DIR	:= $(SRC_DIR)game/
 PARS_DIR	:= $(SRC_DIR)parser/
 
 # ~~ Source files ~~
@@ -25,9 +26,14 @@ PARSER		:= \
 CLIENT		:= \
 				$(CLT_DIR)botToServer.cpp
 
-GAME		:= \
-				$(GAME_DIR)Game.cpp \
-				$(GAME_DIR)Uno/UnoGame.cpp
+ENGINE		:= \
+				$(ENG_DIR)Game.cpp \
+				$(ENG_DIR)GameEngine.cpp \
+				$(ENG_DIR)GamePlayer.cpp \
+				$(ENG_DIR)GameHelper.cpp
+
+UNO			:= \
+				$(UNO_DIR)Uno.cpp
 
 HELPER		:= \
 				$(HELP_DIR)gameDataUtils.cpp
@@ -35,7 +41,8 @@ HELPER		:= \
 SRC			:= \
 				$(CLIENT) \
 				$(LOG) \
-				$(GAME) \
+				$(ENGINE) \
+				$(UNO) \
 				$(PARSER) \
 				$(HELPER) \
 				$(SRC_DIR)testing_main.cpp

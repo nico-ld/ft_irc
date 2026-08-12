@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 22:02:17 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:04:57 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ enum e_state {
 
 enum e_type {
 	UNO,
-	WEREWOLF	
+	WEREWOLF,
+	UNKNOW // Delimiter in case of loop
 };
 
 class Game
@@ -37,60 +38,67 @@ class Game
 	protected:
 		std::vector<std::string> _playerList;
 		std::string	_channel;
-		std::string _userHost;
+		std::string _userHost; // Not used
 		std::time_t	_timeSinceEnd;
 		e_state		_gameState;
+		e_type		_gameType;
 		int			_sock;
 		
 	public:
 		// == Constructor & destructor ==
-		Game() {}
-		virtual ~Game() {}
+		Game();
+		virtual ~Game();
 
 
 		// === PURE VIRTUAL METHODS ===
 		
 		/* > Init basic value and update dashboard */
-		virtual void initGame(std::string userName, t_bot_data &botData) = 0;
+		void initGame(std::string userName, t_bot_data &botData);
 
 		/* > Start the game in the current channel if there is enought player */
-		virtual void startGame(t_bot_data &botData) = 0;
+		void startGame(t_bot_data &botData);
 
 		/* > Set game state as ENDED */
-		virtual void endGame(t_bot_data &botData) = 0;
+		void endGame(t_bot_data &botData);
 		
 		/* > Set the game state (STARTED, ENDED or WAITING) */
-		virtual void setGameState(e_state state, t_bot_data &botData) = 0;
+		void setGameState(e_state state, t_bot_data &botData);
 		
 		/* > Add a player to the game */
-		virtual void addPlayer(std::string playerName, t_bot_data &botData) = 0;
+		void addPlayer(std::string playerName, t_bot_data &botData);
 		
 		/* > Remove a player from the game */
-		virtual void removePlayer(std::string playerName, t_bot_data &botData) = 0;
+		void removePlayer(std::string playerName, t_bot_data &botData);
 		
 		
-		// === GLOBAL METHODS ===
+		// === GETTERS ===
 		
 		/* > Return the number of player in the game */
-		int getNbPlayer( void ) const { return (_playerList.size()); }
+		int getNbPlayer( void ) const;
 
 		/* > Return the list of player  */
-		std::vector<std::string> getPlayerList( void ) const { return (_playerList); }
-		
-		/* > Return the current game state */
-		e_state getGameState( void ) const { return (_gameState); }
+		std::vector<std::string> getPlayerList( void ) const;
 		
 		/* > Return the channel of the game */
-		std::string getChannel( void ) const { return (_channel); }
-
+		std::string getChannel( void ) const;
+		
 		/* > Return the time since the game is over */
 		std::time_t getTimeSinceEnd( void ) const;
+		
+		/* > Return the current game state */
+		e_state getGameState( void ) const;
+
+		/* > Return the type of game (Uno or Werewolf) */
+		e_type getGameType( void ) const;
 };
 
 std::ostream &operator<<(std::ostream &out, e_state state);
 
-/* > Convert Game state from enum to string */
+/* > Convert game state from enum to string */
 std::string convertState(e_state state);
+
+/* > Convert game type from enum to string */
+std::string convertType(e_type type);
 
 /* > Boolean function to check if a player is in the player list */
 bool isPlayerInGame(std::string playerName, std::vector<std::string> playerList);

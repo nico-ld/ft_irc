@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 21:47:28 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 10:01:39 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,8 @@ static void clearEndedGame(t_bot_data &botData) {
 		else
 			++it;
 	}
-	
-	botData.dash->setGames(botData.data.games);
-	botData.dash->render();
+
+	applyDashData(botData);
 }
 
 void catchCommand(std::string line, t_bot_data &botData)
