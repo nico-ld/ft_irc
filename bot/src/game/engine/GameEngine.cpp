@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:10:53 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 11:27:13 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 11:46:21 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void Game::startGame(t_bot_data &botData) {
 	setGameState(STARTED, botData);
 
 	// Start the Game
-	// code //
+	launchGame(botData);
 }
 
 void Game::endGame(t_bot_data &botData) {

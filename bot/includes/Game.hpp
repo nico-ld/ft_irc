@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 11:26:55 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 11:42:13 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class Game
 		virtual ~Game();
 
 
-		// === PURE VIRTUAL METHODS ===
+		// === GAME ENGINE ===
 		
 		/* > Init basic value and update dashboard */
 		void initGame(std::string userName, t_bot_data &botData);
@@ -62,6 +62,9 @@ class Game
 		
 		/* > Set the game state (STARTED, ENDED or WAITING) */
 		void setGameState(e_state state, t_bot_data &botData);
+		
+		
+		// === GAME PLAYER ===
 		
 		/* > Add a player to the game */
 		void addPlayer(std::string playerName, t_bot_data &botData);
@@ -89,6 +92,12 @@ class Game
 
 		/* > Return the type of game (Uno or Werewolf) */
 		e_type getGameType( void ) const;
+
+		
+		// === PURE VIRTUAL METHODS ===
+
+		/* > Second part of ::startGame, specific at Uno or Werewolf */
+		virtual void launchGame(t_bot_data &botData) = 0;
 };
 
 std::ostream &operator<<(std::ostream &out, e_state state);

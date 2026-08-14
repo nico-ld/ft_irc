@@ -6,15 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:23:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 09:43:06 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/12 11:52:20 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Game.hpp"
 
-Game::Game() {
-	std::srand(std::time(NULL));
-}
+Game::Game() {}
 
 Game::~Game() {}
 

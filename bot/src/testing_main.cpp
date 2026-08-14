@@ -5,6 +5,8 @@
 #include <iostream>
 
 int main(void) {
+	std::srand(std::time(NULL));
+
 	// Init dashboard
 	DashData data;
 	initData(data, "127.0.0.1", 6667);
