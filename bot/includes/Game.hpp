@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:11:09 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 11:42:13 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/15 10:59:18 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,3 +110,5 @@ std::string convertType(e_type type);
 
 /* > Boolean function to check if a player is in the player list */
 bool isPlayerInGame(std::string playerName, std::vector<std::string> playerList);
+
+Game *getCurrentGame(t_bot_data &botData, std::string channel);

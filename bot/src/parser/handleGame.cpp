@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 17:17:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 11:18:52 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/15 11:06:45 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,27 +44,26 @@ void handleGame(t_bot_data &botData)
 		else
 			sendMessage(botData, channel, "Unknow parameter for !game create : " + param[1], WARNING);
 	}
-
-	// Other commands, for a better code only one for loop instead of one loop by if
-	else if (command == "join" || command == "leave" || command == "start" || command == "end" || command == "kick") {
-		for (std::vector<Game *>::iterator it = botData.games.begin(); it != botData.games.end(); ++it) {
-			if (channel == (*it)->getChannel()) {
-				if (command == "join")
-					(*it)->addPlayer(botData.parser.getUserName(), botData);
-				else if (command == "leave")
-					(*it)->removePlayer(botData.parser.getUserName(), botData, false);
-				else if (command == "kick")
-					(*it)->removePlayer(param[1], botData, true);
-				else if (command == "start")
-					(*it)->startGame(botData);
-				else
-					(*it)->endGame(botData);
-				return ;
-			}
+	else {
+		// Other commands
+		Game *currentGame = getCurrentGame(botData, channel);
+		
+		if (!currentGame) {
+			sendMessage(botData, channel, "There is no game in this channel", WARNING);
+			return ;
 		}
-		// If the channel doesn't exist -> in fact this is impossible but handled
-		botData.dash->log(ERROR_LVL, "the channel " + channel + "doesn't exist");
+		
+		if (command == "join")
+			currentGame->addPlayer(botData.parser.getUserName(), botData);
+		else if (command == "leave")
+			currentGame->removePlayer(botData.parser.getUserName(), botData, false);
+		else if (command == "kick")
+			currentGame->removePlayer(param[1], botData, true);
+		else if (command == "start")
+			currentGame->startGame(botData);
+		else if (command == "end")
+			currentGame->endGame(botData);
+		else
+			sendMessage(botData, channel, "Unknow command : " + command, WARNING);
 	}
-	else
-		sendMessage(botData, channel, "Unknow command for !game : " + command, WARNING);
 }

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/15 10:43:32 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/15 10:51:05 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class Uno: public Game
 	private:
 		std::vector<std::pair<std::string, std::vector<e_card> > > _deckList;
 		std::vector<e_card> _pool;
+		std::string	_playerTurn;
 
 	public:
 		// == Constuctor & destructor ==
@@ -51,6 +52,9 @@ class Uno: public Game
 
 		/* > Set the deck of a player into _deckList */
 		void setUserDeck(std::string userName, std::vector<e_card> deck);
+
+		/* > Tell wich player have to play */
+		void whoseTurn(t_bot_data &botData) const;
 };
 
 /* > Fill a vector with every card in the game, then sendCard() can random on this vector to choose card */
