@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 11:04:57 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/15 11:15:06 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void catchCommand(std::string line, t_bot_data &botData)
 			handleGame(botData);
 		}
 		else if (command == "!uno") {
-			botData.dash->log(DEBUG, "command 'uno' is not handled for the moment.");
+			handleUno(botData);
 		}
 	}
 }

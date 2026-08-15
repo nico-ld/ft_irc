@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 14:25:42 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 10:48:09 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/15 11:14:46 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,6 @@ class Parser
 void handleHelp(t_bot_data &botData);
 
 void handleGame(t_bot_data &botData);
+
+void handleUno(t_bot_data &botData);
 

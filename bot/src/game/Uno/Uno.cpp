@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/15 10:51:54 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/15 11:19:02 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void Uno::launchGame(t_bot_data &botData) {
 		sendCard(botData, *it, 7);
 	}	
 
-	std::string _playerTurn = _playerList[std::rand() % _playerList.size()];
+	_playerTurn = _playerList[std::rand() % _playerList.size()];
 	sendMessage(botData, _channel, "Everyone received their cards ! First person to play is " + _playerTurn, CLIENT);
 }
 

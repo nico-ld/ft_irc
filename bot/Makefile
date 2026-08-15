@@ -21,7 +21,8 @@ PARSER		:= \
 				$(PARS_DIR)Parser.cpp \
 				$(PARS_DIR)handleCommands.cpp \
 				$(PARS_DIR)handleHelp.cpp \
-				$(PARS_DIR)handleGame.cpp
+				$(PARS_DIR)handleGame.cpp \
+				$(PARS_DIR)handleUno.cpp
 
 CLIENT		:= \
 				$(CLT_DIR)botToServer.cpp
