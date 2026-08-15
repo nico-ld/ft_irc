@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:11:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 11:26:57 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/15 10:04:17 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ std::string convertType(e_type type)
 	switch (type)
 	{
 		case UNO:
-			return ("UNO");
+			return ("Uno");
 		case WEREWOLF:
-			return ("WEREWOLF");
+			return ("Werewolf");
 					
 		default:
 			return ("UNKNOW");

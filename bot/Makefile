@@ -33,7 +33,8 @@ ENGINE		:= \
 				$(ENG_DIR)GameHelper.cpp
 
 UNO			:= \
-				$(UNO_DIR)Uno.cpp
+				$(UNO_DIR)Uno.cpp \
+				$(UNO_DIR)UnoHelper.cpp
 
 HELPER		:= \
 				$(HELP_DIR)DashboardHelper.cpp
