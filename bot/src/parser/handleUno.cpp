@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 10:52:26 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 15:14:12 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 16:07:48 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,20 @@ void handleUno(t_bot_data &botData) {
 
 	Uno *currentGame = static_cast<Uno *>(getCurrentGame(botData, channel));
 	
+	// Check if the game have started
 	if (!currentGame || currentGame->getGameState() != STARTED) {
 		if (!currentGame)
 			sendMessage(botData, channel, "There is no Uno in this channel.", WARNING);
 		else
 			sendMessage(botData, channel, "The Uno not start yet.", WARNING);
+		return ;
+	}
+
+	// Check if player is in the game
+	std::vector<std::string> playerList = currentGame->getPlayerList();
+	std::vector<std::string>::iterator player = std::find(playerList.begin(), playerList.end(), userName);
+	if (player == playerList.end()) {
+		sendMessage(botData, channel, "You're not in the game " + userName, WARNING);
 		return ;
 	}
 
@@ -38,4 +47,6 @@ void handleUno(t_bot_data &botData) {
 		else
 			currentGame->playCard(botData, userName, param[1], "");
 	}
+	else if (command == "hand")
+		currentGame->showHand(botData, userName);
 }
