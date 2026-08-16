@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 10:52:26 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 16:07:48 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 17:14:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,8 @@ void handleUno(t_bot_data &botData) {
 	}
 	else if (command == "hand")
 		currentGame->showHand(botData, userName);
+	else if (command == "draw")
+		currentGame->sendCard(botData, userName, 1);
+	else if (command == "uno")
+		currentGame->uno(botData, userName);
 }

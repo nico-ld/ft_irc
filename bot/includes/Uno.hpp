@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 15:28:30 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 17:00:06 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ class Uno: public Game
 		std::vector<e_card> getDeckByUser(std::string userName) const;
 		
 		/* > Return information about a player in the game */
-		t_player_info getPlayerInfo(std::string userName) const;
+		t_player_info &getPlayerInfo(std::string userName);
 		
 		/* > Return the next player */
 		std::string nextPlayer(bool skip) const;
@@ -92,6 +92,15 @@ class Uno: public Game
 
 		/* > Play a card */
 		void playCard(t_bot_data &botData, std::string userName, std::string deckIdx, std::string color);
+		
+		/* > When a player get only one card */
+		void uno(t_bot_data &botData, std::string userName);
+
+		
+		// === SPECIAL CASES ===
+		
+		/* > handle Case of draw 2 or 4 */
+		// void drawManagement(t_bot_data &botData, t_player_info player);
 };
 
 /* > Fill a vector with every card in the game, then sendCard() can random on this vector to choose card */

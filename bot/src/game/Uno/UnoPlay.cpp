@@ -6,15 +6,15 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:12:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 15:59:07 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 16:59:59 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Uno.hpp"
 #include "Bot.hpp"
 
-t_player_info Uno::getPlayerInfo(std::string userName) const {
-	std::vector<t_player_info>::const_iterator it;
+t_player_info &Uno::getPlayerInfo(std::string userName) {
+	std::vector<t_player_info>::iterator it;
 
 	for (it = _playerInfo.begin(); it != _playerInfo.end(); ++it) {
 		if (it->name == userName)

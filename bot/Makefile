@@ -37,7 +37,8 @@ UNO			:= \
 				$(UNO_DIR)Uno.cpp \
 				$(UNO_DIR)UnoHelper.cpp \
 				$(UNO_DIR)UnoDeck.cpp \
-				$(UNO_DIR)UnoPlay.cpp
+				$(UNO_DIR)UnoPlay.cpp \
+				$(UNO_DIR)UnoChallenge.cpp
 
 HELPER		:= \
 				$(HELP_DIR)DashboardHelper.cpp \
