@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 15:55:12 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 17:22:47 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,4 +90,29 @@ std::string Uno::nextPlayer(bool skip) const{
 	}
 	
 	return (*it);
+}
+
+void Uno::showCardsAmount(t_bot_data &botData) const {
+	std::vector<t_player_info>::const_iterator it;
+
+	sendMessage(botData, _channel, "Here the number of card of everyone : ", CLIENT);
+	std::string message;
+	for (it = _playerInfo.begin(); it != _playerInfo.end(); ++it) {
+		if (message.size() < 400)
+		{
+			if (!message.empty())
+				message.append(" | ");
+
+			// Convert size into string to print it
+			std::ostringstream oss;
+			oss << it->name << " : " << it->deck.size();
+			message.append(oss.str());
+		}
+		else {
+			sendMessage(botData, _channel, message, CLIENT);
+			message.clear();
+		}
+	}
+	if (!message.empty())
+		sendMessage(botData, _channel, message, CLIENT);
 }

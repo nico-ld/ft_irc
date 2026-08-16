@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 17:00:06 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 17:18:20 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,9 @@ class Uno: public Game
 		
 		/* > Return the next player */
 		std::string nextPlayer(bool skip) const;
+
+		/* > Show how many card everyone gets */
+		void showCardsAmount(t_bot_data &botData) const;
 
 		
 		// === DECK ===

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:28:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 13:48:11 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 17:19:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void Uno::showHand(t_bot_data &botData, std::string userName) {
 	std::string sendingDeck;
 	
 	for (size_t index = 0; index < deck.size(); ++index) {
-		if (sendingDeck.empty() || sendingDeck.size() < 400) {
+		if (sendingDeck.size() < 400) {
 			if (!sendingDeck.empty())
 				sendingDeck.append(" | ");
 			
