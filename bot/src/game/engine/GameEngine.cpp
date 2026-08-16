@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:10:53 by nico              #+#    #+#             */
-/*   Updated: 2026/08/15 10:03:58 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 15:17:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void Game::initGame(std::string userName, t_bot_data &botData) {
 	_timeSinceEnd = -1;
 
 	sendMessage(botData, _channel, convertType(_gameType) + " has been created by " + userName + "!", INFO);
-	sendMessage(botData, _channel, "Join the game with '!game join', or start it with '!game start", CLIENT);
+	sendMessage(botData, _channel, "Join the game with '!game join', or start it with '!game start'", CLIENT);
 
 	// Update information in dashboard
 	GameChannelInfo info;

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 13:44:22 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 15:28:30 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,22 +47,36 @@ class Uno: public Game
 
 		// Round informations
 		std::string	_playerTurn;
-		std::string _currentColor;
-		e_card _lastCard;
-		int _drawAmount;
+		std::string	_currentColor;
+		e_card		_lastCard;
+		bool		_reversed;
+		int			_drawAmount;
 
 	public:
 		// == Constuctor & destructor ==
 		Uno(int sock, std::string &channel);
 		~Uno();
 
+		// Pure virtual method
 		void launchGame(t_bot_data &botData);
 
-		/* > Send cards to a specif user by private message */
-		void sendCard(t_bot_data &botData, std::string userName, int amount);
+
+		// === GETTERS ===
 
 		/* > Send the deck of a player from _deckList or init a new deck if player is not in the list */
 		std::vector<e_card> getDeckByUser(std::string userName) const;
+		
+		/* > Return information about a player in the game */
+		t_player_info getPlayerInfo(std::string userName) const;
+		
+		/* > Return the next player */
+		std::string nextPlayer(bool skip) const;
+
+		
+		// === DECK ===
+
+		/* > Send cards to a specif user by private message */
+		void sendCard(t_bot_data &botData, std::string userName, int amount);
 
 		/* > Set the deck of a player into _deckList */
 		void setUserDeck(std::string userName, std::vector<e_card> deck);
@@ -70,11 +84,14 @@ class Uno: public Game
 		/* > Send, by private message, player deck */
 		void showHand(t_bot_data &botData, std::string userName);
 
+
+		// === PLAYER COMMANDS ===
+		
 		/* > Tell wich player have to play */
 		void whoseTurn(t_bot_data &botData) const;
 
 		/* > Play a card */
-		void playCard(t_bot_data &botData, std::string userName, std::string index, std::string color);
+		void playCard(t_bot_data &botData, std::string userName, std::string deckIdx, std::string color);
 };
 
 /* > Fill a vector with every card in the game, then sendCard() can random on this vector to choose card */
@@ -85,5 +102,14 @@ std::string convertCard(e_card card);
 
 /* > Parse the color */
 bool isColorValid(std::string color);
+
+/* > Convert a color into an index (int), return -1 on invalid color */
+int colorToInt(std::string color);
+
+/* > Convert a color index into a string, throw an error on invalid index */
+std::string colorToString(int color);
+
+/* > Check if player can play this card */
+bool cardPlayable(e_card card, e_card lastCard, int gameColor);
 
 #endif

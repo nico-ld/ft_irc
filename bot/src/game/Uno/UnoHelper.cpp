@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/14 16:18:25 by nico              #+#    #+#             */
-/*   Updated: 2026/08/15 17:04:00 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 15:25:50 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,48 @@ bool isColorValid(std::string color) {
 		return (true);
 	else
 		return (false);
+}
+
+int colorToInt(std::string color) {
+	if (color == "yellow")
+		return (0);
+	else if (color == "red")
+		return (1);
+	else if (color == "blue")
+		return (2);
+	else if (color == "green")
+		return (3);
+	else
+		return (-1);
+}
+
+std::string colorToString(int color) {
+	if (color == 0)
+		return ("yellow");
+	else if (color == 1)
+		return ("red");
+	else if (color == 2)
+		return ("blue");
+	else if (color == 3)
+		return ("green");
+	else
+		throw std::invalid_argument("Invalid color index");
+}
+
+bool cardPlayable(e_card card, e_card lastCard, int gameColor) {
+	int cardColor = card / 13;
+	int cardRank = card % 13;
+	
+	int lastCardColor = lastCard / 13;
+	int lastCardRank = lastCard % 13;
+
+	if (lastCard >= WILD)
+	{
+		if (card < WILD && cardColor != gameColor)
+			return (false);
+	}
+	else if (cardColor != lastCardColor && cardRank != lastCardRank)
+		return (false);
+	
+	return (true);
 }

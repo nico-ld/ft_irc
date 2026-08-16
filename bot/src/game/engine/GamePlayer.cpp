@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:05:05 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 11:21:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 14:02:46 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void Game::addPlayer(std::string playerName, t_bot_data &botData) {
 	_gameState = READY;
 	
 	// Log the new update
-	sendMessage(botData, _channel, playerName + "join the " + convertType(_gameType) + " !", INFO);
+	sendMessage(botData, _channel, playerName + " join the " + convertType(_gameType) + " !", INFO);
 
 	// Update Dashboard
 	// Find channel in dashboard data

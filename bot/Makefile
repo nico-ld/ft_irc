@@ -36,7 +36,8 @@ ENGINE		:= \
 UNO			:= \
 				$(UNO_DIR)Uno.cpp \
 				$(UNO_DIR)UnoHelper.cpp \
-				$(UNO_DIR)UnoDeck.cpp
+				$(UNO_DIR)UnoDeck.cpp \
+				$(UNO_DIR)UnoPlay.cpp
 
 HELPER		:= \
 				$(HELP_DIR)DashboardHelper.cpp \
