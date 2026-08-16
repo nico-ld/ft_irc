@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/14 16:18:25 by nico              #+#    #+#             */
-/*   Updated: 2026/08/15 10:42:55 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/15 17:04:00 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,9 @@ std::string convertCard(e_card card)
 	return (ret);
 }
 
-std::vector<e_card> Uno::getDeckByUser(std::string userName) {
-	std::vector<std::pair<std::string, std::vector<e_card> > >::const_iterator itPlayer;
-
-	for (itPlayer = _deckList.begin(); itPlayer != _deckList.end(); ++itPlayer) {
-		if (itPlayer->first == userName)
-			return (itPlayer->second);
-	}
-	std::vector<e_card> deck;
-	_deckList.push_back(std::make_pair(userName, deck));
-	return (deck);
-}
-
-void Uno::setUserDeck(std::string userName, std::vector<e_card> deck) {
-	std::vector<std::pair<std::string, std::vector<e_card> > >::iterator itPlayer;
-
-	for (itPlayer = _deckList.begin(); itPlayer != _deckList.end(); ++itPlayer) {
-		if (itPlayer->first == userName) {
-			itPlayer->second = deck;
-			return ;
-		}
-	}
+bool isColorValid(std::string color) {	
+	if (color == "yellow" || color == "red" || color == "blue" || color == "green")
+		return (true);
+	else
+		return (false);
 }

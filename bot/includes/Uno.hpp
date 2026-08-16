@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/15 10:51:05 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 13:44:22 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,26 @@ enum e_card {
 	WILD_DRAW_4  // 4 cards
 };
 
+struct t_player_info {
+	std::string name;
+	std::vector<e_card> deck;
+	bool unoMode;
+};
+
 class Uno: public Game
 {
 	private:
-		std::vector<std::pair<std::string, std::vector<e_card> > > _deckList;
+		// Pool of every cards in the uno game
 		std::vector<e_card> _pool;
+
+		// Player informations
+		std::vector<t_player_info> _playerInfo;
+
+		// Round informations
 		std::string	_playerTurn;
+		std::string _currentColor;
+		e_card _lastCard;
+		int _drawAmount;
 
 	public:
 		// == Constuctor & destructor ==
@@ -48,13 +62,19 @@ class Uno: public Game
 		void sendCard(t_bot_data &botData, std::string userName, int amount);
 
 		/* > Send the deck of a player from _deckList or init a new deck if player is not in the list */
-		std::vector<e_card> getDeckByUser(std::string userName);
+		std::vector<e_card> getDeckByUser(std::string userName) const;
 
 		/* > Set the deck of a player into _deckList */
 		void setUserDeck(std::string userName, std::vector<e_card> deck);
 
+		/* > Send, by private message, player deck */
+		void showHand(t_bot_data &botData, std::string userName);
+
 		/* > Tell wich player have to play */
 		void whoseTurn(t_bot_data &botData) const;
+
+		/* > Play a card */
+		void playCard(t_bot_data &botData, std::string userName, std::string index, std::string color);
 };
 
 /* > Fill a vector with every card in the game, then sendCard() can random on this vector to choose card */
@@ -62,5 +82,8 @@ std::vector<e_card> fillPool( void );
 
 /* > Convert card from enum to string */
 std::string convertCard(e_card card);
+
+/* > Parse the color */
+bool isColorValid(std::string color);
 
 #endif
