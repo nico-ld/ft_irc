@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 15:35:12 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/16 15:55:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void Uno::launchGame(t_bot_data &botData) {
 	}	
 
 	// define first card
-	int color = (std::rand() % 4);
-	int rank = std::rand() % 10;
+	int color = std::rand() % 4;
+	int rank = std::rand() % 13;
 	_lastCard = static_cast<e_card>(color * 10 + rank);
 	try {
 		_currentColor = colorToString(color);
@@ -74,7 +74,7 @@ std::string Uno::nextPlayer(bool skip) const{
 
 	if (_reversed) {
 		if (it - 1 == _playerList.begin())
-			it = _playerList.end() - 1;
+			it = _playerList.end();
 		else 
 			--it;
 		if (skip)
@@ -82,7 +82,7 @@ std::string Uno::nextPlayer(bool skip) const{
 	}
 	else {
 		if (it + 1 == _playerList.end())
-			it = _playerList.begin() + 1;
+			it = _playerList.begin();
 		else
 			++it;
 		if (skip)
