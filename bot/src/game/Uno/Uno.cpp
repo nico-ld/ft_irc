@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:04:52 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:45:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void Uno::launchGame(t_bot_data &botData) {
 	sendMessage(botData, _channel, "Game start ! you will receive your card by private message...", INFO);
 
 	// Send cards to every player
-	for (std::vector<std::string>::iterator it = _playerList.begin(); it != _playerList.end(); ++it) {
+	for (std::vector<t_player_info>::iterator it = _playerInfo.begin(); it != _playerInfo.end(); ++it) {
 		sendCard(botData, *it, 7);
 	}	
 
@@ -147,7 +147,9 @@ void Uno::showCardsAmount(t_bot_data &botData) const {
 		sendMessage(botData, _channel, message, CLIENT);
 }
 
-std::string Uno::getPlayerTurn( void ) const { return (_playerTurn); }
+std::string Uno::getPlayerTurn( void ) const {
+	return (_playerTurn);
+}
 
 t_player_info &Uno::getPlayerInfo(std::string userName) {
 	std::vector<t_player_info>::iterator it;

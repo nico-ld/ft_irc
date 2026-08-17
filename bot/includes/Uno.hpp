@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:03:46 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:44:15 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,7 @@ class Uno: public Game
 		// === DECK ===
 
 		/* > Send cards to a specif user by private message */
-		void sendCard(t_bot_data &botData, std::string userName, int amount);
-
-		/* > Set the deck of a player into _deckList */
-		void setUserDeck(std::string userName, std::vector<e_card> deck);
+		void sendCard(t_bot_data &botData, t_player_info &player, int amount);
 
 		/* > Send, by private message, player deck */
 		void showHand(t_bot_data &botData, std::string userName);
@@ -105,13 +102,13 @@ class Uno: public Game
 		void top(t_bot_data &botData) const;
 
 		/* > Play a card */
-		void playCard(t_bot_data &botData, std::string userName, std::string deckIdx, std::string color);
+		void playCard(t_bot_data &botData, t_player_info &player, std::string deckIdx, std::string color);
 		
 		/* > When a player get only one card */
-		void uno(t_bot_data &botData, std::string userName);
+		void uno(t_bot_data &botData, t_player_info &player);
 
 		/* > Challenge a player that play a WILD_DRAW_4 */
-		void challenge(t_bot_data &botData, std::string userName);
+		void challenge(t_bot_data &botData, t_player_info &player);
 
 		/* > Draw cards */
 		void draw(t_bot_data &botData, t_player_info &player);

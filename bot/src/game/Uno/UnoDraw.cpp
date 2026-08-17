@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 09:46:28 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:02:23 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:46:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int Uno::drawManagement(t_bot_data &botData, t_player_info &player, e_card card)
 
 void Uno::draw(t_bot_data &botData, t_player_info &player) {
 	if (player.drawAmount > 0) {
-		sendCard(botData, player.name, player.drawAmount);
+		sendCard(botData, player, player.drawAmount);
 		_playerTurn = nextPlayer(false);
 		player.drawAmount = 0;
 		sendMessage(botData, _channel, player.name + " drew their cards. This is at " + _playerTurn + " to play !", CLIENT);
@@ -66,7 +66,7 @@ void Uno::draw(t_bot_data &botData, t_player_info &player) {
 			sendMessage(botData, _channel, player.name + " drew a card that is playable !", CLIENT);
 			
 			if (newCard < WILD) {
-				playCard(botData, player.name, convertIntToString(player.deck.size() - 1), "");
+				playCard(botData, player, convertIntToString(player.deck.size() - 1), "");
 			}
 			else {
 				player.wildDrawed = true;
@@ -78,6 +78,7 @@ void Uno::draw(t_bot_data &botData, t_player_info &player) {
 		}
 		else
 		{
+			showHand(botData, player.name);
 			_playerTurn = nextPlayer(false);
 			sendMessage(botData, _channel, player.name + " drew a card, this is now at " + _playerTurn + " to play !", CLIENT);
 		}

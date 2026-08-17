@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 10:52:26 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:10:27 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:44:43 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 		return ;
 	}
 
+	t_player_info player = currentGame->getPlayerInfo(userName);
 
 	// Command for every player
 	if (command == "turn")
@@ -44,7 +45,7 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 	else if (command == "hand")
 		currentGame->showHand(botData, userName);
 	else if (command == "uno")
-		currentGame->uno(botData, userName);
+		currentGame->uno(botData, player);
 	else if (command == "cards")
 		currentGame->showCardsAmount(botData);
 
@@ -54,8 +55,6 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 		return ;
 	}
 
-	t_player_info player = currentGame->getPlayerInfo(userName);
-	
 	// Command for current player
 	// If player just drew a wild card
 	if (player.wildDrawed) {
@@ -69,14 +68,14 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 	
 	if (command == "play") {
 		if (param.size() == 3)
-			currentGame->playCard(botData, userName, param[1], param[2]);
+			currentGame->playCard(botData, player, param[1], param[2]);
 		else
-			currentGame->playCard(botData, userName, param[1], "");
+			currentGame->playCard(botData, player, param[1], "");
 	}
 	else if (command == "draw")
 		currentGame->draw(botData, currentGame->getPlayerInfo(userName));
 	else if (command == "challenge")
-		currentGame->challenge(botData, userName);
+		currentGame->challenge(botData, player);
 	else
 		sendMessage(botData, channel, "Unknow command : " + command, WARNING);
 }

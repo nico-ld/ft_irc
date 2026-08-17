@@ -6,29 +6,21 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:28:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 17:19:37 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:42:02 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Uno.hpp"
 #include "Bot.hpp"
 
-void Uno::sendCard(t_bot_data &botData, std::string userName, int amount)
-{
-	std::vector<e_card> deck;
-	
-	// Get current user deck
-	deck = getDeckByUser(userName);
-	
+void Uno::sendCard(t_bot_data &botData, t_player_info &player, int amount)
+{	
 	// Fill deck with new cards
 	for (int i = 0; i != amount; ++i)
-		deck.push_back(_pool[std::rand() % _pool.size()]);
-
-	// Update deck
-	setUserDeck(userName, deck);
+		player.deck.push_back(_pool[std::rand() % _pool.size()]);
 
 	// Display new Deck
-	showHand(botData, userName);
+	showHand(botData, player.name);
 }
 
 void Uno::showHand(t_bot_data &botData, std::string userName) {
@@ -65,15 +57,4 @@ std::vector<e_card> Uno::getDeckByUser(std::string userName) const {
 			break ;
 	}
 	return (it->deck);
-}
-
-void Uno::setUserDeck(std::string userName, std::vector<e_card> deck) {
-	std::vector<t_player_info>::iterator it;
-
-	for (it = _playerInfo.begin(); it != _playerInfo.end(); ++it) {
-		if (it->name == userName) {
-			it->deck = deck;
-			return ;
-		}
-	}
 }

@@ -6,17 +6,15 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:12:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:26:40 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:43:59 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Uno.hpp"
 #include "Bot.hpp"
 
-void Uno::playCard(t_bot_data &botData, std::string userName, std::string deckIdx, std::string color)
+void Uno::playCard(t_bot_data &botData, t_player_info &player, std::string deckIdx, std::string color)
 {
-	t_player_info player = getPlayerInfo(userName);
-
 	// Check card index
 	char *end;
 	size_t index = strtol(deckIdx.c_str(), &end, 10);
