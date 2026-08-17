@@ -25,7 +25,7 @@ void Server::kick(Channel &channel, User *kicked, const User *op) {
 
 	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
 	if (findChannel == _channels.end()) {
-		notification(op, "ERR_NOSUCHCHANNEL");
+		notification(op, "403 ERR_NOSUCHCHANNEL");
 		throw std::runtime_error("[LOG] Channel doesn't exist");
 	}
 
@@ -35,16 +35,16 @@ void Server::kick(Channel &channel, User *kicked, const User *op) {
 			break;
 	}
 	if (findUser == findChannel->second.getMembers().end()) {
-		notification(op, "ERR_NOTONCHANNEL");
+		notification(op, "442 ERR_NOTONCHANNEL");
 		throw std::runtime_error("[LOG] User not on channel");
 	}
 
 	if (!findChannel->second.isOperator(op->getFd())) {
-		notification(op, "ERR_CHANOPRIVSNEEDED");
+		notification(op, "482 ERR_CHANOPRIVSNEEDED");
 		throw std::runtime_error("[LOG] User is not operator");
 	}
 	if (!findChannel->second.isMember(findUser->second->getFd())) {
-		notification(op, "ERR_USERNOTINCHANNEL");
+		notification(op, "441 ERR_USERNOTINCHANNEL");
 		throw std::runtime_error("[LOG] User is not in channel");
 	}
 
@@ -64,7 +64,7 @@ void Server::kick(Channel &channel, User *kicked, std::string reason, const User
 
 	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
 	if (findChannel == _channels.end()) {
-		notification(op, "ERR_NOSUCHCHANNEL");
+		notification(op, "403 ERR_NOSUCHCHANNEL");
 		throw std::runtime_error("[LOG] Channel doesn't exist");
 	}
 
@@ -74,16 +74,16 @@ void Server::kick(Channel &channel, User *kicked, std::string reason, const User
 			break;
 	}
 	if (findUser == findChannel->second.getMembers().end()) {
-		notification(op, "ERR_NOTONCHANNEL");
+		notification(op, "442 ERR_NOTONCHANNEL");
 		throw std::runtime_error("[LOG] User not on the channel.");
 	}
 
 	if (!findChannel->second.isOperator(op->getFd())) {
-		notification(op, "ERR_CHANOPRIVSNEEDED");
+		notification(op, "482 ERR_CHANOPRIVSNEEDED");
 		throw std::runtime_error("[LOG] User is not operator");
 	}
 	if (!findChannel->second.isMember(findUser->second->getFd())) {
-		notification(op, "ERR_USERNOTINCHANNEL");
+		notification(op, "441 ERR_USERNOTINCHANNEL");
 		throw std::runtime_error("[LOG] User is not in channel");
 	}
 

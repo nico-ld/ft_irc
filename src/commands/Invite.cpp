@@ -23,20 +23,20 @@ void Server::invite(const std::string &nickname, Channel &channel, const User *u
 	}
 
 	if (!channel.isMember(user->getFd())) {
-		notification(user, "ERR_NOSUCHCHANNEL");
+		notification(user, "403 ERR_NOSUCHCHANNEL");
 		throw std::runtime_error("[LOG] User are not on the channel.");
 	}
 	if (!getUserByNickname(nickname)) {
-		notification(user, "ERR_NOTONSERVER");
+		notification(user, "442 ERR_NOTONSERVER");
 		throw std::runtime_error("[LOG] User are not on the server.");
 	}
 	if (channel.isInviteOnly())
 		if (!channel.isOperator(user->getFd())) {
-			notification(user, "ERR_CHANOPRIVSNEEDED");
+			notification(user, "482 ERR_CHANOPRIVSNEEDED");
 			throw std::runtime_error("[LOG] User is not operator");
 		}
 	if (channel.isInvited(getUserByNickname(nickname)->getFd()) || channel.isMember(getUserByNickname(nickname)->getFd())) {
-		notification(user, "ERR_USERONCHANNEL");
+		notification(user, "443 ERR_USERONCHANNEL");
 		throw std::runtime_error("[LOG] User already on this channel");
 	}
 

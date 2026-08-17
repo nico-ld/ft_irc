@@ -52,14 +52,18 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 				else if ((*it_modestring)[i] == 't')
 					channel.setTopicRestricted(true);
 				else if ((*it_modestring)[i] == 'k') {
-					if (params.size() <= 0)
-						throw std::runtime_error("need argument"); //notification
+					if (params.size() <= 0) {
+						server.notification(&user, "461 ERR_NEEDMOREPARAMS");
+						throw std::runtime_error("need argument");
+					}
 					channel.setKey(*it_params);
 					it_params++;
 				}
 				else if ((*it_modestring)[i] == 'l') {
-					if (params.size() <= 0)
-						throw std::runtime_error("need argument"); //notification
+					if (params.size() <= 0) {
+						server.notification(&user, "461 ERR_NEEDMOREPARAMS");
+						throw std::runtime_error("need argument");
+					}
 
 					std::stringstream ss(*it_params);
 					int limit;
@@ -68,12 +72,16 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 					it_params++;
 				}
 				else if ((*it_modestring)[i] == 'o') {
-					if (params.size() <= 0)
-						throw std::runtime_error("need argument"); //notification
+					if (params.size() <= 0) {
+						server.notification(&user, "461 ERR_NEEDMOREPARAMS");
+						throw std::runtime_error("need argument");
+					}
 					channel.addOperator(user);
 				}
-				else
-					throw std::runtime_error("This mode doesn't exist"); //notification
+				else {
+					server.notification(&user, "This mode doesn't exist.");
+					throw std::runtime_error("This mode doesn't exist");
+				}
 				++i;
 			}
 		}
@@ -89,8 +97,10 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 					channel.setKey("");
 				else if ((*it_modestring)[i] == 'l')
 					channel.setUserLimit(-1);
-				else
-					throw std::runtime_error("This mode doesn't exist"); //notification
+				else {
+					server.notification(&user, "This mode doesn't exist.");
+					throw std::runtime_error("This mode doesn't exist");
+				}
 			}
 		}
 	}
@@ -103,7 +113,7 @@ void Server::mode(Channel &channel, std::string listMode, User *user, std::vecto
 	}
 	std::map<std::string, Channel>::iterator it = _channels.find(channel.getName());
 	if (it == _channels.end()) {
-		notification(user, "ERR_NOSUCHCHANNEL");
+		notification(user, "403 ERR_NOSUCHCHANNEL");
 		throw std::runtime_error("[LOG] Channel doesn't exist");
 	}
 

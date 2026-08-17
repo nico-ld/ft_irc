@@ -37,7 +37,7 @@ void Server::topic(Channel &channel, std::string newTopic, User *user) {
 
 	if (channel.isTopicRestricted())
 		if (!channel.isOperator(user->getFd())) {
-			notification(user, "ERR_CHANOPRIVSNEEDED");
+			notification(user, "482 ERR_CHANOPRIVSNEEDED");
 			throw std::runtime_error("[LOG] User is not operator");
 		}
 

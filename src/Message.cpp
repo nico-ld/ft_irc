@@ -49,7 +49,7 @@ void Server::notification(const User *user, std::string message) {
 
 void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message) {
 	if (!channel.isMember(src->getFd())) {
-		notification(src, "ERR_NOTONCHANNEL");
+		notification(src, "442 ERR_NOTONCHANNEL");
 		throw std::runtime_error("User not on the channel.");
 	}
 	std::string privateMessage = channel.getName() + "-> " + src->getNickname() + ": " + message + "\r\n";

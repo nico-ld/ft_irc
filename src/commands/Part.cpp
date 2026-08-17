@@ -25,7 +25,7 @@ void Server::part(std::vector<Channel> &channels, User *user) {
 		}
 		std::map<std::string, Channel>::iterator getChan = _channels.find(it->getName());
 		if (!getChan->second.isMember(user->getFd())) {
-			notification(user, "ERR_USERNOTINCHANNEL");
+			notification(user, "441 ERR_USERNOTINCHANNEL");
 			throw std::runtime_error("[LOG] User is not in the channel");
 		}
 		getChan->second.removeMember(user);
@@ -47,7 +47,7 @@ void Server::part(std::vector<Channel> &channels, std::string reason, User *user
 		}
 
 		if (!it->isMember(user->getFd())) {
-			notification(user, "ERR_USERNOTINCHANNEL");
+			notification(user, "441 ERR_USERNOTINCHANNEL");
 			throw std::runtime_error("[LOG] User is not in the channel");
 		}
 		it->removeMember(user);
