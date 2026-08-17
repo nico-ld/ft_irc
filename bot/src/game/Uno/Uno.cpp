@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:45:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 15:12:13 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ Uno::Uno(int sock, std::string &channel) {
 Uno::~Uno() {}
 
 void Uno::launchGame(t_bot_data &botData) {
+	_reversed = false;
+
 	// Init each player information
 	for (std::vector<std::string>::iterator it = _playerList.begin(); it != _playerList.end(); ++it)
 	{
@@ -47,8 +49,8 @@ void Uno::launchGame(t_bot_data &botData) {
 
 	// define first card
 	int color = std::rand() % 4;
-	int rank = std::rand() % 13;
-	_lastCard = static_cast<e_card>(color * 10 + rank);
+	int rank = std::rand() % 10;
+	_lastCard = static_cast<e_card>(color * 13 + rank);
 	try {
 		_currentColor = colorToString(color);
 		_lastColor = _currentColor;
@@ -79,20 +81,27 @@ std::string Uno::nextPlayer(bool skip) const{
 	}
 
 	if (_reversed) {
-		if (it - 1 == _playerList.begin())
-			it = _playerList.end();
+		if (it == _playerList.begin())
+			it = _playerList.end() - 1;
 		else 
 			--it;
-		if (skip)
-			--it;
-	}
+		if (skip) {
+			if (it == _playerList.begin())
+				it = _playerList.end() - 1;
+			else
+				--it;
+		}	}
 	else {
-		if (it + 1 == _playerList.end())
+		if (it == _playerList.end() || it + 1 == _playerList.end())
 			it = _playerList.begin();
 		else
 			++it;
-		if (skip)
-			++it;
+		if (skip) {
+			if (it + 1 == _playerList.end())
+				it = _playerList.begin();
+			else
+				++it;
+		}
 	}
 	
 	return (*it);
@@ -107,14 +116,14 @@ std::string Uno::previousPlayer( void ) const {
 	}
 
 	if (_reversed) {
-		if (it + 1 == _playerList.end())
+		if (it == _playerList.end() || it + 1 == _playerList.end())
 			it = _playerList.begin();
 		else
 			++it;
 	}
 	else {
-		if (it - 1 == _playerList.begin())
-			it = _playerList.end();
+		if (it == _playerList.begin())
+			it = _playerList.end() - 1;
 		else
 			--it;
 	}

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/16 16:17:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:46:41 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 14:35:42 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,10 @@ void Uno::uno(t_bot_data &botData, t_player_info &player) {
 				return ;
 			}
 		}
-		sendMessage(botData, _channel, "There is nobody in 'UNO' situation, " + (player.deck.size() > 1) ? "not even you" : "and you already yell UNO", CLIENT);
+		if (player.deck.size() > 1)
+			sendMessage(botData, _channel, "There is nobody in 'UNO' situation, not even you", CLIENT);
+		else
+			sendMessage(botData, _channel, "There is nobody in 'UNO' situation, you already yell UNO", CLIENT);
 	}
 }
 

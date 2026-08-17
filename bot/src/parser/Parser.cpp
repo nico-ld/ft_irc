@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 14:24:08 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 16:28:45 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 15:17:38 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,7 @@ int Parser::parseMessage(std::string &line) {
 	if (!(ss >> word) || word[0] != '!')
 		return (1);
 
-	if (word == "!help" || word == "!game" || word == "!uno")
-		_gameCmd = word;
-	else
-		return (1);
+	_gameCmd = word;
 		
 	while (ss >> word) {
 		_gameCmdParam.push_back(word);

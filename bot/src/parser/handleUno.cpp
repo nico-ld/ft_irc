@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 10:52:26 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:44:43 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 14:36:43 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,30 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 	t_player_info player = currentGame->getPlayerInfo(userName);
 
 	// Command for every player
-	if (command == "turn")
+	if (command == "turn") {
 		currentGame->whoseTurn(botData);
-	else if (command == "hand")
+		return ;
+	}
+	else if (command == "hand") {
 		currentGame->showHand(botData, userName);
-	else if (command == "uno")
+		return ;
+	}
+	else if (command == "uno") {
 		currentGame->uno(botData, player);
-	else if (command == "cards")
+		return ;
+	}
+	else if (command == "cards") {
 		currentGame->showCardsAmount(botData);
+		return ;
+	}
+	else if (command == "top") {
+		currentGame->top(botData);
+		return ;
+	}
 
 	// Check if this is the good player who play
 	if (userName != currentGame->getPlayerTurn()) {
-		sendMessage(botData, channel, "This is not you're turn " + userName, WARNING);
+		sendMessage(botData, channel, "This is not your turn " + userName, WARNING);
 		return ;
 	}
 
@@ -62,8 +74,10 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 			sendMessage(botData, channel, "You have to choose a color with '!uno color <color>", WARNING);
 			return ;
 		}
-		else if (command == "color")
+		else if (command == "color") {
 			currentGame->color(botData, player, param[1]);
+			return ;
+		}
 	}
 	
 	if (command == "play") {
@@ -76,6 +90,8 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 		currentGame->draw(botData, currentGame->getPlayerInfo(userName));
 	else if (command == "challenge")
 		currentGame->challenge(botData, player);
+	else if (command == "color")
+		sendMessage(botData, channel, "You don't have to set the game color", CLIENT);
 	else
 		sendMessage(botData, channel, "Unknow command : " + command, WARNING);
 }

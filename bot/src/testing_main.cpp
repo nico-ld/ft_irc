@@ -26,6 +26,11 @@ int main(void) {
 	botData.data = data;
 	botData.dash = &dash;
 
+	// init game
+	catchCommand(":leroux! PRIVMSG #channel :!game create uno", botData);
+	catchCommand(":amy! PRIVMSG #channel :!game join", botData);
+	catchCommand(":leroux! PRIVMSG #channel :!game start", botData);
+
 	std::string line;
 	std::cout << " > ";
 	while (std::getline(std::cin, line)) {
