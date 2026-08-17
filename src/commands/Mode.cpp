@@ -46,49 +46,53 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 		size_t i = 0;
 		if ((*it_modestring)[i] == '+') {
 			i++;
-			if ((*it_modestring)[i] == 'i')
-				channel.setInviteOnly(true);
-			else if ((*it_modestring)[i] == 't')
-				channel.setTopicRestricted(true);
-			else if ((*it_modestring)[i] == 'k') {
-				if (params.size() <= 0)
-					throw std::runtime_error("need argument"); //notification
-	
-				channel.setKey(*it_params);
-				it_params++;
-			}
-			else if ((*it_modestring)[i] == 'l') {
-				if (params.size() <= 0)
-					throw std::runtime_error("need argument"); //notification
+			while((*it_modestring)[i]) {
+				if ((*it_modestring)[i] == 'i')
+					channel.setInviteOnly(true);
+				else if ((*it_modestring)[i] == 't')
+					channel.setTopicRestricted(true);
+				else if ((*it_modestring)[i] == 'k') {
+					if (params.size() <= 0)
+						throw std::runtime_error("need argument"); //notification
+					channel.setKey(*it_params);
+					it_params++;
+				}
+				else if ((*it_modestring)[i] == 'l') {
+					if (params.size() <= 0)
+						throw std::runtime_error("need argument"); //notification
 
-				std::stringstream ss(*it_params);
-				int limit;
-				ss >> limit;
-				channel.setUserLimit(limit);
-				it_params++;
+					std::stringstream ss(*it_params);
+					int limit;
+					ss >> limit;
+					channel.setUserLimit(limit);
+					it_params++;
+				}
+				else if ((*it_modestring)[i] == 'o') {
+					if (params.size() <= 0)
+						throw std::runtime_error("need argument"); //notification
+					std::cout << "[DEBUG]: " << *it_params << std::endl;
+					channel.addOperator(user);
+				}
+				else
+					throw std::runtime_error("This mode doesn't exist"); //notification
+				++i;
 			}
-			else if ((*it_modestring)[i] == 'o') {
-				if (params.size() <= 0)
-					throw std::runtime_error("need argument"); //notification
-
-				channel.addOperator(user);
-			}
-			else
-				throw std::runtime_error("This mode doesn't exist"); //notification
 		}
 		else if ((*it_modestring)[i] == '-') {
-			i++;
+			while((*it_modestring)[i]) {
+				i++;
 
-			if ((*it_modestring)[i] == 'i')
-				channel.setInviteOnly(false);
-			else if ((*it_modestring)[i] == 't')
-				channel.setTopicRestricted(false);
-			else if ((*it_modestring)[i] == 'k')
-				channel.setKey("");
-			else if ((*it_modestring)[i] == 'l')
-				channel.setUserLimit(-1);
-			else
-				throw std::runtime_error("This mode doesn't exist"); //notification
+				if ((*it_modestring)[i] == 'i')
+					channel.setInviteOnly(false);
+				else if ((*it_modestring)[i] == 't')
+					channel.setTopicRestricted(false);
+				else if ((*it_modestring)[i] == 'k')
+					channel.setKey("");
+				else if ((*it_modestring)[i] == 'l')
+					channel.setUserLimit(-1);
+				else
+					throw std::runtime_error("This mode doesn't exist"); //notification
+			}
 		}
 	}
 }
