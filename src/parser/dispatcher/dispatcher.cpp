@@ -34,6 +34,7 @@ static void	channelCommandsDispatch(Server &server, std::string command, User &u
 		else if (parameters.size() == 0) {
 			server.notification(&user, "461 ERR_NEEDMOREPARAMS");
 			throw std::runtime_error("[LOG] Need a channel name.");
+		}
 		else
 			server.join(listChannel, &user);
 	}

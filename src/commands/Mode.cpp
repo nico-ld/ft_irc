@@ -36,7 +36,7 @@ static std::vector<std::string> split_mode(std::string listMode) {
 	return listString;
 }
 
-static void launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user) {
+void Server::launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user) {
 	std::vector<std::string>::iterator it_modestring = modestring.begin();
 	std::vector<std::string>::iterator it_params;
 	if (params.size() > 0)
@@ -53,7 +53,7 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 					channel.setTopicRestricted(true);
 				else if ((*it_modestring)[i] == 'k') {
 					if (params.size() <= 0) {
-						server.notification(&user, "461 ERR_NEEDMOREPARAMS");
+						notification(user, "461 ERR_NEEDMOREPARAMS");
 						throw std::runtime_error("need argument");
 					}
 					channel.setKey(*it_params);
@@ -61,7 +61,7 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 				}
 				else if ((*it_modestring)[i] == 'l') {
 					if (params.size() <= 0) {
-						server.notification(&user, "461 ERR_NEEDMOREPARAMS");
+						notification(user, "461 ERR_NEEDMOREPARAMS");
 						throw std::runtime_error("need argument");
 					}
 
@@ -73,13 +73,13 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 				}
 				else if ((*it_modestring)[i] == 'o') {
 					if (params.size() <= 0) {
-						server.notification(&user, "461 ERR_NEEDMOREPARAMS");
+						notification(user, "461 ERR_NEEDMOREPARAMS");
 						throw std::runtime_error("need argument");
 					}
 					channel.addOperator(user);
 				}
 				else {
-					server.notification(&user, "This mode doesn't exist.");
+					notification(user, "This mode doesn't exist.");
 					throw std::runtime_error("This mode doesn't exist");
 				}
 				++i;
@@ -98,7 +98,7 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 				else if ((*it_modestring)[i] == 'l')
 					channel.setUserLimit(-1);
 				else {
-					server.notification(&user, "This mode doesn't exist.");
+					notification(user, "This mode doesn't exist.");
 					throw std::runtime_error("This mode doesn't exist");
 				}
 			}
