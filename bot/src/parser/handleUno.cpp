@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 10:52:26 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 14:36:43 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 15:28:48 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 		return ;
 	}
 
-	t_player_info player = currentGame->getPlayerInfo(userName);
-
 	// Command for every player
 	if (command == "turn") {
 		currentGame->whoseTurn(botData);
@@ -49,7 +47,7 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 		return ;
 	}
 	else if (command == "uno") {
-		currentGame->uno(botData, player);
+		currentGame->uno(botData, currentGame->getPlayerInfo(userName));
 		return ;
 	}
 	else if (command == "cards") {
@@ -69,27 +67,27 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 
 	// Command for current player
 	// If player just drew a wild card
-	if (player.wildDrawed) {
+	if (currentGame->getPlayerInfo(userName).wildDrawed) {
 		if (command == "play" || command == "draw" || command == "challenge") {
 			sendMessage(botData, channel, "You have to choose a color with '!uno color <color>", WARNING);
 			return ;
 		}
 		else if (command == "color") {
-			currentGame->color(botData, player, param[1]);
+			currentGame->color(botData, currentGame->getPlayerInfo(userName), param[1]);
 			return ;
 		}
 	}
 	
 	if (command == "play") {
 		if (param.size() == 3)
-			currentGame->playCard(botData, player, param[1], param[2]);
+			currentGame->playCard(botData, currentGame->getPlayerInfo(userName), param[1], param[2]);
 		else
-			currentGame->playCard(botData, player, param[1], "");
+			currentGame->playCard(botData, currentGame->getPlayerInfo(userName), param[1], "");
 	}
 	else if (command == "draw")
 		currentGame->draw(botData, currentGame->getPlayerInfo(userName));
 	else if (command == "challenge")
-		currentGame->challenge(botData, player);
+		currentGame->challenge(botData, currentGame->getPlayerInfo(userName));
 	else if (command == "color")
 		sendMessage(botData, channel, "You don't have to set the game color", CLIENT);
 	else

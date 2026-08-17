@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:12:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:43:59 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 16:01:32 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,21 @@ void Uno::playCard(t_bot_data &botData, t_player_info &player, std::string deckI
 	// Play a wild card
 	if (card == WILD || card == WILD_DRAW_4)
 	{
+		if (color.empty()) {
+			sendMessage(botData, _channel, "You need to give a color for playing this card. Valid color are : 'yellow', 'red', 'blue' and 'green'", WARNING);
+			return ;
+		}
+		
 		std::transform(color.begin(), color.end(), color.begin(), ::tolower);
+		
 		if (!isColorValid(color)) {
 			sendMessage(botData, _channel, "Color is invalid, please try again. Valid color are : 'yellow', 'red', 'blue' and 'green'", WARNING);
 			return ;
 		}
-		else if (card == WILD_DRAW_4)
-			getPlayerInfo(nextPlayer(skip)).drawAmount += 4; // Add draw for the next player 
+		else if (card == WILD_DRAW_4) {
+			getPlayerInfo(nextPlayer(skip)).drawAmount += 4; // Add draw for the next player
+			_challenged = false;
+		}
 		_lastColor = _currentColor;
 		_currentColor = color;
 	}
@@ -53,8 +61,9 @@ void Uno::playCard(t_bot_data &botData, t_player_info &player, std::string deckI
 	// Play an action card 
 	else 
 	{
-		if (!cardPlayable(card, _lastCard, colorToInt(color))) {
+		if (!cardPlayable(card, _lastCard, colorToInt(_currentColor))) {
 			sendMessage(botData, _channel, "You can't play this card, please try another card, or take a new one", WARNING);
+			botData.dash->log(DEBUG, "player card : " + convertCard(card) + "; last card : " + convertCard(_lastCard) + "; game color : " + convertIntToString(colorToInt(color)) + "; player card color : " + convertIntToString(card / 13));
 			return ;
 		}
 

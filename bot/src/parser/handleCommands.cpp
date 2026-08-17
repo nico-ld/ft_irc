@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:14:11 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 16:36:26 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ void catchCommand(std::string line, t_bot_data &botData)
 		// Get command info
 		std::string channel = parser.getParameters()[0];
 		std::string commandGrp = parser.getGameCmd();
-		command = parser.getGameCmdParam()[0];
+		if (!parser.getGameCmdParam().empty())
+			command = parser.getGameCmdParam()[0];
 		botData.parser = parser;
 		
 		

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/14 16:18:25 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 15:25:50 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 16:30:54 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ bool cardPlayable(e_card card, e_card lastCard, int gameColor) {
 		if (card < WILD && cardColor != gameColor)
 			return (false);
 	}
-	else if (cardColor != lastCardColor && cardRank != lastCardRank)
+	else if (card < WILD && cardColor != lastCardColor && cardRank != lastCardRank)
 		return (false);
 	
 	return (true);

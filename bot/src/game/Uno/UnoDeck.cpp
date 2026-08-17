@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:28:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:42:02 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 15:44:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 void Uno::sendCard(t_bot_data &botData, t_player_info &player, int amount)
 {	
 	// Fill deck with new cards
-	for (int i = 0; i != amount; ++i)
+	for (int i = 0; i != amount; ++i) {
 		player.deck.push_back(_pool[std::rand() % _pool.size()]);
+	}
 
 	// Display new Deck
 	showHand(botData, player.name);

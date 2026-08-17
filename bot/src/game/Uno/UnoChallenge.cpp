@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/16 16:17:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 14:35:42 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 15:44:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,18 @@ void Uno::challenge(t_bot_data &botData, t_player_info &player) {
 		sendMessage(botData, _channel, "You can challenge only " + convertCard(WILD_DRAW_4), WARNING);
 		return ;
 	}
+	else if (_challenged) {
+		sendMessage(botData, _channel, "You already challenged this " + convertCard(WILD_DRAW_4), WARNING);
+		return ;
+	}
 
 	t_player_info challenged = getPlayerInfo(previousPlayer());
 
 	std::vector<e_card>::iterator it;
 	for (it = challenged.deck.begin(); it != challenged.deck.end(); ++it) {
 		if (*it / 13 == colorToInt(_lastColor)) {
-			sendMessage(botData, _channel, "Well done ! " + challenged.name + " you've been caught, get every cards !", CLIENT);
-			sendCard(botData, challenged, player.drawAmount);
+			sendMessage(botData, _channel, "Well done " + player.name + " ! " + challenged.name + " you've been caught, get " + convertIntToString(player.drawAmount) + " cards !", CLIENT);
+			sendCard(botData, getPlayerInfo(previousPlayer()), player.drawAmount);
 			player.drawAmount = 0;
 			return ;
 		}

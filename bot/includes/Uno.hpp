@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:44:15 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 15:32:47 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ class Uno: public Game
 		std::string	_lastColor;
 		e_card		_lastCard;
 		bool		_reversed;
+		bool		_challenged;
 
 	public:
 		// == Constuctor & destructor ==

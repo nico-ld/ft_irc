@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 09:46:28 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:46:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 16:35:05 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ void Uno::draw(t_bot_data &botData, t_player_info &player) {
 	if (player.drawAmount > 0) {
 		sendCard(botData, player, player.drawAmount);
 		_playerTurn = nextPlayer(false);
+		sendMessage(botData, _channel, player.name + " drew " + convertIntToString(player.drawAmount) + " cards. This is at " + _playerTurn + " to play !", CLIENT);
 		player.drawAmount = 0;
-		sendMessage(botData, _channel, player.name + " drew their cards. This is at " + _playerTurn + " to play !", CLIENT);
 	}
 	else
 	{
@@ -55,7 +55,6 @@ void Uno::draw(t_bot_data &botData, t_player_info &player) {
 		
 		// Get new card
 		e_card newCard = _pool[std::rand() % _pool.size()];
-		player.deck.push_back(newCard);
 
 		if (player.unoMode)
 			player.unoMode = false;
@@ -64,6 +63,7 @@ void Uno::draw(t_bot_data &botData, t_player_info &player) {
 		if (it == player.deck.end() && cardPlayable(newCard, _lastCard, colorToInt(_currentColor)))
 		{
 			sendMessage(botData, _channel, player.name + " drew a card that is playable !", CLIENT);
+			player.deck.push_back(newCard);
 			
 			if (newCard < WILD) {
 				playCard(botData, player, convertIntToString(player.deck.size() - 1), "");
@@ -78,6 +78,7 @@ void Uno::draw(t_bot_data &botData, t_player_info &player) {
 		}
 		else
 		{
+			player.deck.push_back(newCard);
 			showHand(botData, player.name);
 			_playerTurn = nextPlayer(false);
 			sendMessage(botData, _channel, player.name + " drew a card, this is now at " + _playerTurn + " to play !", CLIENT);

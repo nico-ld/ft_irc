@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 15:12:13 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 15:48:54 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ Uno::~Uno() {}
 
 void Uno::launchGame(t_bot_data &botData) {
 	_reversed = false;
+	_challenged = true;
 
 	// Init each player information
 	for (std::vector<std::string>::iterator it = _playerList.begin(); it != _playerList.end(); ++it)
@@ -172,5 +173,8 @@ t_player_info &Uno::getPlayerInfo(std::string userName) {
 }
 
 void Uno::top(t_bot_data &botData) const {
-	sendMessage(botData, _channel, "The last card played is " + convertCard(_lastCard), CLIENT);
+	if (_lastCard >= WILD)
+		sendMessage(botData, _channel, "The last card played is " + convertCard(_lastCard) + " and the color choosen is " + _currentColor, CLIENT);
+	else
+		sendMessage(botData, _channel, "The last card played is " + convertCard(_lastCard), CLIENT);
 }
