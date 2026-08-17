@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 09:31:29 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 09:44:58 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,3 +147,14 @@ void Uno::showCardsAmount(t_bot_data &botData) const {
 }
 
 std::string Uno::getPlayerTurn( void ) const { return (_playerTurn); }
+
+t_player_info &Uno::getPlayerInfo(std::string userName) {
+	std::vector<t_player_info>::iterator it;
+
+	for (it = _playerInfo.begin(); it != _playerInfo.end(); ++it) {
+		if (it->name == userName)
+			break ;
+	}
+
+	return (*it);
+}

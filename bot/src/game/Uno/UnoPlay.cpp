@@ -6,33 +6,16 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:12:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 09:19:55 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 09:59:06 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Uno.hpp"
 #include "Bot.hpp"
 
-t_player_info &Uno::getPlayerInfo(std::string userName) {
-	std::vector<t_player_info>::iterator it;
-
-	for (it = _playerInfo.begin(); it != _playerInfo.end(); ++it) {
-		if (it->name == userName)
-			break ;
-	}
-
-	return (*it);
-}
-
 void Uno::playCard(t_bot_data &botData, std::string userName, std::string deckIdx, std::string color)
 {
 	t_player_info player = getPlayerInfo(userName);
-
-	// Check player turn
-	if (player.name != _playerTurn) {
-		sendMessage(botData, _channel, "This is not your turn to play " + player.name, WARNING);
-		return ;
-	}
 
 	// Check card index
 	char *end;
@@ -49,6 +32,11 @@ void Uno::playCard(t_bot_data &botData, std::string userName, std::string deckId
 	// Play the card
 	e_card	card = player.deck[index];
 	bool	skip = false;
+
+	if (player.drawAmount > 0) {
+		if (drawManagement(botData, player, card) == 1)
+			return ;
+	}
 
 	// Play a wild card
 	if (card == WILD || card == WILD_DRAW_4)
@@ -102,4 +90,7 @@ void Uno::playCard(t_bot_data &botData, std::string userName, std::string deckId
 		cardInfo = ", new color is " + color + " ! ";
 	
 	sendMessage(botData, _channel, player.name + " played " + convertCard(card) + cardInfo + _playerTurn + " this is your turn !", CLIENT);
+
+	if (getPlayerInfo(_playerTurn).drawAmount > 0)
+		sendMessage(botData, _channel, _playerTurn + " You have to draw, if you get a card to counter it play it '!uno play <cardIdx>' else draw with '!uno draw'", CLIENT);
 }

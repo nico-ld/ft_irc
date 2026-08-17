@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 15:58:08 by nico              #+#    #+#             */
-/*   Updated: 2026/08/12 10:25:35 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 10:25:23 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,3 +163,6 @@ void applyDashData(t_bot_data &botData);
 
 /* > Send PRIVMSG to target on server */
 void sendMessage(t_bot_data &botData, std::string target, std::string content, std::string level);
+
+/* > Convert an int into a string, to print it into log */
+std::string convertIntToString(int num);

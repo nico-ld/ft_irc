@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/11 17:14:20 by nico              #+#    #+#             */
-/*   Updated: 2026/08/14 17:01:18 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 10:24:33 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,10 @@ void sendMessage(t_bot_data &botData, std::string target, std::string content, s
 	std::string message = "PRIVMSG " + target + " :" + content + "\r\n";
 	send(botData.sock, message.c_str(), message.size(), MSG_NOSIGNAL);
 	botData.dash->log(level, message);
+}
+
+std::string convertIntToString(int num) {
+	std::ostringstream oss;
+	oss << num;
+	return (oss.str());
 }

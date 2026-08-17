@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 09:32:24 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 10:01:08 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,11 +109,13 @@ class Uno: public Game
 		/* > Challenge a player that play a WILD_DRAW_4 */
 		void challenge(t_bot_data &botData, std::string userName);
 
+		/* > Draw cards */
+		void draw(t_bot_data &botData, t_player_info &player);
 		
 		// === SPECIAL CASES ===
 		
-		/* > handle Case of draw 2 or 4 */
-		// void drawManagement(t_bot_data &botData, t_player_info player);
+		/* > handle case of a draw, return 1 on error */
+		int drawManagement(t_bot_data &botData, t_player_info &player, e_card card);
 };
 
 /* > Fill a vector with every card in the game, then sendCard() can random on this vector to choose card */
