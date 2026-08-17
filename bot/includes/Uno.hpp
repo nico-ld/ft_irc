@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 10:36:24 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:03:46 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,9 @@ class Uno: public Game
 		
 		/* > Tell wich player have to play in the channel */
 		void whoseTurn(t_bot_data &botData) const;
+
+		/* > Tell the last card played */
+		void top(t_bot_data &botData) const;
 
 		/* > Play a card */
 		void playCard(t_bot_data &botData, std::string userName, std::string deckIdx, std::string color);

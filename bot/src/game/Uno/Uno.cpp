@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 10:31:54 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:04:52 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,4 +158,8 @@ t_player_info &Uno::getPlayerInfo(std::string userName) {
 	}
 
 	return (*it);
+}
+
+void Uno::top(t_bot_data &botData) const {
+	sendMessage(botData, _channel, "The last card played is " + convertCard(_lastCard), CLIENT);
 }

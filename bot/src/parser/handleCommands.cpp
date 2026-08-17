@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/15 11:15:06 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:14:11 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,17 +64,30 @@ void catchCommand(std::string line, t_bot_data &botData)
 		std::string trailing = parser.getTrailing();
 		parser.parseMessage(trailing);
 
-		command = parser.getGameCmd();
+		// Get command info
+		std::string channel = parser.getParameters()[0];
+		std::string commandGrp = parser.getGameCmd();
+		command = parser.getGameCmdParam()[0];
 		botData.parser = parser;
 		
-		if (command == "!help") {
+		
+		if (commandGrp == "!help") {
 			handleHelp(botData);
 		}
-		else if (command == "!game") {
-			handleGame(botData);
+		else if (commandGrp == "!game") {
+			handleGame(botData, channel, command);
 		}
-		else if (command == "!uno") {
-			handleUno(botData);
+		else if (commandGrp == "!uno") {
+			handleUno(botData, channel, command);
 		}
+		else if (commandGrp == "!ww" || commandGrp == "!werewolf") {
+			sendMessage(botData, channel, "Sorry about that, this game is not handled for the moment. But you can play Uno !", CLIENT);
+			return ;
+		}
+		
+		botData.data.bot.currentTask.channel = channel;
+		botData.data.bot.currentTask.command = commandGrp + " " + command;
+		botData.data.bot.currentTask.game = "Uno";
+		applyDashData(botData);
 	}
 }

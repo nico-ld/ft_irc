@@ -6,19 +6,17 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 17:17:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/15 11:06:45 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:16:38 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
 #include "Uno.hpp"
 
-void handleGame(t_bot_data &botData)
+void handleGame(t_bot_data &botData, std::string channel, std::string command)
 {
 	// Get value from parser
-	std::string channel = botData.parser.getParameters()[0];
 	std::vector<std::string> param = botData.parser.getGameCmdParam();
-	std::string command = param[0];
 
 	if (command == "create") {
 		// Check if there is already a game in this channel
@@ -39,6 +37,8 @@ void handleGame(t_bot_data &botData)
 			newGame->initGame(botData.parser.getUserName(), botData);
 			botData.games.push_back(newGame);
 		}
+		else if (param[1] == "werewolf" || param[1] == "ww")
+			sendMessage(botData, channel, "Sorry about that, Werewolf is not handled for the moment. But you can play Uno !", CLIENT);
 
 		// Unknow parameter
 		else
