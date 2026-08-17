@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:12:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 10:40:19 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:26:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,11 @@ void Uno::playCard(t_bot_data &botData, std::string userName, std::string deckId
 
 	if (player.deck.size() == 1)
 		player.unoMode = true;
-	// else if (player.deck.size() == 0)
-	// 	endGame();
+	else if (player.deck.size() == 0) {
+		sendMessage(botData, _channel, "Game Over ! " + player.name + " played " + convertCard(card) + " and win ! ", CLIENT);
+		endGame(botData);
+		return ;
+	}
 
 	std::string cardInfo = ". "; // no info
 	if (card >= WILD)
