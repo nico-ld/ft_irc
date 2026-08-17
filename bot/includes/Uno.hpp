@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 17:18:20 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 09:32:24 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ struct t_player_info {
 	std::string name;
 	std::vector<e_card> deck;
 	bool unoMode;
+	int drawAmount;
 };
 
 class Uno: public Game
@@ -48,9 +49,9 @@ class Uno: public Game
 		// Round informations
 		std::string	_playerTurn;
 		std::string	_currentColor;
+		std::string	_lastColor;
 		e_card		_lastCard;
 		bool		_reversed;
-		int			_drawAmount;
 
 	public:
 		// == Constuctor & destructor ==
@@ -72,8 +73,14 @@ class Uno: public Game
 		/* > Return the next player */
 		std::string nextPlayer(bool skip) const;
 
+		/* > Return the previous player */
+		std::string previousPlayer( void ) const;
+
 		/* > Show how many card everyone gets */
 		void showCardsAmount(t_bot_data &botData) const;
+
+		/* > Return wich player have to play */
+		std::string getPlayerTurn( void ) const;
 
 		
 		// === DECK ===
@@ -90,7 +97,7 @@ class Uno: public Game
 
 		// === PLAYER COMMANDS ===
 		
-		/* > Tell wich player have to play */
+		/* > Tell wich player have to play in the channel */
 		void whoseTurn(t_bot_data &botData) const;
 
 		/* > Play a card */
@@ -98,6 +105,9 @@ class Uno: public Game
 		
 		/* > When a player get only one card */
 		void uno(t_bot_data &botData, std::string userName);
+
+		/* > Challenge a player that play a WILD_DRAW_4 */
+		void challenge(t_bot_data &botData, std::string userName);
 
 		
 		// === SPECIAL CASES ===

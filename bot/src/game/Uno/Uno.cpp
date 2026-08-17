@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 17:22:47 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 09:31:29 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void Uno::launchGame(t_bot_data &botData) {
 		t_player_info newPlayer;
 		newPlayer.name = *it;
 		newPlayer.unoMode = false;
+		newPlayer.drawAmount = 0;
 		_playerInfo.push_back(newPlayer);
 	}
 	
@@ -49,6 +50,7 @@ void Uno::launchGame(t_bot_data &botData) {
 	_lastCard = static_cast<e_card>(color * 10 + rank);
 	try {
 		_currentColor = colorToString(color);
+		_lastColor = _currentColor;
 	} catch(std::exception &e) {
 		(void)e;
 		botData.dash->log(ERROR_LVL, "Invalid color index");
@@ -62,6 +64,9 @@ void Uno::launchGame(t_bot_data &botData) {
 void Uno::whoseTurn(t_bot_data &botData) const {
 	sendMessage(botData, _channel, "This is " + _playerTurn + " turn !", CLIENT);
 }
+
+
+// === GETTERS ===
 
 std::string Uno::nextPlayer(bool skip) const{
 	std::vector<std::string>::const_iterator it;
@@ -92,6 +97,30 @@ std::string Uno::nextPlayer(bool skip) const{
 	return (*it);
 }
 
+std::string Uno::previousPlayer( void ) const {
+	std::vector<std::string>::const_iterator it;
+
+	for (it = _playerList.begin(); it != _playerList.end(); ++it) {
+		if (*it == _playerTurn)
+			break ;
+	}
+
+	if (_reversed) {
+		if (it + 1 == _playerList.end())
+			it = _playerList.begin();
+		else
+			++it;
+	}
+	else {
+		if (it - 1 == _playerList.begin())
+			it = _playerList.end();
+		else
+			--it;
+	}
+
+	return (*it);
+}
+
 void Uno::showCardsAmount(t_bot_data &botData) const {
 	std::vector<t_player_info>::const_iterator it;
 
@@ -116,3 +145,5 @@ void Uno::showCardsAmount(t_bot_data &botData) const {
 	if (!message.empty())
 		sendMessage(botData, _channel, message, CLIENT);
 }
+
+std::string Uno::getPlayerTurn( void ) const { return (_playerTurn); }

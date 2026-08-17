@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:12:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 16:59:59 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 09:19:55 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ void Uno::playCard(t_bot_data &botData, std::string userName, std::string deckId
 			return ;
 		}
 		else if (card == WILD_DRAW_4)
-			_drawAmount += 4;
+			getPlayerInfo(nextPlayer(skip)).drawAmount += 4; // Add draw for the next player 
+		_lastColor = _currentColor;
 		_currentColor = color;
 	}
 	
@@ -82,7 +83,7 @@ void Uno::playCard(t_bot_data &botData, std::string userName, std::string deckId
 			else if (cardRank == 11)
 				_reversed = !_reversed;
 			else
-				_drawAmount += 2;
+				getPlayerInfo(nextPlayer(skip)).drawAmount += 2; // Add draw for the next player
 		}
 	}
 

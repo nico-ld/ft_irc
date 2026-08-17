@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 10:52:26 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 17:23:48 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 09:35:36 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,22 +39,34 @@ void handleUno(t_bot_data &botData) {
 		return ;
 	}
 
+
+	// Command for every player
 	if (command == "turn")
 		currentGame->whoseTurn(botData);
-	else if (command == "play") {
+	else if (command == "hand")
+		currentGame->showHand(botData, userName);
+	else if (command == "uno")
+		currentGame->uno(botData, userName);
+	else if (command == "cards")
+		currentGame->showCardsAmount(botData);
+
+	// Check if this is the good player who play
+	if (userName != currentGame->getPlayerTurn()) {
+		sendMessage(botData, channel, "This is not you're turn " + userName, WARNING);
+		return ;
+	}
+		
+	// Command for current player
+	if (command == "play") {
 		if (param.size() == 3)
 			currentGame->playCard(botData, userName, param[1], param[2]);
 		else
 			currentGame->playCard(botData, userName, param[1], "");
 	}
-	else if (command == "hand")
-		currentGame->showHand(botData, userName);
 	else if (command == "draw")
 		currentGame->sendCard(botData, userName, 1);
-	else if (command == "uno")
-		currentGame->uno(botData, userName);
-	else if (command == "cards")
-		currentGame->showCardsAmount(botData);
+	else if (command == "challenge")
+		currentGame->challenge(botData, userName);
 	else
 		sendMessage(botData, channel, "Unknow command : " + command, WARNING);
 }
