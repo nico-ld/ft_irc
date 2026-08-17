@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:12:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 09:59:06 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 10:40:19 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,6 @@ void Uno::playCard(t_bot_data &botData, std::string userName, std::string deckId
 		std::transform(color.begin(), color.end(), color.begin(), ::tolower);
 		if (!isColorValid(color)) {
 			sendMessage(botData, _channel, "Color is invalid, please try again. Valid color are : 'yellow', 'red', 'blue' and 'green'", WARNING);
-			return ;
-		}
-		else if (color == _currentColor) {
-			sendMessage(botData, _channel, "This is the current color, that make no sense !", WARNING);
 			return ;
 		}
 		else if (card == WILD_DRAW_4)

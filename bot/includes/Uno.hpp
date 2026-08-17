@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 10:01:08 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 10:36:24 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,11 @@ enum e_card {
 };
 
 struct t_player_info {
-	std::string name;
 	std::vector<e_card> deck;
-	bool unoMode;
-	int drawAmount;
+	std::string	name;
+	bool		unoMode;
+	bool		wildDrawed;
+	int			drawAmount;
 };
 
 class Uno: public Game
@@ -111,6 +112,9 @@ class Uno: public Game
 
 		/* > Draw cards */
 		void draw(t_bot_data &botData, t_player_info &player);
+
+		/* > In case of wild card drawed, player have to set manually the color */
+		void color(t_bot_data &botData, t_player_info &player, std::string color);
 		
 		// === SPECIAL CASES ===
 		

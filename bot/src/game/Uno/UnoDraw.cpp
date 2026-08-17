@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 09:46:28 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 10:27:05 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 11:02:23 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,51 @@ void Uno::draw(t_bot_data &botData, t_player_info &player) {
 		
 		// Get new card
 		e_card newCard = _pool[std::rand() % _pool.size()];
+		player.deck.push_back(newCard);
+
+		if (player.unoMode)
+			player.unoMode = false;
 		
 		// If no card in deck is playable but the new one
 		if (it == player.deck.end() && cardPlayable(newCard, _lastCard, colorToInt(_currentColor)))
 		{
 			sendMessage(botData, _channel, player.name + " drew a card that is playable !", CLIENT);
 			
-			if (newCard < WILD) { // NEED TO ASK PLAYER COLOR
-				player.deck.push_back(newCard);
+			if (newCard < WILD) {
 				playCard(botData, player.name, convertIntToString(player.deck.size() - 1), "");
+			}
+			else {
+				player.wildDrawed = true;
+				_lastCard = newCard;
+				if (newCard == WILD_DRAW_4)
+					getPlayerInfo(nextPlayer(false)).drawAmount += 4;
+				sendMessage(botData, _channel, player.name + " you just drew a " + convertCard(newCard) + ", please choose a color with '!uno color <color>'", CLIENT);
 			}
 		}
 		else
 		{
-			player.deck.push_back(newCard);
 			_playerTurn = nextPlayer(false);
 			sendMessage(botData, _channel, player.name + " drew a card, this is now at " + _playerTurn + " to play !", CLIENT);
 		}
 	}
+}
+
+void Uno::color(t_bot_data &botData, t_player_info &player, std::string color) {
+	if (player.wildDrawed == false) {
+		sendMessage(botData, _channel, "You can't use this command, if you want to see the top card use '!uno top'", WARNING);
+		return ;
+	}
+	else if (!isColorValid(color)) {
+		sendMessage(botData, _channel, "Color is invalid, please try again. Valid color are : 'yellow', 'red', 'blue' and 'green'", WARNING);
+		return ;
+	}
+
+	player.wildDrawed = false;
+	_playerTurn = nextPlayer(false);
+	player.deck.pop_back();
+	if (player.deck.size() == 1)
+		player.unoMode = true;
+	_lastColor = _currentColor;
+	_currentColor = color;
+	sendMessage(botData, _channel, player.name + " just set game color to " + color + ". This is now at " + _playerTurn + " to play !", CLIENT);
 }

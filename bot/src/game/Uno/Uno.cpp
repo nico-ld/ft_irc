@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:11 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 09:44:58 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 10:31:54 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void Uno::launchGame(t_bot_data &botData) {
 		t_player_info newPlayer;
 		newPlayer.name = *it;
 		newPlayer.unoMode = false;
+		newPlayer.wildDrawed = false;
 		newPlayer.drawAmount = 0;
 		_playerInfo.push_back(newPlayer);
 	}
