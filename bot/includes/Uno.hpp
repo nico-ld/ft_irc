@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 10:44:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 15:32:47 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 16:49:36 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,9 @@ class Uno: public Game
 
 		/* > In case of wild card drawed, player have to set manually the color */
 		void color(t_bot_data &botData, t_player_info &player, std::string color);
+
+		/* > Show Uno rules that ares followed here */
+		void rules(t_bot_data &botData);
 		
 		// === SPECIAL CASES ===
 		

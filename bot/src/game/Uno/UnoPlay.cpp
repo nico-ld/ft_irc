@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:12:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 16:01:32 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/17 17:03:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,5 +98,5 @@ void Uno::playCard(t_bot_data &botData, t_player_info &player, std::string deckI
 	sendMessage(botData, _channel, player.name + " played " + convertCard(card) + cardInfo + _playerTurn + " this is your turn !", CLIENT);
 
 	if (getPlayerInfo(_playerTurn).drawAmount > 0)
-		sendMessage(botData, _channel, _playerTurn + " You have to draw, if you get a card to counter it play it '!uno play <cardIdx>' else draw with '!uno draw'", CLIENT);
+		sendMessage(botData, _channel, _playerTurn + " You have to draw, if you get a card to counter it play it '!uno play <cardIndex>' else draw with '!uno draw'", CLIENT);
 }
