@@ -70,7 +70,6 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 				else if ((*it_modestring)[i] == 'o') {
 					if (params.size() <= 0)
 						throw std::runtime_error("need argument"); //notification
-					std::cout << "[DEBUG]: " << *it_params << std::endl;
 					channel.addOperator(user);
 				}
 				else

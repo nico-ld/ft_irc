@@ -69,8 +69,8 @@ static void	channelCommandsDispatch(Server &server, std::string command, User &u
 			throw std::runtime_error("[LOG] Need a channel name.");
 		Channel *channel = server.getChannelByName(parameters[1]);
 		if (!channel) {
+			server.notification(&user, "This channel doesn't exist.");
 			throw std::runtime_error("[LOG] channel doesn't exist");
-			server.notification("This channel doesn't exist.")
 		}
 		if (parameters.size() == 2)
 			server.invite(parameters[0], *channel, &user);
