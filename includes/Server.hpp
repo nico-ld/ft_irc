@@ -108,7 +108,8 @@ class Server
 		void part(std::vector<Channel> &channels, User *user);
 		void part(std::vector<Channel> &channels, std::string reason, User *user);
 		void invite(const std::string &nickname, Channel &channel, const User *user);
-		void mode(Channel &channel, std::string listMode, std::vector<std::string> params = std::vector<std::string>());
+		void mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params = std::vector<std::string>());
+		void launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user);
 
 		// Message
 		void broadcastServer(std::string message);

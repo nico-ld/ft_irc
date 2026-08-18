@@ -1,18 +1,31 @@
 #include "Server.hpp"
 #include "User.hpp"
 #include "Channel.hpp"
+#include "Parser.hpp"
 #include <stdexcept>
 
 void Server::join(std::vector<Channel> &listChannel, User *client) {
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
+		if (!Parser::checkNameChannel(getChan->getName()))
+			throw std::runtime_error("[LOG] Name channel must start with #");
+
 		std::map<std::string, Channel>::iterator it = _channels.find(getChan->getName());
 		if (it != _channels.end()) {
 			if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd()))
-				throw std::runtime_error("ERR_INVITEONLYCHAN");
+			{
+				notification(client, "473 ERR_INVITEONLYCHAN");
+				throw std::runtime_error("[LOG] Channel is in invite only.");
+			}
 
-			if (it->second.getUserLimit() != -1 && it->second.getMemberCount() >= it->second.getUserLimit())
-				throw std::runtime_error("ERR_CHANNELISFULL");
+			if (it->second.getUserLimit() != -1 && it->second.getMemberCount() >= it->second.getUserLimit()) {
+				notification(client, "471 ERR_CHANNELISFULL");
+				throw std::runtime_error("[LOG] Channel is full.");
+			}
 
+			if (it->second.getKey().size() > 0) {
+				notification(client, "475 ERR_BADCHANNELKEY");
+				throw std::runtime_error("[LOG] This channel need a key");
+			}
 			it->second.addMember(client);
 			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 			broadcast(it->second, client, message);
@@ -20,6 +33,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 		else {
 			Channel channel(getChan->getName());
 			channel.addMember(client);
+			channel.addOperator(client);
 			_channels.insert(std::make_pair(getChan->getName(), channel));
 			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 			broadcast(channel, client, message);
@@ -31,17 +45,26 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client) {
 	size_t i = 0;
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
+		if (!Parser::checkNameChannel(getChan->getName())) {
+			notification(client, "Name channel must start with #");
+			throw std::runtime_error("[LOG] Name channel must start with #");
+		}
+
 		if (i < listKey.size()) {
 			std::map<std::string, Channel>::iterator it = _channels.find(getChan->getName());
 			if (it != _channels.end()) {
 
-				if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd()))
-					throw std::runtime_error("ERR_INVITEONLYCHAN");
-				if (it->second.getUserLimit() != -1 && it->second.getMemberCount() > it->second.getUserLimit())
-					throw std::runtime_error("ERR_CHANNELISFULL");
+				if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd())) {
+					notification(client, "473 ERR_INVITEONLYCHAN");
+					throw std::runtime_error("[LOG] Channel is in invite only");
+				}
+				if (it->second.getUserLimit() != -1 && it->second.getMemberCount() > it->second.getUserLimit()) {
+					notification(client, "471 ERR_CHANNELISFULL");
+					throw std::runtime_error("[LOG] Channel is full");
+				}
 				if (it->second.getKey() != listKey[i]) {
-					notification(client, " cannot join the channel : key error\n");
-					throw std::runtime_error("ERR_BADCHANNELKEY");
+					notification(client, "475 ERR_BADCHANNELKEY");
+					throw std::runtime_error("User cannot join the channel : key error");
 				}
 
 				std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';

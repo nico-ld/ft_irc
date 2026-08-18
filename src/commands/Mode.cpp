@@ -13,6 +13,7 @@
 #include "Server.hpp"
 #include "User.hpp"
 #include "Channel.hpp"
+#include "Parser.hpp"
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -35,7 +36,7 @@ static std::vector<std::string> split_mode(std::string listMode) {
 	return listString;
 }
 
-static void launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params) {
+void Server::launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user) {
 	std::vector<std::string>::iterator it_modestring = modestring.begin();
 	std::vector<std::string>::iterator it_params;
 	if (params.size() > 0)
@@ -44,56 +45,81 @@ static void launchMode(Channel &channel, std::vector<std::string> modestring, st
 	for(; it_modestring != modestring.end(); ++it_modestring) {
 		size_t i = 0;
 		if ((*it_modestring)[i] == '+') {
-			(*it_modestring)[i]++;
-			if ((*it_modestring)[i] == 'i')
-				channel.setInviteOnly(true);
-			else if ((*it_modestring)[i] == 't')
-				channel.setTopicRestricted(true);
-			else if ((*it_modestring)[i] == 'k') {
-				if (params.size() <= 0)
-					throw std::runtime_error("need argument");
-	
-				channel.setKey(*it_params);
-				it_params++;
-			}
-			else if ((*it_modestring)[i] == 'l') {
-				if (params.size() <= 0)
-					throw std::runtime_error("need argument");
+			i++;
+			while((*it_modestring)[i]) {
+				if ((*it_modestring)[i] == 'i')
+					channel.setInviteOnly(true);
+				else if ((*it_modestring)[i] == 't')
+					channel.setTopicRestricted(true);
+				else if ((*it_modestring)[i] == 'k') {
+					if (params.size() <= 0) {
+						notification(user, "461 ERR_NEEDMOREPARAMS");
+						throw std::runtime_error("need argument");
+					}
+					channel.setKey(*it_params);
+					it_params++;
+				}
+				else if ((*it_modestring)[i] == 'l') {
+					if (params.size() <= 0) {
+						notification(user, "461 ERR_NEEDMOREPARAMS");
+						throw std::runtime_error("need argument");
+					}
 
-				std::stringstream ss(*it_params);
-				int limit;
-				ss >> limit;
-				channel.setUserLimit(limit);
-				it_params++;
+					std::stringstream ss(*it_params);
+					int limit;
+					ss >> limit;
+					channel.setUserLimit(limit);
+					it_params++;
+				}
+				else if ((*it_modestring)[i] == 'o') {
+					if (params.size() <= 0) {
+						notification(user, "461 ERR_NEEDMOREPARAMS");
+						throw std::runtime_error("need argument");
+					}
+					channel.addOperator(user);
+				}
+				else {
+					notification(user, "This mode doesn't exist.");
+					throw std::runtime_error("This mode doesn't exist");
+				}
+				++i;
 			}
-			else
-				throw std::runtime_error("This mode doesn't existe");
 		}
 		else if ((*it_modestring)[i] == '-') {
-			i++;
+			while((*it_modestring)[i]) {
+				i++;
 
-			if ((*it_modestring)[i] == 'i')
-				channel.setInviteOnly(false);
-			else if ((*it_modestring)[i] == 't')
-				channel.setTopicRestricted(false);
-			else if ((*it_modestring)[i] == 'k')
-				channel.setKey("");
-			else if ((*it_modestring)[i] == 'l')
-				channel.setUserLimit(-1);
-			else
-				throw std::runtime_error("This mode doesn't existe");
+				if ((*it_modestring)[i] == 'i')
+					channel.setInviteOnly(false);
+				else if ((*it_modestring)[i] == 't')
+					channel.setTopicRestricted(false);
+				else if ((*it_modestring)[i] == 'k')
+					channel.setKey("");
+				else if ((*it_modestring)[i] == 'l')
+					channel.setUserLimit(-1);
+				else {
+					notification(user, "This mode doesn't exist.");
+					throw std::runtime_error("This mode doesn't exist");
+				}
+			}
 		}
 	}
 }
 
-void Server::mode(Channel &channel, std::string listMode, std::vector<std::string> params) {
+void Server::mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params) {
+	if (!Parser::checkNameChannel(channel.getName())) {
+		notification(user, "Name channel must start with #");
+		throw std::runtime_error("[LOG] Name channel must start with #");
+	}
 	std::map<std::string, Channel>::iterator it = _channels.find(channel.getName());
-	if (it == _channels.end())
-		throw std::runtime_error("ERR_NOSUCHCHANNEL");
+	if (it == _channels.end()) {
+		notification(user, "403 ERR_NOSUCHCHANNEL");
+		throw std::runtime_error("[LOG] Channel doesn't exist");
+	}
 
 	//PARSING
 	std::vector<std::string> modestring = split_mode(listMode);
 
 	// LAUNCH MODE
-	launchMode(channel, modestring, params);
+	launchMode(channel, modestring, params, user);
 }

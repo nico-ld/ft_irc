@@ -56,6 +56,7 @@ class Parser
 		static std::vector<std::string> getlistKey(std::string parameter);
 		static std::vector<std::string> split_params(std::vector<std::string> parameters);
 		static std::string getMessage(std::vector<std::string> parameters);
+		static bool checkNameChannel(std::string nameChannel);
 
 
 		/* Return the trailing parameter as vector */
