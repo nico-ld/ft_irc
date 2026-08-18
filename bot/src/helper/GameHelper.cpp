@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_irc.hpp                                         :+:      :+:    :+:   */
+/*   GameHelper.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/13 08:36:12 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/06 17:32:23 by nico             ###   ########.fr       */
+/*   Created: 2026/08/15 10:55:12 by nico              #+#    #+#             */
+/*   Updated: 2026/08/15 10:58:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "Game.hpp"
+#include "Bot.hpp"
 
-// > Includes
-#include "ansi.hpp"
-#include "Parser.hpp"
-#include "User.hpp"
-#include "Server.hpp"
-#include "Channel.hpp"
+Game *getCurrentGame(t_bot_data &botData, std::string channel) {
+	for (std::vector<Game *>::iterator it = botData.games.begin(); it != botData.games.end(); ++it) {
+		if ((*it)->getChannel() == channel)
+			return (*it);
+	}
+	return (NULL);
+}

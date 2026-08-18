@@ -1,4 +1,7 @@
-compile_commands.json
+*.json
 ircserv
 obj/
+RouxBot
+bot.log
+vgcore.*
 src/maintest.cpp
