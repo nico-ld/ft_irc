@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/08/19 11:30:45 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/19 14:03:23 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ void userCommandsDispatch(std::string command, User &user, Server &server) {
 		user.setProvidedPassword(true);
 	}
 	
-	if (user.hasProvidedNick() && user.hasProvidedUser() && user.hasProvidedPassword())
+	if (user.hasProvidedNick() && user.hasProvidedUser() && user.hasProvidedPassword()) {
 		user.setAuthenticated(true);
+		server.sendReply(user, RPL_WELCOME, "User '" + user.getNickname() + "' successfully registered");
+	}
 }

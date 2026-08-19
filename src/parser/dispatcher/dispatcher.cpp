@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/19 11:25:43 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/19 13:55:55 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,25 @@ void dispatchCommand(Server &server, User &user) {
 	{
 		switch (Parser::getCommandListId())
 		{
-		case 1:
-			channelCommandsDispatch(server, command, user);
-			break ;
-		case 2:
-			messageCommandsDispatch(server, command, user);
-			break ;
-		case 3:
-			userCommandsDispatch(command, user, server);
-			break ;
+			case 1:
+				if (user.isAuthenticated())
+					channelCommandsDispatch(server, command, user);
+				else
+					server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
+				break ;
+			case 2:
+				if (user.isAuthenticated())
+					messageCommandsDispatch(server, command, user);
+				else
+					server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
+				break ;
+			case 3:
+				userCommandsDispatch(command, user, server);
+				break ;
 
-		default:
-			throw Parser::InvalidCommandException();
-			break ;
+			default:
+				throw Parser::InvalidCommandException();
+				break ;
 		}
 	}
 
