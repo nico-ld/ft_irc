@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+         #
+#    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/07/29 15:34:02 by nile-dai         ###   ########.fr        #
+#    Updated: 2026/08/19 12:08:46 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,25 +28,50 @@ YELLOW		:= \033[93m
 SRC_DIR		:= src/
 BUF_DIR		:= $(SRC_DIR)buffer/
 NET_DIR		:= $(SRC_DIR)network/
-PARS_DIR	:= $(SRC_DIR)parser/
+CMD_DIR		:= $(SRC_DIR)commands/
+REP_DIR		:= $(SRC_DIR)Replies/
+PARS_DIR	:= $(SRC_DIR)parser/Parser/
+DISP_DIR	:= $(SRC_DIR)parser/dispatcher/
 CORE_DIR	:= $(SRC_DIR)core/
 
 # ~~ Sources files ~~
-SRC			:= \
-				$(SRC_DIR)main.cpp \
-				$(PARS_DIR)Parser/Parser.cpp \
-				$(PARS_DIR)Parser/ParserInit.cpp \
-				$(PARS_DIR)dispatcher/dispatcher.cpp \
+COMMANDS	:= \
+				$(CMD_DIR)Join.cpp \
+				$(CMD_DIR)Kick.cpp \
+				$(CMD_DIR)Topic.cpp \
+				$(CMD_DIR)Part.cpp \
+				$(CMD_DIR)Invite.cpp \
+				$(CMD_DIR)Mode.cpp
+
+CORE		:= \
 				$(CORE_DIR)Channel.cpp \
 				$(CORE_DIR)Server.cpp \
-				$(CORE_DIR)User.cpp \
-				$(SRC_DIR)Message.cpp \
-				$(SRC_DIR)commands/Join.cpp \
-				$(SRC_DIR)commands/Kick.cpp \
-				$(SRC_DIR)commands/Topic.cpp \
-				$(SRC_DIR)commands/Part.cpp \
-				$(SRC_DIR)commands/Invite.cpp \
-				$(SRC_DIR)commands/Mode.cpp
+				$(CORE_DIR)User.cpp
+
+NETWORK		:= \
+				$(NET_DIR)NetworkBuffer.cpp \
+				$(NET_DIR)NetworkUtils.cpp
+
+PARSER		:= \
+				$(PARS_DIR)Parser.cpp \
+				$(PARS_DIR)ParserInit.cpp \
+
+DISPATCHER	:= \
+				$(DISP_DIR)dispatcher.cpp \
+				$(DISP_DIR)dispatchChanCmd.cpp \
+				$(DISP_DIR)dispatchMessage.cpp \
+				$(DISP_DIR)dispatchUser.cpp
+
+REPLIES		:= $(REP_DIR)Replies.cpp
+
+SRC			:= \
+				$(CORE) \
+				$(PARSER) \
+				$(REPLIES) \
+				$(COMMANDS) \
+				$(DISPATCHER) \
+				$(SRC_DIR)main.cpp \
+				$(SRC_DIR)Message.cpp
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/

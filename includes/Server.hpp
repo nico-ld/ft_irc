@@ -6,14 +6,17 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/04 10:02:35 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/19 12:11:03 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include <string>
+#include "Replies.hpp"
+#include "Channel.hpp"
+#include "User.hpp"
+
 #include <map>
 #include <vector>
 #include <sys/epoll.h>
@@ -30,8 +33,8 @@
 #define loop while(1)
 
 // Forward declarations to avoid circular dependency
-class User;
-class Channel;
+// class User;
+// class Channel;
 
 class Server
 {

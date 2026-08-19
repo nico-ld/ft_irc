@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/03 18:44:29 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/19 11:27:00 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,3 +96,12 @@ std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content);
 
 /* After parsing the user input, this function take the targer user and call the good command */
 void dispatchCommand(Server &server, User &user);
+
+/* Manage command USER, NICK and PASS */
+void userCommandsDispatch(std::string command, User &user, Server &server);
+
+/* Manage PRIVMSG command */
+void messageCommandsDispatch(Server &server, std::string command, User &user);
+
+/* Manage channel commands (JOIN, LEAVE, KICK, etc...) */
+void channelCommandsDispatch(Server &server, std::string command, User &user);

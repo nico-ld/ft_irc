@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 08:36:12 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/06 17:32:23 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/19 11:08:39 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,3 +18,4 @@
 #include "User.hpp"
 #include "Server.hpp"
 #include "Channel.hpp"
+#include "Replies.hpp"

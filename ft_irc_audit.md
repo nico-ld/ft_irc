@@ -76,7 +76,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 *(includes/Replies.hpp cross-refs, src/parser/, src/commands/Join.cpp, Part.cpp, Kick.cpp)*
 
 ### src/parser/dispatcher/dispatcher.cpp
-- 🔴 **The `PASS` command's password check is commented out.**
+- _[FIXED]_ ~~🔴 **The `PASS` command's password check is commented out.**~~   
   `userCommandsDispatch()` sets `hasProvidedPassword(true)` unconditionally on any non-empty `PASS` argument; the line comparing it to `Server::getPassword()` is dead code.
   This means the server-wide password protecting the whole IRC network is not enforced at all — total authentication bypass for every connecting client.
   → Restore the comparison (fix it to call the member function on the actual `Server` instance, not `Server::` statically), reject with `ERR_PASSWDMISMATCH` (464) on mismatch, and use a constant-time string compare to avoid timing side-channels.
