@@ -92,7 +92,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → Ensure every throw site in the three dispatch functions sends a matching numeric reply first.
 
 ### src/parser/Parser/Parser.cpp
-- 🟠 **No nickname validation and no duplicate-nickname check.**  
+- **_[FIXED]_** ~~🟠 **No nickname validation and no duplicate-nickname check.**~~  
   `NICK` accepts any string as-is; two clients can hold the identical nickname, and `getUserByNickname()` just returns the first match it iterates to.
   That ambiguity lets a second client "shadow" an existing nick — private messages or kicks aimed at one user can resolve to the wrong socket, which is an impersonation/message-interception risk, not just a cosmetic bug.
   → Validate against RFC nick-name grammar and reject with `ERR_ERRONEUSNICKNAME` (432); reject duplicates with `ERR_NICKNAMEINUSE` (433) via a lookup before accepting the new nick.
