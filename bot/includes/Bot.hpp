@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 15:58:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/11 10:24:27 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/19 08:55:51 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ struct t_bot_data
 };
 
 /* > Create a user for the bot on the server, return 1 on error */
-int	registerBot(int sock, std::string password, DashData &data, Dashboard &dash);
+int	registerBot(t_bot_data &botData, std::string password);
 
 /* > Start the loop that read server output */
-void serverLoop(int sock, DashData &data, Dashboard &Dashboard);
+void serverLoop(t_bot_data &botData);
 
 /* > Read incoming message to find a knowed command */
 void catchCommand(std::string line, t_bot_data &botData);

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 09:43:24 by nico              #+#    #+#             */
-/*   Updated: 2026/08/10 12:31:15 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/19 08:49:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,29 @@ inline std::string setCursor(int row, int column) {
 #define ERROR RED BOLD "ERROR: " RESET
 #define ROUXBOT BOLD ORANGE "Roux" PURPLE "Bot" RESET
 
+/* === LOG LEVEL === */
+// Server main information
 #define INFO CYAN "INFO" RESET
+
+// Debug information
 #define DEBUG YELLOW "DEBUG" RESET
+
+// User command that not exit normally
 #define WARNING YELLOW "WARNING" RESET
+
+// Error on server side
 #define ERROR_LVL RED "ERROR" RESET
+
+// Task successfully ended
 #define SUCCESS GREEN "SUCCESS" RESET
+
+// Information on system
 #define SYSTEM BLUE "SYSTEM" RESET
+
+// Message send by the server
 #define SERVER DIM "SERVER" RESET
+
+// Message send by the client
 #define CLIENT DIM "CLIENT" RESET
 
 #endif

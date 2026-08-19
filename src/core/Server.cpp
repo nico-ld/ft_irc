@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/29 15:34:33 by nile-dai         ###   ########.fr       */
+/*   Updated: 2026/08/19 09:14:38 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,6 @@ void Server::startLoop() {
         				if (!command.empty()) {
 							if (Parser::parse(command) == 0)
 								dispatchCommand(*this, currentUser->second);
-						    // std::cout << "not handle" << std::endl;
 						}
             		}
         		}

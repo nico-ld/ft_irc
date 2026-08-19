@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/07 14:36:58 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/19 08:56:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,13 @@ int main(int ac, char **av) {
 	dash.setGames(data.games);
 	dash.render();
 
-	if (registerBot(sock, password, data, dash) == 0) {
-		serverLoop(sock, data, dash);
+	t_bot_data botData;
+	botData.sock = sock;
+	botData.data = data;
+	botData.dash = &dash;
+
+	if (registerBot(botData, password) == 0) {
+		serverLoop(botData);
 	}
 
 	close (sock);
