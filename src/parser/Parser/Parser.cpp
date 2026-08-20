@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/03 18:41:34 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/20 10:31:32 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,14 +119,15 @@ std::vector<Channel> Parser::getlistChannel(std::string parameter) {
 	size_t pos;
 	while ((pos = parameter.find(',', search)) != std::string::npos) {
 		std::string str = parameter.substr(search, pos - search);
-		listChannel.push_back(Channel(str));
+		if (checkNameChannel(str) == true)
+			listChannel.push_back(Channel(str));
 		search = pos + 1;
 	}
 	if (search < parameter.size()) {
 		std::string str = parameter.substr(search);
 		listChannel.push_back(Channel(str));
 	}
-	return listChannel;
+	return (listChannel);
 }
 
 std::vector<std::string> Parser::getlistKey(std::string parameter) {
@@ -142,7 +143,7 @@ std::vector<std::string> Parser::getlistKey(std::string parameter) {
 		std::string str = parameter.substr(search);
 		listKey.push_back(str);
 	}
-	return listKey;
+	return (listKey);
 }
 
 std::vector<std::string> Parser::split_params(std::vector<std::string> parameters) {
@@ -153,7 +154,7 @@ std::vector<std::string> Parser::split_params(std::vector<std::string> parameter
 	for(; it != parameters.end(); ++it) {
 		getParams.push_back(*it);
 	}
-	return getParams;
+	return (getParams);
 }
 
 std::string Parser::getMessage(std::vector<std::string> parameters) {
@@ -164,11 +165,15 @@ std::string Parser::getMessage(std::vector<std::string> parameters) {
 	for (; it != parameters.end(); ++it) {
 		message+=" " + *it;
 	}
-	return message;
+	return (message);
 }
 
 bool Parser::checkNameChannel(std::string nameChannel) {
-	if (nameChannel[0] == '#')
-		return true;
-	return false;
+	if (nameChannel.empty())
+		return (false);
+	else if (nameChannel[0] != '#')
+		return (false);
+	else if (nameChannel.size() <= 1)
+		return (false);
+	return (true);
 }

@@ -97,7 +97,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   That ambiguity lets a second client "shadow" an existing nick — private messages or kicks aimed at one user can resolve to the wrong socket, which is an impersonation/message-interception risk, not just a cosmetic bug.
   → Validate against RFC nick-name grammar and reject with `ERR_ERRONEUSNICKNAME` (432); reject duplicates with `ERR_NICKNAMEINUSE` (433) via a lookup before accepting the new nick.
 
-- 🟡 **`checkNameChannel()` / `getlistChannel()` don't handle empty or malformed names safely.**  
+- **_[FIXED]_** ~~🟡 **`checkNameChannel()` / `getlistChannel()` don't handle empty or malformed names safely.**~~  
   `checkNameChannel` indexes `nameChannel[0]` without checking the string isn't empty, and a channel list like `"#a,,#b"` silently produces an empty-named `Channel`.
   Depending on standard-library behavior this is undefined access on an empty string, and empty-named channels can end up stored in `_channels`, corrupting later lookups.
   → Guard with `if (nameChannel.empty()) return false;` and skip zero-length tokens when splitting comma lists.
