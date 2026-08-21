@@ -24,7 +24,14 @@ int main(int ac, char **av) {
 		return (1);
 	}
 
-	Server server(port, av[2]);
-	server.init();
-	server.startLoop();
+	try {
+		Server server(port, av[2]);
+		server.init();
+		server.startLoop();
+	}
+	catch (const std::exception &e) {
+		std::cerr << e.what() << std::endl;
+		return (1);
+	}
+	return (0);
 }
