@@ -115,18 +115,27 @@ void Server::startLoop() {
             if (currentFd == _serverFd) {
                 struct sockaddr_in clientAddr;
                 socklen_t addrLen = sizeof(clientAddr);
-                int clientFd = accept(_serverFd, (struct sockaddr*)&clientAddr, &addrLen);
-                if (clientFd >= 0) {
-                    fcntl(clientFd, F_SETFL, O_NONBLOCK);
+                if (_users.size() == MAX_USER) {
+                    std::cout << "to many users on the server." << std::endl;
+                    int clientFd = accept(_serverFd, (struct sockaddr*)&clientAddr, &addrLen);
+                    std::string message = "Serveur is full\r\n";
+                    send(clientFd, message.c_str(), message.size(),0);
+                    close(clientFd);
+                }
+                else {
+                    int clientFd = accept(_serverFd, (struct sockaddr*)&clientAddr, &addrLen);
+                    if (clientFd >= 0) {
+                        fcntl(clientFd, F_SETFL, O_NONBLOCK);
 
-                    struct epoll_event ev;
-                    memset(&ev, 0, sizeof(ev));
-                    ev.events = EPOLLIN;
-                    ev.data.fd = clientFd;
-                    epoll_ctl(_epollFd, EPOLL_CTL_ADD, clientFd, &ev);
+                        struct epoll_event ev;
+                        memset(&ev, 0, sizeof(ev));
+                        ev.events = EPOLLIN;
+                        ev.data.fd = clientFd;
+                        epoll_ctl(_epollFd, EPOLL_CTL_ADD, clientFd, &ev);
 
-                    addUnauthenticatedUser(clientFd);
-                    std::cout << "New client connected on fd: " << clientFd << std::endl;
+                        addUnauthenticatedUser(clientFd);
+                        std::cout << "New client connected on fd: " << clientFd << std::endl;
+                    }
                 }
             } 
             // Case B: the incoming client is already connected and registered through epoll

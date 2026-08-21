@@ -11,7 +11,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 
 ### includes/Server.hpp
 - 🟡 **No cap on simultaneous connections or per-IP connections.**  
-  There's no field or check limiting how many clients (total or per source) can connect at once.
+  There's no field or check limiting how many clients (total or per source) can connect at once. [FIX]
   A single peer can open sockets until the process hits its file-descriptor limit, starving legitimate users.
   → Add a `MAX_CLIENTS` constant and reject `accept()` past it; optionally track a `map<ip,count>` for a per-IP cap.
 

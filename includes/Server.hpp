@@ -30,6 +30,7 @@
 
 #define MAX_EVENTS 64
 #define BUFFER_SIZE 512
+#define MAX_USER 20
 #define loop while(1)
 
 // Forward declarations to avoid circular dependency
