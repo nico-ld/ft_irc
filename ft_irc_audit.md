@@ -25,7 +25,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 - 🟠 **`server.init()` / `server.startLoop()` aren't wrapped in try/catch.**  
   Both throw `std::runtime_error` on socket/bind/listen/epoll failures, and `startLoop()` can propagate exceptions from deep inside command handling.
   Any uncaught exception terminates the whole server, dropping every connected client at once.
-  → Wrap the two calls in a top-level `try { ... } catch (const std::exception&)` that logs and exits cleanly (or restarts).
+  → Wrap the two calls in a top-level `try { ... } catch (const std::exception&)` that logs and exits cleanly (or restarts). [FIX]
 
 - 🟡 **No signal handling (SIGINT/SIGTERM).**  
   `Server::stop()` closes every fd and clears state, but it only runs from the destructor — which a `kill`/Ctrl-C won't trigger.
