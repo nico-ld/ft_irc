@@ -1,6 +1,19 @@
 #include "ft_irc.hpp"
 #include "Replies.hpp"
 #include <cstdlib>
+#include <csignal>
+
+Server *&getStateServer() {
+	static Server *state = NULL;
+	return state;
+}
+
+void handler(int signal) {
+	(void)signal;
+	Server *state = getStateServer();
+	if (state)
+		state->stop();
+}
 
 int main(int ac, char **av) {
 	if (ac != 3) {
@@ -25,7 +38,9 @@ int main(int ac, char **av) {
 	}
 
 	try {
+		std::signal(SIGINT, handler);
 		Server server(port, av[2]);
+		getStateServer() = &server;
 		server.init();
 		server.startLoop();
 	}

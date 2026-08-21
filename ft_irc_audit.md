@@ -30,7 +30,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 - 🟡 **No signal handling (SIGINT/SIGTERM).**  
   `Server::stop()` closes every fd and clears state, but it only runs from the destructor — which a `kill`/Ctrl-C won't trigger.
   Restarting the server after a hard stop can hit `EADDRINUSE`-style issues and leaves clients with sockets that never got a clean close.
-  → Install a signal handler that sets an `sig_atomic_t` flag, checked each loop iteration, to call `stop()` and exit gracefully.
+  → Install a signal handler that sets an `sig_atomic_t` flag, checked each loop iteration, to call `stop()` and exit gracefully. [FIX]
 
 - ⚪ **Server password is passed as a plaintext CLI argument (`av[2]`).**  
   Any local user on the box can read it from `ps aux` or `/proc/<pid>/cmdline` while the server runs.
