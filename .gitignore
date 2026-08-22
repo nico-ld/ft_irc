@@ -5,3 +5,5 @@ RouxBot
 bot.log
 vgcore.*
 src/maintest.cpp
+
+compile_commands.json

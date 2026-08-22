@@ -146,7 +146,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 ## PART 3 — Permissions, Topic/Mode Enforcement & Network/Output Layer
 *(src/commands/Mode.cpp, Topic.cpp, src/network/, src/Message.cpp, src/Replies/)*
 
-### src/commands/Mode.cpp
+### src/commands/Mode.cpp : DONE
 - 🔴 **`Server::mode()` never checks that the calling user is a channel operator before applying any mode change.**  
   Any connected client — member or not — can send `MODE #chan +i`/`+t`/`+k`/`+l`/`+o` and it is applied unconditionally; `isOperator()` exists but is never called from this path.
   This is a full privilege-escalation / broken-access-control bug: it lets anyone lock, key, limit, or take over any channel on the server.
