@@ -16,30 +16,40 @@
 #include "Parser.hpp"
 #include <stdexcept>
 
-void Server::topic(const Channel &channel, User *user) {
+// Shared guard for both overloads: the channel name must be well-formed and
+// the caller must actually be in the channel before any topic access.
+static void checkTopicAccess(const Channel &channel, User *user, Server &server) {
 	if (!Parser::checkNameChannel(channel.getName())) {
-		notification(user, "Name channel must start with #");
+		server.notification(user, "Name channel must start with #");
 		throw std::runtime_error("[LOG] Name channel must start with #");
 	}
 
+	if (!channel.isMember(user->getFd())) {
+		server.notification(user, "442 ERR_NOTONCHANNEL");
+		throw std::runtime_error("[LOG] User is not on channel");
+	}
+}
+
+// TOPIC #chan : read the current topic
+void Server::topic(const Channel &channel, User *user) {
+	checkTopicAccess(channel, user, *this);
+
 	if (channel.getTopic().empty()) {
-		notification(user, "No topic on this channel");
+		notification(user, "331 RPL_NOTOPIC");
 		return ;
 	}
 	notification(user, channel.getTopic());
 }
 
+// TOPIC #chan :new topic : change the topic
 void Server::topic(Channel &channel, std::string newTopic, User *user) {
-	if (!Parser::checkNameChannel(channel.getName())) {
-		notification(user, "Name channel must start with #");
-		throw std::runtime_error("[LOG] Name channel must start with #");
-	}
+	checkTopicAccess(channel, user, *this);
 
-	if (channel.isTopicRestricted())
-		if (!channel.isOperator(user->getFd())) {
-			notification(user, "482 ERR_CHANOPRIVSNEEDED");
-			throw std::runtime_error("[LOG] User is not operator");
-		}
+	// Hypothesis of +t set, where only operators may change the topic
+	if (channel.isTopicRestricted() && !channel.isOperator(user->getFd())) {
+		notification(user, "482 ERR_CHANOPRIVSNEEDED");
+		throw std::runtime_error("[LOG] User is not operator");
+	}
 
 	channel.setTopic(newTopic);
 	std::string message = "New topic of the channel: " + channel.getTopic() + "\r\n";
