@@ -11,7 +11,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 
 ### includes/Server.hpp
 - 🟡 **No cap on simultaneous connections or per-IP connections.**  
-  There's no field or check limiting how many clients (total or per source) can connect at once. [FIX]
+  There's no field or check limiting how many clients (total or per source) can connect at once. [FIXED]
   A single peer can open sockets until the process hits its file-descriptor limit, starving legitimate users.
   → Add a `MAX_CLIENTS` constant and reject `accept()` past it; optionally track a `map<ip,count>` for a per-IP cap.
 
@@ -25,12 +25,12 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 - 🟠 **`server.init()` / `server.startLoop()` aren't wrapped in try/catch.**  
   Both throw `std::runtime_error` on socket/bind/listen/epoll failures, and `startLoop()` can propagate exceptions from deep inside command handling.
   Any uncaught exception terminates the whole server, dropping every connected client at once.
-  → Wrap the two calls in a top-level `try { ... } catch (const std::exception&)` that logs and exits cleanly (or restarts). [FIX]
+  → Wrap the two calls in a top-level `try { ... } catch (const std::exception&)` that logs and exits cleanly (or restarts). [FIXED]
 
 - 🟡 **No signal handling (SIGINT/SIGTERM).**  
   `Server::stop()` closes every fd and clears state, but it only runs from the destructor — which a `kill`/Ctrl-C won't trigger.
   Restarting the server after a hard stop can hit `EADDRINUSE`-style issues and leaves clients with sockets that never got a clean close.
-  → Install a signal handler that sets an `sig_atomic_t` flag, checked each loop iteration, to call `stop()` and exit gracefully. [FIX]
+  → Install a signal handler that sets an `sig_atomic_t` flag, checked each loop iteration, to call `stop()` and exit gracefully. [FIXED]
 
 - ⚪ **Server password is passed as a plaintext CLI argument (`av[2]`).**  
   Any local user on the box can read it from `ps aux` or `/proc/<pid>/cmdline` while the server runs.
@@ -41,7 +41,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 - 🔴 **`removeUser()` never removes the user from the channels they were in.**  
   It only erases the entry from `_users` and closes the fd — `Channel::_members` / `_operators` / `_invitedUsers` still hold the raw `User*` for that fd.
   The very next broadcast/kick/mode touching that channel dereferences a pointer into freed memory (use-after-free), which is a crash and a potential exploitation primitive.
-  → Before erasing from `_users`, iterate `user->getJoinedChannels()` and call `channel.removeMember(&user)` on each; delete now-empty channels too.
+  → Before erasing from `_users`, iterate `user->getJoinedChannels()` and call `channel.removeMember(&user)` on each; delete now-empty channels too. [FIXED]
 
 - 🟠 **`inputBuffer` has no size ceiling while waiting for `\r\n`.**  
   A client can stream bytes forever without ever sending a line terminator, and `Server.cpp` keeps `.append()`-ing to `User::inputBuffer` unbounded.

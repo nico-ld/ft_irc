@@ -115,6 +115,7 @@ void Server::startLoop() {
             if (currentFd == _serverFd) {
                 struct sockaddr_in clientAddr;
                 socklen_t addrLen = sizeof(clientAddr);
+
                 if (_users.size() == MAX_USER) {
                     std::cout << "to many users on the server." << std::endl;
                     int clientFd = accept(_serverFd, (struct sockaddr*)&clientAddr, &addrLen);
@@ -134,6 +135,7 @@ void Server::startLoop() {
                         epoll_ctl(_epollFd, EPOLL_CTL_ADD, clientFd, &ev);
 
                         addUnauthenticatedUser(clientFd);
+                        getUserById(clientFd)->setAuthenticated(true);
                         std::cout << "New client connected on fd: " << clientFd << std::endl;
                     }
                 }
@@ -194,6 +196,18 @@ void Server::addUnauthenticatedUser(int clientFd) {
 }
 
 void Server::removeUser(int clientFd) {
+
+    User *user_tmp = getUserById(clientFd);
+    for (std::vector<std::string>::const_iterator it = user_tmp->getJoinedChannels().begin(); it !=user_tmp->getJoinedChannels().end(); ++it) {
+        Channel *channel_tmp = getChannelByName(*it);
+        channel_tmp->removeMember(user_tmp);
+        if (channel_tmp->getMembers().empty()) {
+			std::string message = channel_tmp->getName() + " has been deleted." + "\r\n";
+			broadcastServer(message);
+			_channels.erase(*it);
+		}
+    }
+
     epoll_ctl(_epollFd, EPOLL_CTL_DEL, clientFd, NULL);
     close(clientFd);
     _users.erase(clientFd);

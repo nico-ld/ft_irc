@@ -28,6 +28,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 			}
 			it->second.addMember(client);
 			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
+			client->joinChannel(getChan->getName());
 			broadcast(it->second, client, message);
 		}
 		else {
@@ -36,6 +37,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 			channel.addOperator(client);
 			_channels.insert(std::make_pair(getChan->getName(), channel));
 			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
+			client->joinChannel(getChan->getName());
 			broadcast(channel, client, message);
 			continue;
 		}
@@ -70,6 +72,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 				std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 				broadcast(it->second, client, message);
 				it->second.addMember(client);
+				client->joinChannel(getChan->getName());
 				}
 
 			else {
@@ -78,6 +81,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 				_channels.insert(std::make_pair(getChan->getName(), channel));
 				std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 				broadcast(channel, client, message);
+				client->joinChannel(getChan->getName());
 				continue;
 			}	
 		}

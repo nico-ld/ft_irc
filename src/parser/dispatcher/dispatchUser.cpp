@@ -28,7 +28,7 @@ static bool isNicknameValid(Server &server, User &user, std::string nickname) {
 		server.sendReply(user, ERR_ERRONEUSNICKNAME, "Nickname too long");
 		return (false);
 	}
-	else if (!isalpha(nickname[0]) || isdigit(nickname[0]) || !strchr(VALID_CHAR, nickname[0])) {
+	else if (!isalpha(nickname[0]) || (isdigit(nickname[0]) && !strchr(VALID_CHAR, nickname[0]))) {
 		server.sendReply(user, ERR_ERRONEUSNICKNAME, "First character of nickname is invalid");
 		return (false);
 	}
