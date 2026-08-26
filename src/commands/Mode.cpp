@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/08/03 18:43:40 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/26 11:22:46 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,9 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 
 // Entry point for handling a user's request to change room settings.
 // It verifies that the room exists, validates the user has permission, and triggers the settings update.
-void Server::mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params) {
+void Server::mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params, Parser &parser) {
     // Verify that the room name uses the required formatting (must start with '#')
-	if (!Parser::checkNameChannel(channel.getName())) {
+	if (!parser.checkChannelName(channel.getName())) {
 		notification(user, "Name channel must start with #");
 		throw std::runtime_error("[LOG] Name channel must start with #");
 	}

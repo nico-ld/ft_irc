@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/19 09:14:38 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/26 10:35:39 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,8 +158,7 @@ void Server::startLoop() {
         				std::string command = currentUser->second.inputBuffer.substr(0, pos);
         				currentUser->second.inputBuffer.erase(0, pos + 2);
         				if (!command.empty()) {
-							if (Parser::parse(command) == 0)
-								dispatchCommand(*this, currentUser->second);
+							dispatchCommand(*this, currentUser->second, command);
 						}
             		}
         		}

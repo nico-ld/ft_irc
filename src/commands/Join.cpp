@@ -4,9 +4,9 @@
 #include "Parser.hpp"
 #include <stdexcept>
 
-void Server::join(std::vector<Channel> &listChannel, User *client) {
+void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parser) {
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
-		if (!Parser::checkNameChannel(getChan->getName()))
+		if (!parser.checkChannelName(getChan->getName()))
 			throw std::runtime_error("[LOG] Name channel must start with #");
 
 		std::map<std::string, Channel>::iterator it = _channels.find(getChan->getName());
@@ -42,10 +42,10 @@ void Server::join(std::vector<Channel> &listChannel, User *client) {
 	}
 }
 
-void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client) {
+void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client, Parser &parser) {
 	size_t i = 0;
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
-		if (!Parser::checkNameChannel(getChan->getName())) {
+		if (!parser.checkChannelName(getChan->getName())) {
 			notification(client, "Name channel must start with #");
 			throw std::runtime_error("[LOG] Name channel must start with #");
 		}
@@ -83,7 +83,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 		}
 		else {
 			std::vector<Channel> restOfListChannel(getChan, listChannel.end()); 
-			join(restOfListChannel, client);
+			join(restOfListChannel, client, parser);
 			return ;
 		}
 		++i;

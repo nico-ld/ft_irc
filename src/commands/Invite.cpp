@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 17:25:04 by afons             #+#    #+#             */
-/*   Updated: 2026/08/03 17:00:15 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/26 11:17:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include "Parser.hpp"
 #include <stdexcept>
 
-void Server::invite(const std::string &nickname, Channel &channel, const User *user) {
-	if (!Parser::checkNameChannel(channel.getName())) {
+void Server::invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser) {
+	if (!parser.checkChannelName(channel.getName())) {
 		notification(user, "Name channel must start with #.");
 		throw std::runtime_error("[LOG] Name channel must start with #.");
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/08/03 17:00:34 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/26 11:21:36 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include <stdexcept>
 #include <iostream>
 
-void Server::kick(Channel &channel, User *kicked, const User *op) {
-	if (!Parser::checkNameChannel(channel.getName())) {
+void Server::kick(Channel &channel, User *kicked, const User *op, Parser &parser) {
+	if (!parser.checkChannelName(channel.getName())) {
 		notification(op, "Name channel must start with #");
 		throw std::runtime_error("[LOG] Name channel must start with #");
 	}
@@ -56,8 +56,8 @@ void Server::kick(Channel &channel, User *kicked, const User *op) {
 	notification(kicked, "You've been kicked from the channel");
 }
 
-void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {
-	if (!Parser::checkNameChannel(channel.getName())) {
+void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op, Parser &parser) {
+	if (!parser.checkChannelName(channel.getName())) {
 		notification(op, "Name channel must start with #");
 		throw std::runtime_error("[LOG] Name channel must start with #");
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 16:43:41 by afons             #+#    #+#             */
-/*   Updated: 2026/08/03 17:00:43 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/26 11:23:25 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 #include "Parser.hpp"
 #include <stdexcept>
 
-void Server::part(std::vector<Channel> &channels, User *user) {
+void Server::part(std::vector<Channel> &channels, User *user, Parser &parser) {
 	
 	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
-		if (!Parser::checkNameChannel(it->getName())) {
+		if (!parser.checkChannelName(it->getName())) {
 			notification(user, "Name channel must start with #");
 			throw std::runtime_error("[LOG] Name channel must start with #");
 		}
@@ -39,9 +39,9 @@ void Server::part(std::vector<Channel> &channels, User *user) {
 	}
 }
 
-void Server::part(std::vector<Channel> &channels, std::string reason, User *user) {
+void Server::part(std::vector<Channel> &channels, std::string reason, User *user, Parser &parser) {
 	for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); ++it) {
-		if (!Parser::checkNameChannel(it->getName())) {
+		if (!parser.checkChannelName(it->getName())) {
 			notification(user, "Name channel must start with #");
 			throw std::runtime_error("[LOG] Name channel must start with #");
 		}

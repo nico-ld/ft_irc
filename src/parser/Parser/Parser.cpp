@@ -5,175 +5,118 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/14 16:23:16 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/20 10:31:32 by nico             ###   ########.fr       */
+/*   Created: 2026/08/20 10:58:49 by nico              #+#    #+#             */
+/*   Updated: 2026/08/26 10:34:51 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_irc.hpp"
+#include "../../../includes/Parser.hpp" // absolute path to avoid conflict with bot Parser
 
-int Parser::parse(std::string &input) {
-	std::stringstream ss(input);
+Parser::Parser() {
+	_initCommandsList();
+}
+
+Parser::Parser(const Parser &other) { *this = other; }
+
+Parser::~Parser() {}
+
+// == Overload ==
+Parser &Parser::operator=(const Parser &other) {
+	if (this != &other) {
+		_prefix = other._prefix;
+		_command = other._command;
+		_trailing = other._trailing;
+		_parameters = other._parameters;
+		_commandListId = other._commandListId;
+		_commandsChannel = other._commandsChannel;
+		_commandsMessage = other._commandsMessage;
+		_commandsUser = other._commandsUser;
+	}
+	return (*this);
+}
+
+
+// === PARSER ===
+
+int Parser::parse(std::string &line) {
+	std::stringstream ss(line);
 	std::string word;
 
-	initCommandList();
-
-	// Wipes out old data in buffer, so last msg doesn't bleed out
-	// on the new message
-	clearParser();
-	
-	try {
-		// Safe check for empty input
+	// Safe check for empty input
+	if (!(ss >> word) || word.empty())
+		return (0);
+		
+	// Seek for prefix abd stores it if found
+	// Then get rid of it so we only keep the command to parse
+	if (word[0] == ':') {
+		_prefix = word;
 		if (!(ss >> word) || word.empty())
-			return (0);
-		// Seek for prefix and stores it if found
-		// then get rid of it so we only keep the command to parse
-		if (word[0] == ':') {
-			_prefix = word;
-			if (!(ss >> word) || word.empty())
-				return (0);
-		}
-
-		// Parse command to see if it match an existing IRC command
-		parseCommand(word);
-
-		// Get parameters, up to 14 according to the RFC 1459 convention
-		// if we find a :, it means it's a trailing parameter,
-		// so we save it then break ; if we don't, we keep getting the regular params
-		for (int i = 0; i < 14; i++) {
-			ss >> std::ws; // Consume leading whitespace
-			if (ss.eof())
-				break;
-
-			// Check for trailing parameter start (':')
-			if (ss.peek() == ':') {
-				std::string trailing_str;
-				ss.get(); // Consume the ':'
-				std::getline(ss, trailing_str);
-				_trailing.push_back(trailing_str);
-				break;
-			}
-
-			if (ss >> word) {
-				_parameters.push_back(word);
-			} else {
-				break;
-			}
-		}
-	} catch (std::exception &e) {
-		std::cerr << e.what() << std::flush << std::endl;
-		return (-1);
+			return (1);
 	}
+
+	// Parse command to see if it match an existing IRC command
+	if (parseCommand(word) == 1)
+		return (2);
+
+	// Get parameters, up to 14 according to the RFC 1419 convention
+	// If we find a ':', it means it's a trailing parameter,
+	// so we save it then break; if we don't, we keep getting the regular params
+	for (int i = 0; i < 14; i++) {
+		ss >> std::ws; // Consume leading whitespace
+		if (ss.eof())
+			break ;
+		
+		// Check for trailing parameter start (':')
+		if (ss.peek() == ':') {
+			ss.get(); // Consume the ':'
+			std::getline(ss, _trailing);
+			return (0);
+		}
+
+		// Get param
+		if (ss >> word)
+			_parameters.push_back(word);
+		else
+			return (3);
+	}
+
+	// Get trailing
+	if (!ss.eof()) {
+		if (ss.peek() == ':')
+			ss.get(); // Consume the ':'
+		std::getline(ss, _trailing);
+	}
+	
 	return (0);
 }
-void Parser::parseCommand(std::string &input) {
-	std::transform(input.begin(), input.end(), input.begin(), ::tolower);
+
+int Parser::parseCommand(std::string word) {
+	std::transform(word.begin(), word.end(), word.begin(), ::tolower);
 
 	std::vector<std::string>::iterator it;
 	for (it = _commandsChannel.begin(); it != _commandsChannel.end(); it++) {
-		if (*it == input) {
-			_command = input;
+		if (*it == word) {
+			_command = word;
 			_commandListId = 1;
-			return ;
+			return (0);
 		}
 	}
 
 	for (it = _commandsMessage.begin(); it != _commandsMessage.end(); it++) {
-		if (*it == input) {
-			_command = input;
+		if (*it == word) {
+			_command = word;
 			_commandListId = 2;
-			return ;
+			return (0);
 		}
 	}
 
 	for (it = _commandsUser.begin(); it != _commandsUser.end(); it++) {
-		if (*it == input) {
-			_command = input;
+		if (*it == word) {
+			_command = word;
 			_commandListId = 3;
-			return ;
+			return (0);
 		}
 	}
 
-	throw std::runtime_error("Unknow command");
-}
-
-void Parser::clearParser(void) {
-	_prefix.clear();
-	_command.clear();
-	_commandListId = 0;
-	_parameters.clear();
-	_trailing.clear();
-}
-
-void Parser::buildPrefix(User &user) {
-	if (!_prefix.empty())
-		return ;
-
-	if (user.isAuthenticated())
-		_prefix = user.getNickname() + "!" + user.getRealname() + "@" + user.getHostname();
-}
-
-std::vector<Channel> Parser::getlistChannel(std::string parameter) {
-	std::vector<Channel> listChannel;
-	size_t search = 0;
-	size_t pos;
-	while ((pos = parameter.find(',', search)) != std::string::npos) {
-		std::string str = parameter.substr(search, pos - search);
-		if (checkNameChannel(str) == true)
-			listChannel.push_back(Channel(str));
-		search = pos + 1;
-	}
-	if (search < parameter.size()) {
-		std::string str = parameter.substr(search);
-		listChannel.push_back(Channel(str));
-	}
-	return (listChannel);
-}
-
-std::vector<std::string> Parser::getlistKey(std::string parameter) {
-	std::vector<std::string> listKey;
-	size_t search = 0;
-	size_t pos;
-	while ((pos = parameter.find(',', search)) != std::string::npos) {
-		std::string str = parameter.substr(search, pos - search);
-		listKey.push_back(str);
-		search = pos + 1;
-	}
-	if (search < parameter.size()) {
-		std::string str = parameter.substr(search);
-		listKey.push_back(str);
-	}
-	return (listKey);
-}
-
-std::vector<std::string> Parser::split_params(std::vector<std::string> parameters) {
-	std::vector<std::string> getParams;
-	std::vector<std::string>::iterator it = parameters.begin();
-	it += 2;
-	
-	for(; it != parameters.end(); ++it) {
-		getParams.push_back(*it);
-	}
-	return (getParams);
-}
-
-std::string Parser::getMessage(std::vector<std::string> parameters) {
-	std::vector<std::string>::iterator it = parameters.begin();
-	it++;
-
-	std::string message;
-	for (; it != parameters.end(); ++it) {
-		message+=" " + *it;
-	}
-	return (message);
-}
-
-bool Parser::checkNameChannel(std::string nameChannel) {
-	if (nameChannel.empty())
-		return (false);
-	else if (nameChannel[0] != '#')
-		return (false);
-	else if (nameChannel.size() <= 1)
-		return (false);
-	return (true);
+	return (1);
 }

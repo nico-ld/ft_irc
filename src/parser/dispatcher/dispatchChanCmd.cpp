@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/19 12:11:30 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/26 10:52:46 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 #include "../../../includes/Parser.hpp"
 #include "Channel.hpp"
 
-void	channelCommandsDispatch(Server &server, std::string command, User &user) {
-	std::vector<std::string> parameters = Parser::getParameters();
+void	channelCommandsDispatch(Server &server, std::string command, User &user, Parser &parser) {
+	std::vector<std::string> parameters = parser.getParameters();
 	std::vector<Channel> listChannel;
 	std::vector<std::string> listKey;
 	
 	// === JOIN ===
 	if (command == "join") {
-		listChannel = Parser::getlistChannel(parameters[0]);
+		listChannel = parser.getChannelList(parameters[0]);
 		
 		// Get channel(s) from command input
 		for (std::vector<Channel>::iterator it_listChannel = listChannel.begin(); it_listChannel != listChannel.end(); ++it_listChannel) {
@@ -34,7 +34,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user) {
 			throw std::runtime_error("[LOG] Need a channel name.");
 		}
 		else if (parameters.size() > 1) {
-			listKey = Parser::getlistKey(parameters[1]);
+			listKey = parser.getKeyList(parameters[1]);
 			server.join(listChannel, listKey, &user);
 		}
 		else
@@ -81,7 +81,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user) {
 		}
 		
 		// Dispatch
-		listChannel = Parser::getlistChannel(parameters[0]);
+		listChannel = parser.getChannelList(parameters[0]);
 		if (parameters.size() > 1)
 			server.part(listChannel, parameters[1], &user);
 		else
@@ -157,8 +157,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user) {
 		if (parameters.size() == 2)
 			server.mode(*channel, parameters[1], &user);
 		else if (parameters.size() > 2) {
-			std::vector<std::string> params = Parser::split_params(parameters);
-			server.mode(*channel, parameters[1], &user, params);
+			std::string listMode = parameters[1];
+			parameters.erase(parameters.begin(), parameters.begin() + 2);
+			server.mode(*channel, listMode, &user, parameters);
 		}
 	}
 }

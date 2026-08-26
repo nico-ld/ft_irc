@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/19 12:08:46 by nico             ###   ########.fr        #
+#    Updated: 2026/08/26 10:26:44 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,6 +55,7 @@ NETWORK		:= \
 PARSER		:= \
 				$(PARS_DIR)Parser.cpp \
 				$(PARS_DIR)ParserInit.cpp \
+				$(PARS_DIR)ParserHelper.cpp
 
 DISPATCHER	:= \
 				$(DISP_DIR)dispatcher.cpp \

@@ -3,29 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   ParserInit.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nile-dai <nile-dai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 17:37:06 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/07/27 18:33:49 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/08/26 10:26:16 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Parser.hpp"
+#include "../../../includes/Parser.hpp"  // absolute path to avoid conflict with bot Parser
 
-std::string Parser::_prefix = "";
-std::string Parser::_command = "";
-unsigned int Parser::_commandListId = 0;
-std::vector<std::string> Parser::_parameters;
-std::vector<std::string> Parser::_trailing;
-
-bool Parser::_listInit = false;
-std::vector<std::string> Parser::_commandsChannel;
-std::vector<std::string> Parser::_commandsMessage;
-std::vector<std::string> Parser::_commandsUser;
-
-void Parser::initCommandList() {
-	if (_listInit)
-		return ;
+void Parser::_initCommandsList( void ) {
+	// Init values to avoid conditional jump on uninitialized values
+	_prefix.clear();
+	_command.clear();
+	_trailing.clear();
+	_parameters.clear();
 
 	// Channel management command
 	_commandsChannel.push_back("join");
@@ -43,8 +35,6 @@ void Parser::initCommandList() {
 	_commandsUser.push_back("user");
 	_commandsUser.push_back("nick");
 	_commandsUser.push_back("pass");
-
-	_listInit = true;
 }
 
 std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content) {

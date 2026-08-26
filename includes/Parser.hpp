@@ -5,103 +5,95 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/14 15:54:54 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/19 11:27:00 by nico             ###   ########.fr       */
+/*   Created: 2026/08/20 10:49:01 by nico              #+#    #+#             */
+/*   Updated: 2026/08/26 10:51:25 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <stdexcept>
 #include <vector>
+#include <string>
+#include <sstream>
+#include <algorithm>
 
 class User;
 class Channel;
 class Server;
 
-class Parser
-{
-	public:
-		// === PUBLIC METHODS ===
-		/* Parse and tokenize user input. Return -1 on error */
-		static int	parse(std::string &input);
-
-		/* Reset private attribut */
-		static void clearParser( void );
-		
-		/* Init every commands list */
-		static void initCommandList( void );
-
-		/* Build origin prefix, if there is an existing prefix, it overwrite the function */
-		static void buildPrefix(User &user);
-
-		
-		// === GETTERS ===
-		/* Return the prefix of user input as string */
-		static std::string getPrefix( void ) {return (_prefix);}
-		
-		/* Return the command of user input */
-		static std::string getCommand( void ) {return (_command);}
-
-		/* Return the Id of command list {1: Channel commands; 2: Message commands; 3: User commands} */
-		static unsigned int getCommandListId( void ) {return (_commandListId);}
-
-		/* Return the list of paramaters (no trailing) as vector */
-		static std::vector<std::string> getParameters( void ) {return (_parameters);}
-
-		static std::vector<Channel> getlistChannel(std::string parameter);
-		static std::vector<std::string> getlistKey(std::string parameter);
-		static std::vector<std::string> split_params(std::vector<std::string> parameters);
-		static std::string getMessage(std::vector<std::string> parameters);
-		static bool checkNameChannel(std::string nameChannel);
-
-
-		/* Return the trailing parameter as vector */
-		static std::vector<std::string> getTrailing( void ) {return (_trailing);}
-
-		// === EXCEPTION ===
-		class InvalidCommandException: public std::exception {
-			public: virtual const char *what() const throw() {return ("Error: invalid command.");}
-		};
-
+class Parser {
 	private:
-		Parser() {}
-		~Parser() {}
-
-		// === PRIVATE METHODS ===
-		/* Search command, if command is unknow _command  stay empty and an error is throwed */
-		static void parseCommand(std::string &input);
-
-
 		// === COMMANDS LISTS ===
-		static bool	_listInit;
-		static std::vector<std::string> _commandsChannel;
-		static std::vector<std::string> _commandsMessage;
-		static std::vector<std::string> _commandsUser;
+		void _initCommandsList( void );
+		std::vector<std::string> _commandsChannel;
+		std::vector<std::string> _commandsMessage;
+		std::vector<std::string> _commandsUser;
 
 
 		// === PRIVATE ATTRIBUTS ===
-		static std::string _prefix;
-		static std::string _command;
-		static unsigned int _commandListId;
-		static std::vector<std::string> _parameters;
-		static std::vector<std::string> _trailing;
+		std::string _prefix;
+		std::string _command;
+		std::string _trailing;
+		unsigned int _commandListId;
+		std::vector<std::string> _parameters;
 
+	public:
+		// == Constructor & destructor ==
+		Parser();
+		Parser(const Parser &other);
+		~Parser();
+
+		// == Overload ==
+		Parser &operator=(const Parser &other);
+		
+		// === PARSER METHODS ===
+		/* > Parse and tokenzie the line received, return an error code if necessary */
+		int parse(std::string &line);
+
+		/* > Parse the wanted command */
+		int parseCommand(std::string word);
+
+
+		// === GETTERS ===
+		/* > Return line prefix */
+		std::string getPrefix( void ) const { return (_prefix); }
+
+		/* > Return the wanted command */
+		std::string getCommand( void ) const { return (_command); }
+
+		/* > Return the trailing parameter */
+		std::string getTrailing( void ) const { return (_trailing); }
+		
+		/* > Return the command id */
+		unsigned int getCommandId( void ) const { return (_commandListId); }
+
+		/* > Return the list of parameters */
+		std::vector<std::string> getParameters( void ) const { return (_parameters); }
+
+		// === HELPERS ===
+		/* > Return a list of channel from command parameter */
+		std::vector<Channel> getChannelList(std::string parameter);
+
+		/* > Return a list of key from command parameter */
+		std::vector<std::string> getKeyList(std::string parameter);
+		
+		/* > Skip the message target and return every other params needed by PRIVMSG or NOTICE */
+		std::string getMessage( void );
+
+		/* > Parse the name, return True if this is valid for a channel name, otherwise return False */
+		bool checkChannelName(std::string name);
 };
 
 std::ostream &operator<<(std::ostream &out, std::vector<std::string> &content);
 
 /* After parsing the user input, this function take the targer user and call the good command */
-void dispatchCommand(Server &server, User &user);
+void dispatchCommand(Server &server, User &user, std::string command);
 
 /* Manage command USER, NICK and PASS */
-void userCommandsDispatch(std::string command, User &user, Server &server);
+void userCommandsDispatch(std::string command, User &user, Server &server, Parser &parser);
 
 /* Manage PRIVMSG command */
-void messageCommandsDispatch(Server &server, std::string command, User &user);
+void messageCommandsDispatch(Server &server, std::string command, User &user, Parser &parser);
 
 /* Manage channel commands (JOIN, LEAVE, KICK, etc...) */
-void channelCommandsDispatch(Server &server, std::string command, User &user);
+void channelCommandsDispatch(Server &server, std::string command, User &user, Parser &parser);
