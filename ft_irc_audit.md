@@ -136,7 +136,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → Rewrite this overload to `_channels.find(it->getName())` first (exactly like the other `part()` overload) and operate on that entry, not on the parser's temporary object.
 
 ### src/commands/Kick.cpp
-- **_[NICO TASK]_** 🟡 **The kicked user's `_joinedChannels` list isn't updated, and the reply code is semantically wrong.**  
+- **_[FIXED]_** ~~🟡 **The kicked user's `_joinedChannels` list isn't updated, and the reply code is semantically wrong.**~~  
   `removeMember()` cleans up the `Channel` side, but nothing calls `kicked->leaveChannel(...)`; separately, "user not on channel" replies with `442 ERR_NOTONCHANNEL`, which per RFC means *"you (the sender) aren't on that channel"*, not *"the target isn't"* — that's `441 ERR_USERNOTINCHANNEL`.
   The first leaves user-side state stale (ties into the Part 1 finding on unused `joinChannel`/`leaveChannel`); the second will confuse any real IRC client trying to interpret the reply.
   → Call `kicked->leaveChannel(channel.getName())` alongside `removeMember()`, and swap the reply code to 441.
@@ -192,7 +192,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → On repeated/fatal send errors (e.g. `EPIPE`, `ECONNRESET`), call the same cleanup path as `removeUser()` for that client.
 
 ### src/Replies/Replies.cpp
-- 🟡 **`Server::sendReply()` — the only function that builds an RFC-2812-correct numeric reply (`:server CODE nick <text>\r\n`) — is defined but never called anywhere.**  
+- **_[WORK IN PROGRESS (nico)]_** 🟡 **`Server::sendReply()` — the only function that builds an RFC-2812-correct numeric reply (`:server CODE nick <text>\r\n`) — is defined but never called anywhere.**  
   Every actual error/reply in the codebase goes through `notification()` with hand-rolled strings like `"473 ERR_INVITEONLYCHAN"`, which is not a valid IRC protocol line — no `:server` prefix, no proper spacing, and the macro name is sent literally instead of a human-readable message.
   Real IRC clients (irssi, WeeChat, HexChat…) parse replies by position and numeric code; they won't recognize these as server replies at all, so anything beyond a raw `nc` test client will show garbled or missing errors.
   → Replace every `notification(user, "<code> <MACRO_NAME>")` call across `commands/` with `sendReply(user, CODE, "<proper trailing text>")`, using the numerics already defined in `Replies.hpp`.

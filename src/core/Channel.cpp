@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:50:45 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/03 17:15:27 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/26 15:11:45 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ void Channel::removeMember(User* user) {
         _members.erase(fd);
         _operators.erase(fd);
         _invitedUsers.erase(fd);
+        user->leaveChannel(_name);
     }
 }
 
