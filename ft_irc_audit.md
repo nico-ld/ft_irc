@@ -16,7 +16,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → Add a `MAX_CLIENTS` constant and reject `accept()` past it; optionally track a `map<ip,count>` for a per-IP cap.
 
 ### includes/Parser.hpp
-- **_[WORK IN PROGRESS]_** ⚪ **Parser is entirely static/shared, mutable global state (`_prefix`, `_command`, `_parameters`…).**  
+- **_[FIXED]_** ⚪ **Parser is entirely static/shared, mutable global state (`_prefix`, `_command`, `_parameters`…).**  
   This works only because the loop is single-threaded and strictly sequential; it's a latent trap the moment anyone parallelizes I/O.
   It also makes the parser impossible to unit-test in isolation from the rest of the program.
   → Make `Parser::parse()` return a `ParsedMessage` value/struct instead of stashing results in static members.
@@ -103,23 +103,23 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → Guard with `if (nameChannel.empty()) return false;` and skip zero-length tokens when splitting comma lists.
 
 ### src/parser/Parser/ParserInit.cpp
-- **_[WORK IN PROGRESS]_** 🟡 **No `QUIT` command and no `PING`/`PONG` keep-alive support.**  
+- **_[NICO TASK]_** 🟡 **No `QUIT` command and no `PING`/`PONG` keep-alive support.**  
   The command tables only cover join/kick/invite/topic/mode/part, privmsg/notice(unhandled), and user/nick/pass — there's no graceful disconnect command and no liveness check.
   Dead or NAT-dropped connections never get cleaned up (no way to detect them), slowly leaking fds and memory, and other clients never see a proper "X has quit" message.
   → Add `quit` to `_commandsUser` (broadcast a quit message, then `removeUser()`), and implement periodic `PING`/expect-`PONG` with a timeout-based disconnect.
 
 ### src/commands/Join.cpp
-- **_[NICO TASK]_** 🟠 **No limit on how many channels one user can join.**  
+- **_[FIXED]_** ~~🟠 **No limit on how many channels one user can join.**~~  
   `ERR_TOOMANYCHANNELS` (405) is defined in `Replies.hpp` but never used anywhere — a single client can `JOIN` an unbounded number of channels.
   Each joined channel consumes memory and grows every broadcast fan-out for that user, so this is a straightforward resource-exhaustion vector.
   → Track a per-user join count and reject further `JOIN`s past a reasonable cap (e.g. 10–20) with 405.
 
-- **_[NICO TASK]_** ⚪ **Off-by-one inconsistency between the two `join()` overloads for `+l`.**  
+- **_[FIXED]_** ~~⚪ **Off-by-one inconsistency between the two `join()` overloads for `+l`.**~~  
   The no-key overload rejects at `getMemberCount() >= getUserLimit()`, the keyed overload rejects at `> getUserLimit()` — the keyed path lets a channel exceed its own limit by one member.
   This is a small correctness gap, but it means the `+l` mode isn't reliably enforced depending on which join path a client takes.
   → Use the same `>=` comparison in both overloads.
 
-- **_[NICO TASK]_** ⚪ **`broadcast()` fires before `addMember()` in the keyed-join path.**  
+- **_[FIXED]_** ~~⚪ **`broadcast()` fires before `addMember()` in the keyed-join path.**~~  
   The joining member is notified of their own join *before* they're actually in `_members`, and other members receive the message off-order relative to the actual state change.
   It's mostly cosmetic today, but it's the kind of ordering bug that turns into a real race once writes become asynchronous (see the unused `NetworkBuffer` in Part 3).
   → Call `addMember()` first, then `broadcast()`, consistently in both overloads.
