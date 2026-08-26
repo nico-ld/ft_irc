@@ -167,7 +167,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   A malformed `MODE #chan +l abc` can therefore set an unpredictable channel limit instead of being rejected.
   → Check `ss.fail()` (or use `strtol` and check `endptr`) and reply `461 ERR_NEEDMOREPARAMS` / reject on non-numeric input.
 
-### src/commands/Topic.cpp
+### src/commands/Topic.cpp : DONE
 - 🟡 **No membership check before reading or setting a channel's topic.**  
   Both `topic()` overloads only gate on `isTopicRestricted()` + operator status when *changing* the topic; there's no check that the calling user is even a member of the channel for either viewing or (when `+t` is off) setting it.
   A non-member can read or overwrite the topic of any channel on the server just by knowing its name.
