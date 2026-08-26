@@ -13,7 +13,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 - **_[FIXED]_** ~~🟡 **No cap on simultaneous connections or per-IP connections.**  
   There's no field or check limiting how many clients (total or per source) can connect at once.
   A single peer can open sockets until the process hits its file-descriptor limit, starving legitimate users.
-  → Add a `MAX_CLIENTS` constant and reject `accept()` past it; optionally track a `map<ip,count>` for a per-IP cap.
+  → Add a `MAX_CLIENTS` constant and reject `accept()` past it; optionally track a `map<ip,count>` for a per-IP cap.~~
 
 ### includes/Parser.hpp
 - **_[WORK IN PROGRESS]_** ⚪ **Parser is entirely static/shared, mutable global state (`_prefix`, `_command`, `_parameters`…).**  
@@ -25,12 +25,12 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 - **_[FIXED]_** ~~🟠 **`server.init()` / `server.startLoop()` aren't wrapped in try/catch.**  
   Both throw `std::runtime_error` on socket/bind/listen/epoll failures, and `startLoop()` can propagate exceptions from deep inside command handling.
   Any uncaught exception terminates the whole server, dropping every connected client at once.
-  → Wrap the two calls in a top-level `try { ... } catch (const std::exception&)` that logs and exits cleanly (or restarts).
+  → Wrap the two calls in a top-level `try { ... } catch (const std::exception&)` that logs and exits cleanly (or restarts).~~
 
 - **_[FIXED]_** ~~🟡 **No signal handling (SIGINT/SIGTERM).**  
   `Server::stop()` closes every fd and clears state, but it only runs from the destructor — which a `kill`/Ctrl-C won't trigger.
   Restarting the server after a hard stop can hit `EADDRINUSE`-style issues and leaves clients with sockets that never got a clean close.
-  → Install a signal handler that sets an `sig_atomic_t` flag, checked each loop iteration, to call `stop()` and exit gracefully.
+  → Install a signal handler that sets an `sig_atomic_t` flag, checked each loop iteration, to call `stop()` and exit gracefully.~~
 
 - ⚪ **Server password is passed as a plaintext CLI argument (`av[2]`).**  
   Any local user on the box can read it from `ps aux` or `/proc/<pid>/cmdline` while the server runs.
@@ -38,10 +38,10 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → Accept the password via an env var or a restricted-permission config file instead of argv, if the subject allows it.
 
 ### src/core/Server.cpp
-- **_[FIXED]_** ~~ 🔴 **`removeUser()` never removes the user from the channels they were in.**  
-  It only erases the entry from `_users` and closes the fd — `Channel::_members` / `_operators` / `_invitedUsers` still hold the raw `User*` for that fd.
+- **_[FIXED]_** ~~ 🔴 **`removeUser()` never removes the user from the channels they were in.**  ~~
+  ~~It only erases the entry from `_users` and closes the fd — `Channel::_members` / `_operators` / `_invitedUsers` still hold the raw `User*` for that fd.
   The very next broadcast/kick/mode touching that channel dereferences a pointer into freed memory (use-after-free), which is a crash and a potential exploitation primitive.
-  → Before erasing from `_users`, iterate `user->getJoinedChannels()` and call `channel.removeMember(&user)` on each; delete now-empty channels too.
+ → Before erasing from `_users`, iterate `user->getJoinedChannels()` and call `channel.removeMember(&user)` on each; delete now-empty channels too.~~
 
 - 🟠 **`inputBuffer` has no size ceiling while waiting for `\r\n`.**  
   A client can stream bytes forever without ever sending a line terminator, and `Server.cpp` keeps `.append()`-ing to `User::inputBuffer` unbounded.
@@ -51,7 +51,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
 - **_[FIXED]_** ~~🟠 **No cap on accepted connections (fd exhaustion).**  
   `startLoop()` calls `accept()` unconditionally whenever `_serverFd` fires — there's no check against a maximum client count.
   A connect-flood exhausts the process's file descriptors, taking down the server for every user, not just the attacker.
-  → Track `_users.size()`; once at the limit, `accept()` then immediately `close()` the new fd instead of registering it.
+  → Track `_users.size()`; once at the limit, `accept()` then immediately `close()` the new fd instead of registering it.~~
 
 - 🟡 **The client's real IP/hostname is never captured.**  
   `accept()`'s `sockaddr_in clientAddr` is filled in and then discarded — `User::_hostname` stays hardcoded to `"127.0.0.1"` for every connection (see `User.cpp`).
