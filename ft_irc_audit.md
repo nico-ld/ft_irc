@@ -125,7 +125,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → Call `addMember()` first, then `broadcast()`, consistently in both overloads.
 
 ### src/commands/Part.cpp
-- **_[NICO TASK]_** 🔴 **`part(vector<Channel>&, User*)` dereferences `_channels.find()` without checking for `end()`.**  
+- **_[FIXED]_** 🔴 **`part(vector<Channel>&, User*)` dereferences `_channels.find()` without checking for `end()`.**  
   If a client sends `PART` for a channel name that doesn't exist in `_channels`, `getChan->second` dereferences the end iterator directly.
   This is undefined behavior reachable from a single, unauthenticated, one-line client message — a trivial remote crash/DoS.
   → Add `if (getChan == _channels.end()) { notification(...ERR_NOSUCHCHANNEL 403...); throw ...; }` before touching `getChan->second`, matching the pattern already used in `Kick.cpp`/`Mode.cpp`.

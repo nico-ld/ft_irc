@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/08/26 15:44:02 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/26 16:50:25 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,6 @@
 #include <iostream>
 
 void Server::kick(Channel &channel, User *kicked, const User *op, Parser &parser) {
-	// Check if channel name is correct
-	if (!parser.checkChannelName(channel.getName())) {
-		sendReply(*op, ERR_NOSUCHCHANNEL, "Channel name is invalid");
-		throw std::runtime_error("[LOG] Name channel must start with #");
-	}
-
 	// Check if sender is on the channel
 	if (!channel.isMember(op->getFd())) {
 		sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");
@@ -56,12 +50,6 @@ void Server::kick(Channel &channel, User *kicked, const User *op, Parser &parser
 }
 
 void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op, Parser &parser) {
-	// Check if channel name is correct
-	if (!parser.checkChannelName(channel.getName())) {
-		sendReply(*op, ERR_NOSUCHCHANNEL, "Channel name is invalid");
-		throw std::runtime_error("[LOG] Name channel must start with #");
-	}
-
 	// Check if sender is on the channel
 	if (!channel.isMember(op->getFd())) {
 		sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");

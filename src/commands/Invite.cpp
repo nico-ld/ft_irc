@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 17:25:04 by afons             #+#    #+#             */
-/*   Updated: 2026/08/26 13:54:07 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/26 16:50:52 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,6 @@
 #include <stdexcept>
 
 void Server::invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser) {
-	// Check if channel name is valid
-	if (!parser.checkChannelName(channel.getName())) {
-		sendReply(*user, ERR_NOSUCHCHANNEL, "Channel name is invalid");
-		throw std::runtime_error("[LOG] Name channel must start with #.");
-	}
-
 	// Check if User that send command is in the channel
 	if (!channel.isMember(user->getFd())) {
 		sendReply(*user, ERR_NOTONCHANNEL, "You're not in channel '" + channel.getName() + "'");
