@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/26 10:52:46 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/26 14:43:14 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		}
 		else if (parameters.size() > 1) {
 			listKey = parser.getKeyList(parameters[1]);
-			server.join(listChannel, listKey, &user);
+			server.join(listChannel, listKey, &user, parser);
 		}
 		else
-			server.join(listChannel, &user);
+			server.join(listChannel, &user, parser);
 	}
 
 	// === KICK ===
@@ -67,9 +67,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		
 		// Dispatch
 		if (parameters.size() > 2)
-			server.kick(*channel, kicked, parameters[2], &user);
+			server.kick(*channel, kicked, parameters[2], &user, parser);
 		else
-			server.kick(*channel, kicked, &user);
+			server.kick(*channel, kicked, &user, parser);
 	}
 
 	// === PART ===
@@ -83,9 +83,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		// Dispatch
 		listChannel = parser.getChannelList(parameters[0]);
 		if (parameters.size() > 1)
-			server.part(listChannel, parameters[1], &user);
+			server.part(listChannel, parameters[1], &user, parser);
 		else
-			server.part(listChannel, &user);
+			server.part(listChannel, &user, parser);
 	}
 
 	// === INVITE ===
@@ -107,7 +107,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 			throw std::runtime_error("[LOG] channel doesn't exist");
 		}
 
-		server.invite(parameters[0], *channel, &user);
+		server.invite(parameters[0], *channel, &user, parser);
 	}
 
 	// === TOPIC ===
@@ -127,9 +127,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 
 		// Dispatch
 		if (parameters.size() > 1)
-			server.topic(*channel, parameters[1], &user);
+			server.topic(*channel, parameters[1], &user, parser);
 		else
-			server.topic(*channel, &user);
+			server.topic(*channel, &user, parser);
 	}
 
 	// === MODE ===
