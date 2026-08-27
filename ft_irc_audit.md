@@ -173,7 +173,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   A non-member can read or overwrite the topic of any channel on the server just by knowing its name.
   → Require `channel.isMember(user->getFd())` (reply `442 ERR_NOTONCHANNEL` otherwise) at the top of both overloads, before any topic access.
 
-### src/network/NetworkBuffer.cpp / NetworkBuffer.hpp
+### src/network/NetworkBuffer.cpp / NetworkBuffer.hpp : DONE
 - 🟠 **A fully-implemented outgoing write-buffer (backpressure) class exists but is never instantiated or used anywhere in the codebase.**  
   Real sends all go through raw `send()` calls in `Message.cpp`/`Replies.cpp` instead, on sockets that are explicitly set non-blocking (`fcntl(..., O_NONBLOCK)`).
   Without this buffer (or equivalent `EPOLLOUT` handling), a slow client can cause `send()` to fail/partially-write under load, and that data is simply lost — no queuing, no retry.
