@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 15:06:57 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 15:14:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,25 @@ class Dashboard
 		/* > Write log into log file, return -1 on error */
 		int		log(const std::string &level, const std::string &message);
 
+		
+		
+		/*===========================*\
+		|							  |
+		|      SECTION MANAGEMENT     |
+		|							  |
+		\*===========================*/
+		
 		/* > Add a new section on dashboard */
 		void	addSection(t_section &newSection);
 
+		/* > Remove a section on dashboard (with title) */
+		void	removeSection(std::string &title);
+
+		/* > Remove a section on dashboard (with index) */
+		void	removeSection(size_t index);
+
 		
-		// === GETTERS ===
-		
+		// === GETTERS ===		
 		/* > Get the full list of sections */
 		std::vector<t_section> getSectionList( void ) const;
 
@@ -68,10 +81,9 @@ class Dashboard
 
 		/* > Get a specific section of dashboard with the index */
 		t_section *getSectionByIndex(size_t index);
-
+		
 		
 		// === SETTERS ===
-
 		/* > Set information for a section (with title) */
 		void setSection(std::string &title, t_section &newSection);
 
@@ -80,7 +92,6 @@ class Dashboard
 
 
 		// === BOOLEAN ===
-
 		/* > Check information on section, return True if everything is correct, otherwise False */
 		bool isSectionValid(t_section &section) const;
 		

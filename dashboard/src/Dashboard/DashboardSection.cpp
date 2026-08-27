@@ -6,12 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:34:27 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 15:08:17 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 15:17:08 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Dashboard.hpp"
 
+// === METHODS === 
 void Dashboard::addSection(t_section &newSection) {
 	// Check if section is valid
 	if (!isSectionValid(newSection))
@@ -24,6 +25,19 @@ void Dashboard::addSection(t_section &newSection) {
 	_sectionList.push_back(newSection);
 }
 
+void Dashboard::removeSection(std::string &title) {
+	std::vector<t_section>::iterator it;
+
+	for (it = _sectionList.begin(); it != _sectionList.end(); ++it) {
+		if (it->title == title)
+			_sectionList.erase(it);
+	}
+}
+
+void Dashboard::removeSection(size_t index) {
+	if (index <= _sectionList.size())
+		_sectionList.erase(_sectionList.begin() + index);
+}
 
 // === GETTERS ===
 std::vector<t_section> Dashboard::getSectionList( void ) const { return (_sectionList); }
