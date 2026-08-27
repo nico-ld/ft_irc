@@ -13,7 +13,7 @@
 NAME 		:= ircserv
 CXXFLAGS	:= -Wall -Wextra -Werror -g -std=c++98
 CXX			:= c++
-INC			:= -Iincludes
+INC			:= -Iincludes -Isrc/network
 
 # ~~ AINSI code ~~
 RESET		:= \033[0m
@@ -68,6 +68,7 @@ REPLIES		:= $(REP_DIR)Replies.cpp
 
 SRC			:= \
 				$(CORE) \
+				$(NETWORK) \
 				$(PARSER) \
 				$(REPLIES) \
 				$(COMMANDS) \

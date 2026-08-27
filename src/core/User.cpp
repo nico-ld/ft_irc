@@ -42,6 +42,7 @@ User& User::operator=(const User& src) {
         _hasProvidedUser = src._hasProvidedUser;
         _isAuthenticated = src._isAuthenticated;
         _joinedChannels = src._joinedChannels;
+        _netBuffer = src._netBuffer;
     }
     return *this;
 }

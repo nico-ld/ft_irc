@@ -51,6 +51,10 @@ class Server
 		Server(const Server &src) { (void)src; }
 		Server &operator=(const Server &src) { (void)src; return (*this);}
 
+		// === WRITE BACKPRESSURE (NetworkBuffer) ===
+		/* > Toggle whether epoll also watches this fd for write-readiness (EPOLLOUT) */
+		void setEpollWriteInterest(int fd, bool enable);
+
 	public:
 		// == Constructor & Destructor == 
 		Server(int port, const std::string &password);
@@ -74,6 +78,16 @@ class Server
 		
 		/* > Remove client FD from epoll tracking & delete user */
 		void removeUser(int clientFd, std::string reason);
+
+
+		// === WRITE BACKPRESSURE (NetworkBuffer) ===
+		/* > Send data to a user without blocking: sends what it can immediately,
+		     queues whatever the kernel wouldn't take yet, and arms EPOLLOUT so
+		     the rest goes out once the socket is writable again. */
+		void queueWrite(User &user, const std::string &data);
+
+		/* > Called on an EPOLLOUT-ready event: flushes a user's pending outgoing buffer */
+		void flushWrite(int fd);
 
 
 		// === CHANNEL MANAGEMENT ===

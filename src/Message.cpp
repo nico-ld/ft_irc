@@ -16,19 +16,21 @@
 #include <sys/socket.h>
 #include <cstdio>
 
+// NOTE: all outgoing sends go through Server::queueWrite() rather than a raw
+// send() call, so a slow/blocked client backs up into its NetworkBuffer
+// (drained on EPOLLOUT) instead of silently losing data. See ServerHelper.cpp.
+
 void Server::broadcastServer(std::string message) {
-	std::map<int, User>::const_iterator it = _users.begin();
+	std::map<int, User>::iterator it = _users.begin();
 	for (; it != _users.end(); ++it) {
-    	if (send(it->second.getFd(), message.c_str(), message.size(), MSG_NOSIGNAL) == -1)
-        	std::perror("Send crashed.");
+    	queueWrite(it->second, message);
 	}
 }
 
 void Server::broadcast(const Channel &channel, std::string message) {
 	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
 	for (; it != channel.getMembers().end(); ++it) {
-    	if (send(it->second->getFd(), message.c_str(), message.size(), MSG_NOSIGNAL) == -1)
-        	std::perror("Send crashed.");
+    	queueWrite(*it->second, message);
 	}
 }
 
@@ -36,15 +38,13 @@ void Server::broadcast(const Channel &channel, const User *user, std::string mes
 	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
 	std::string messageError = user->getUsername() + message;
 	for (; it != channel.getMembers().end(); ++it) {
-    	if (send(it->second->getFd(), messageError.c_str(), messageError.size(), MSG_NOSIGNAL) == -1)
-        	std::perror("Send crashed.");
+    	queueWrite(*it->second, messageError);
 	}
 }
 
 void Server::notification(const User *user, std::string message) {
 	std::string messageError = message + "\r\n";
-	if (send(user->getFd(), messageError.c_str(), messageError.size(), MSG_NOSIGNAL) == -1)
-        std::perror("Send crashed.");
+	queueWrite(*const_cast<User *>(user), messageError);
 }
 
 void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message) {
@@ -54,12 +54,10 @@ void Server::privateMessageChannel(const User *src, const Channel &channel, std:
 	}
 	std::string privateMessage = channel.getName() + "-> " + src->getNickname() + ": " + message + "\r\n";
 	for (std::map<int, User *>::const_iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); ++it)
-		if (send(it->second->getFd(), privateMessage.c_str(), privateMessage.size(), MSG_NOSIGNAL) == -1)
-        	std::perror("Send crashed.");
+		queueWrite(*it->second, privateMessage);
 }
 
 void Server::privateMessageUser(const User *src, const User *dest, std::string message) {
 	std::string privateMessage = src->getNickname() + ": " + message + "\r\n";
-	if (send(dest->getFd(), privateMessage.c_str(), privateMessage.size(), MSG_NOSIGNAL) == -1)
-        std::perror("Send crashed.");
+	queueWrite(*const_cast<User *>(dest), privateMessage);
 }
