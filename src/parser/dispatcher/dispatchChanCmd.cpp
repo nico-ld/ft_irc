@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 08:32:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 08:50:42 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,12 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		if (!channel) {
 			server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + parameters[0] + "' doesn't exist");
 			throw std::runtime_error("This channel doesn't exist.");
+		}
+
+		// Check if user is on the channel
+		if (!channel->isMember(user.getFd())) {
+			server.sendReply(user, ERR_NOTONCHANNEL, "You're not on this channel");
+			throw std::runtime_error("[LOG] user not on channel");
 		}
 
 		// Dispatch

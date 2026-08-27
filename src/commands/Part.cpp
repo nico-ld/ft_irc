@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 16:43:41 by afons             #+#    #+#             */
-/*   Updated: 2026/08/26 16:43:32 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 09:05:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,12 @@
 #include <stdexcept>
 
 void Server::part(std::vector<Channel> &channelsList, User *user, Parser &parser) {
-	for (std::vector<Channel>::iterator channel = channelsList.begin(); channel != channelsList.end(); ++channel) {
+	for (std::vector<Channel>::iterator it = channelsList.begin(); it != channelsList.end(); ++it) {
+		// Get pointer on current channel
+		Channel *channel = getChannelByName(it->getName());
+		
 		// Check if channel exist
-		if (!getChannelByName(channel->getName())) {
+		if (!channel) {
 			sendReply(*user, ERR_NOSUCHCHANNEL, "Channel doesn't exist");
 			throw std::runtime_error("[LOG] Channel doesn't exist");
 		}
@@ -45,9 +48,12 @@ void Server::part(std::vector<Channel> &channelsList, User *user, Parser &parser
 }
 
 void Server::part(std::vector<Channel> &channelsList, std::string reason, User *user, Parser &parser) {
-	for (std::vector<Channel>::iterator channel = channelsList.begin(); channel != channelsList.end(); ++channel) {
+	for (std::vector<Channel>::iterator it = channelsList.begin(); it != channelsList.end(); ++it) {
+		// Get pointer on current channel
+		Channel *channel = getChannelByName(it->getName());
+		
 		// Check if channel exist
-		if (!getChannelByName(channel->getName())) {
+		if (!channel) {
 			sendReply(*user, ERR_NOSUCHCHANNEL, "Channel doesn't exist");
 			throw std::runtime_error("[LOG] Channel doesn't exist");
 		}

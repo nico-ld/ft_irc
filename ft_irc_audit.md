@@ -130,7 +130,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   This is undefined behavior reachable from a single, unauthenticated, one-line client message — a trivial remote crash/DoS.
   → Add `if (getChan == _channels.end()) { notification(...ERR_NOSUCHCHANNEL 403...); throw ...; }` before touching `getChan->second`, matching the pattern already used in `Kick.cpp`/`Mode.cpp`.
 
-- **_[NICO TASK]_** 🟠 **`part(vector<Channel>&, std::string reason, User*)` operates on throwaway local `Channel` copies instead of the real channel in `_channels`.**  
+- **_[FIXED]_** 🟠 **`part(vector<Channel>&, std::string reason, User*)` operates on throwaway local `Channel` copies instead of the real channel in `_channels`.**  
   The `it` iterator here comes straight from `Parser::getlistChannel()` — a freshly-constructed `Channel` with no members ever added — so `it->isMember(...)` is always false and the reasoned-PART feature can never succeed for a real user.
   If this gets "fixed" naively by removing the `isMember` guard, the code would then call `it->getMembers().empty()` (always true on the local copy) and `_channels.erase(it->getName())`, deleting the *real* channel even while it still has members — turning a broken feature into a data-loss bug.
   → Rewrite this overload to `_channels.find(it->getName())` first (exactly like the other `part()` overload) and operate on that entry, not on the parser's temporary object.
