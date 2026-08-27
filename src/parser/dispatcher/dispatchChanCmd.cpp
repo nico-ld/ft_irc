@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 08:50:42 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 10:05:16 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,16 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		// Dispatch
 		listChannel = parser.getChannelList(parameters[0]);
 		if (parameters.size() > 1)
-			server.part(listChannel, parameters[1], &user, parser);
+			server.part(listChannel, parameters[1], &user);
 		else
-			server.part(listChannel, &user, parser);
+			server.part(listChannel, &user);
+	}
+
+	// === QUIT ===
+	else if (command == "quit") {
+		std::string message = parser.getMessage();
+		
+		server.removeUser(user.getFd(), message);
 	}
 
 	// === INVITE ===

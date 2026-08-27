@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/26 10:35:39 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 09:51:21 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ void Server::startLoop() {
 				// if <= 0, it means the network disconnected during the process
                 if (bytesRead <= 0) {
                     std::cout << "Client disconnected on fd: " << currentFd << std::endl;
-                    removeUser(currentFd);
+                    removeUser(currentFd, "Client disconnected");
                 } else {
 					std::map<int, User>::iterator currentUser = _users.find(currentFd);
 					if (currentUser == _users.end())
@@ -177,40 +177,4 @@ void Server::stop() {
 
     if (_serverFd != -1) close(_serverFd);
     if (_epollFd != -1) close(_epollFd);
-}
-
-void Server::addUnauthenticatedUser(int clientFd) {
-    _users.insert(std::make_pair(clientFd, User(clientFd)));
-}
-
-void Server::removeUser(int clientFd) {
-    epoll_ctl(_epollFd, EPOLL_CTL_DEL, clientFd, NULL);
-    close(clientFd);
-    _users.erase(clientFd);
-}
-
-User* Server::getUserById(int fd) {
-    std::map<int, User>::iterator it = _users.find(fd);
-    if (it != _users.end()) {
-        return &(it->second);
-    }
-    return NULL;
-}
-
-Channel* Server::getChannelByName(const std::string &name){
-    for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
-        if (it->second.getName() == name) {
-            return &(it->second);
-        }
-    }
-    return NULL;
-}
- 
-User* Server::getUserByNickname(const std::string& nickname) {
-    for (std::map<int, User>::iterator it = _users.begin(); it != _users.end(); ++it) {
-        if (it->second.getNickname() == nickname) {
-            return &(it->second);
-        }
-    }
-    return NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/27 08:32:09 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 09:56:05 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ class Server
 		void addUnauthenticatedUser(int clientFd);
 		
 		/* > Remove client FD from epoll tracking & delete user */
-		void removeUser(int clientFd);
+		void removeUser(int clientFd, std::string reason);
 
 
 		// === CHANNEL MANAGEMENT ===
@@ -115,8 +115,8 @@ class Server
 		void topic(Channel &channel, std::string newTopic, User *user);
 
 		// PART
-		void part(std::vector<Channel> &channels, User *user, Parser &parser);
-		void part(std::vector<Channel> &channels, std::string reason, User *user, Parser &parser);
+		void part(std::vector<Channel> &channels, User *user);
+		void part(std::vector<Channel> &channels, std::string reason, User *user);
 
 		// INVITE
 		void invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser);

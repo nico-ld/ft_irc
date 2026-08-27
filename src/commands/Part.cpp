@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 16:43:41 by afons             #+#    #+#             */
-/*   Updated: 2026/08/27 09:05:37 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 09:55:50 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "Parser.hpp"
 #include <stdexcept>
 
-void Server::part(std::vector<Channel> &channelsList, User *user, Parser &parser) {
+void Server::part(std::vector<Channel> &channelsList, User *user) {
 	for (std::vector<Channel>::iterator it = channelsList.begin(); it != channelsList.end(); ++it) {
 		// Get pointer on current channel
 		Channel *channel = getChannelByName(it->getName());
@@ -47,7 +47,7 @@ void Server::part(std::vector<Channel> &channelsList, User *user, Parser &parser
 	}
 }
 
-void Server::part(std::vector<Channel> &channelsList, std::string reason, User *user, Parser &parser) {
+void Server::part(std::vector<Channel> &channelsList, std::string reason, User *user) {
 	for (std::vector<Channel>::iterator it = channelsList.begin(); it != channelsList.end(); ++it) {
 		// Get pointer on current channel
 		Channel *channel = getChannelByName(it->getName());

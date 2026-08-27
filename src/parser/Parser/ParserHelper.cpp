@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 09:11:31 by nico              #+#    #+#             */
-/*   Updated: 2026/08/26 10:24:03 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 10:04:24 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,14 @@ std::string Parser::getMessage( void ) {
 	std::string message;
 
 	// Skip message target and get every other parameter
-	for (it = _parameters.begin() + 1; it != _parameters.end(); ++it) {
-		if (!message.empty())
-			message.append(" ");
-		message.append(*it);
+	if (_parameters.size() > 0) {
+		for (it = _parameters.begin() + 1; it != _parameters.end(); ++it) {
+			if (!message.empty())
+				message.append(" ");
+			message.append(*it);
+		}
 	}
-
+		
 	// If the trailing is not empty, add it to the message
 	if (!_trailing.empty()) {
 		if (!message.empty())

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 17:37:06 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/26 10:26:16 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 10:01:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void Parser::_initCommandsList( void ) {
 	_commandsChannel.push_back("topic");
 	_commandsChannel.push_back("mode");
 	_commandsChannel.push_back("part");
+	_commandsChannel.push_back("quit");
 
 	// Messaging command
 	_commandsMessage.push_back("privmsg");

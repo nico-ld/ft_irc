@@ -103,7 +103,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → Guard with `if (nameChannel.empty()) return false;` and skip zero-length tokens when splitting comma lists.
 
 ### src/parser/Parser/ParserInit.cpp
-- **_[NICO TASK]_** 🟡 **No `QUIT` command and no `PING`/`PONG` keep-alive support.**  
+- **_[FIXED]_** ~~🟡 **No `QUIT` command and no `PING`/`PONG` keep-alive support.**~~  
   The command tables only cover join/kick/invite/topic/mode/part, privmsg/notice(unhandled), and user/nick/pass — there's no graceful disconnect command and no liveness check.
   Dead or NAT-dropped connections never get cleaned up (no way to detect them), slowly leaking fds and memory, and other clients never see a proper "X has quit" message.
   → Add `quit` to `_commandsUser` (broadcast a quit message, then `removeUser()`), and implement periodic `PING`/expect-`PONG` with a timeout-based disconnect.
@@ -125,12 +125,12 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → Call `addMember()` first, then `broadcast()`, consistently in both overloads.
 
 ### src/commands/Part.cpp
-- **_[FIXED]_** 🔴 **`part(vector<Channel>&, User*)` dereferences `_channels.find()` without checking for `end()`.**  
+- **_[FIXED]_** ~~🔴 **`part(vector<Channel>&, User*)` dereferences `_channels.find()` without checking for `end()`.**~~  
   If a client sends `PART` for a channel name that doesn't exist in `_channels`, `getChan->second` dereferences the end iterator directly.
   This is undefined behavior reachable from a single, unauthenticated, one-line client message — a trivial remote crash/DoS.
   → Add `if (getChan == _channels.end()) { notification(...ERR_NOSUCHCHANNEL 403...); throw ...; }` before touching `getChan->second`, matching the pattern already used in `Kick.cpp`/`Mode.cpp`.
 
-- **_[FIXED]_** 🟠 **`part(vector<Channel>&, std::string reason, User*)` operates on throwaway local `Channel` copies instead of the real channel in `_channels`.**  
+- **_[FIXED]_** ~~🟠 **`part(vector<Channel>&, std::string reason, User*)` operates on throwaway local `Channel` copies instead of the real channel in `_channels`.**~~  
   The `it` iterator here comes straight from `Parser::getlistChannel()` — a freshly-constructed `Channel` with no members ever added — so `it->isMember(...)` is always false and the reasoned-PART feature can never succeed for a real user.
   If this gets "fixed" naively by removing the `isMember` guard, the code would then call `it->getMembers().empty()` (always true on the local copy) and `_channels.erase(it->getName())`, deleting the *real* channel even while it still has members — turning a broken feature into a data-loss bug.
   → Rewrite this overload to `_channels.find(it->getName())` first (exactly like the other `part()` overload) and operate on that entry, not on the parser's temporary object.
