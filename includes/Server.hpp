@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/26 13:44:40 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 08:32:09 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,8 @@ class Server
 		void kick(Channel &channel, User *kicked, std::string reason, const User *op, Parser &parser);
 
 		// TOPIC
-		void topic(const Channel &channel, User *user, Parser &parser);
-		void topic(Channel &channel, std::string newTopic, User *user, Parser &parser);
+		void topic(const Channel &channel, User *user);
+		void topic(Channel &channel, std::string newTopic, User *user);
 
 		// PART
 		void part(std::vector<Channel> &channels, User *user, Parser &parser);
@@ -122,7 +122,7 @@ class Server
 		void invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser);
 
 		// MODE
-		void mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params = std::vector<std::string>(), Parser &parser);
+		void mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params = std::vector<std::string>());
 		void launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user);
 
 		// Message

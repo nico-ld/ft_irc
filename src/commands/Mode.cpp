@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/08/27 08:30:44 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 08:44:27 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 
 			// Reject unrecognized settings letter before anything has been applied
 			if (c != 'i' && c != 't' && c != 'k' && c != 'l' && c != 'o') {
-				notification(user, "472 ERR_UNKNOWNMODE");
+				sendReply(*user, ERR_UMODEUNKNOWNFLAG, "Unknow MODE flag");
 				throw std::runtime_error("[LOG] This mode doesn't exist");
 			}
 
@@ -83,7 +83,9 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			if (!needsParam) continue;
 
 			if (it_params == params.end()) {
-				notification(user, "461 ERR_NEEDMOREPARAMS");
+				std::string message = "Need more param for " + c;
+				message.append(" mode");
+				sendReply(*user, ERR_NEEDMOREPARAMS, message);
 				throw std::runtime_error("[LOG] need argument");
 			}
 
@@ -91,7 +93,7 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			if (c == 'l') {
 				int tmp;
 				if (!parse_limit(*it_params, tmp)) {
-					notification(user, "461 ERR_NEEDMOREPARAMS");
+					sendReply(*user, ERR_NEEDMOREPARAMS, "Invalid limit for +l mode");
 					throw std::runtime_error("[LOG] invalid user limit");
 				}
 			}
@@ -100,11 +102,11 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			if (c == 'o') {
 				User *target = getUserByNickname(*it_params);
 				if (!target) {
-					notification(user, "401 ERR_NOSUCHNICK");
+					sendReply(*user, ERR_NOSUCHNICK, "User '" + *it_params + "' doesn't exist");
 					throw std::runtime_error("[LOG] No such nick");
 				}
 				if (!channel.isMember(target->getFd())) {
-					notification(user, "441 ERR_USERNOTINCHANNEL");
+					sendReply(*user, ERR_USERNOTINCHANNEL, "User " + *it_params + "' isn't on this channel");
 					throw std::runtime_error("[LOG] User not in channel");
 				}
 			}
@@ -157,22 +159,9 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 // Entry point for handling a user's request to change room settings.
 // It verifies that the room exists, validates the user has permission, and triggers the settings update.
 void Server::mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params) {
-	// Verify that the room name uses the required formatting (must start with '#')
-	if (!Parser::checkNameChannel(channel.getName())) {
-		notification(user, "Name channel must start with #");
-		throw std::runtime_error("[LOG] Name channel must start with #");
-	}
-
-	// Ensure the requested room actually exists on the server
-	std::map<std::string, Channel>::iterator it = _channels.find(channel.getName());
-	if (it == _channels.end()) {
-		notification(user, "403 ERR_NOSUCHCHANNEL");
-		throw std::runtime_error("[LOG] Channel doesn't exist");
-	}
-
 	// Ensure the user requesting changes is a room administrator
 	if (!channel.isOperator(user->getFd())) {
-		notification(user, "482 ERR_CHANOPRIVSNEEDED");
+		sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need channel operator priviledge to do this");
 		throw std::runtime_error("[LOG] You're not channel operator");
 	}
 

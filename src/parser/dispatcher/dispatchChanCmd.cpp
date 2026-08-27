@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/26 14:43:14 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 08:32:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,9 +127,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 
 		// Dispatch
 		if (parameters.size() > 1)
-			server.topic(*channel, parameters[1], &user, parser);
+			server.topic(*channel, parameters[1], &user);
 		else
-			server.topic(*channel, &user, parser);
+			server.topic(*channel, &user);
 	}
 
 	// === MODE ===
@@ -140,7 +140,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 			throw std::runtime_error("Need a channel name.");
 		}
 
-		// Parse channel name
+		// Ensure channel on server 
 		Channel *channel = server.getChannelByName(parameters[0]);
 		if (!channel) {
 			server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + parameters[0] + "' doesn't exist");
