@@ -53,9 +53,16 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			i++;
 			while((*it_modestring)[i]) {
 			    // i : Make the room invite-only
-				if ((*it_modestring)[i] == 'i') channel.setInviteOnly(true);
+				if ((*it_modestring)[i] == 'i') {
+					channel.setInviteOnly(true);
+					broadcast(channel, "Invite mode is activated\r\n");
+				}
 				// t : Restrict room topics to administrators choice
-				else if ((*it_modestring)[i] == 't') channel.setTopicRestricted(true);
+				else if ((*it_modestring)[i] == 't') {
+					channel.setTopicRestricted(true);
+					broadcast(channel, "Topic mode is activated\r\n");
+				}
+
 				// k : Set a room password
 				else if ((*it_modestring)[i] == 'k') {
 					if (params.size() <= 0) {
@@ -63,6 +70,8 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 						throw std::runtime_error("need argument");
 					}
 					channel.setKey(*it_params);
+					std::string message = "The new key of the channel is: " + *it_params+"\r\n";
+					broadcast(channel, message);
 					it_params++;
 				}
 
@@ -76,7 +85,13 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					std::stringstream ss(*it_params);
 					int limit;
 					ss >> limit;
+					if (limit <= 0) {
+						sendReply(*user, ERR_UNKNOWNMODE, "Limit of user need to be more than 0");
+						throw std::runtime_error("501 ERR_UNKNOWNMODE");
+					}
 					channel.setUserLimit(limit);
+					std::string message = "The new limit of users for this channel is: " + *it_params + "\r\n";
+					broadcast(channel, message);
 					it_params++;
 				}
 
@@ -86,7 +101,9 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 						notification(user, "461 ERR_NEEDMOREPARAMS");
 						throw std::runtime_error("need argument");
 					}
-					channel.addOperator(user);
+					channel.addOperator(getUserByNickname(*it_params));
+					std::string message = *it_params + " has just been promoted as an operator\r\n";
+					broadcast(channel, message);
 				}
 				// Reject unrecognized settings letter
 				else {
