@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 15:14:35 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 16:00:49 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <fstream>
 #include <vector>
 #include <ctime>
+#include <iostream>
 
 struct t_column {
 	std::string	title;
@@ -49,12 +50,30 @@ class Dashboard
 		~Dashboard();
 
 
-		// === METHODS ===
+		// === GLOBAL METHODS ===
 
 		/* > Write log into log file, return -1 on error */
 		int		log(const std::string &level, const std::string &message);
 
 		
+		/*===========================*\
+		|							  |
+		|       RENDER MANAGEMENT     |
+		|							  |
+		\*===========================*/
+		
+		// === METHODS ===
+		/* > Display the dashboard with given information */
+		void render( void ) const;
+
+		/* > print the title of the dashboard */
+		void printDashTitle( void ) const;
+		
+		
+		// === GETTERS ===
+		/* > Return the number of lines with every sections */
+		int	getNbLines( void ) const;
+
 		
 		/*===========================*\
 		|							  |
