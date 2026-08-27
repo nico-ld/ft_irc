@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/08/03 17:00:34 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/26 16:50:25 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,80 +17,66 @@
 #include <stdexcept>
 #include <iostream>
 
-void Server::kick(Channel &channel, User *kicked, const User *op) {
-	if (!Parser::checkNameChannel(channel.getName())) {
-		notification(op, "Name channel must start with #");
-		throw std::runtime_error("[LOG] Name channel must start with #");
+void Server::kick(Channel &channel, User *kicked, const User *op, Parser &parser) {
+	// Check if sender is on the channel
+	if (!channel.isMember(op->getFd())) {
+		sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");
+		throw std::runtime_error("[LOG] Sender is not on the channel");
+	}
+	
+	// Check if sender get operator rights
+	else if (!channel.isOperator(op->getFd())) {
+		sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator priviledge to do this");
+		throw std::runtime_error("[LOG] Sender doesn't get operator priviledge");
 	}
 
-	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
-	if (findChannel == _channels.end()) {
-		notification(op, "403 ERR_NOSUCHCHANNEL");
-		throw std::runtime_error("[LOG] Channel doesn't exist");
+	// Check if target is on the channel
+	else if (!channel.isMember(kicked->getFd())) {
+		sendReply(*op, ERR_USERNOTINCHANNEL, "User you trying to kick is not on this channel");
+		throw std::runtime_error("[LOG] Kicked is not on the channel");
 	}
-
-	std::map<int, User *>::const_iterator findUser = findChannel->second.getMembers().begin();
-	for (; findUser != findChannel->second.getMembers().end(); ++findUser) {
-		if (findUser->second->getNickname() == kicked->getNickname())
-			break;
-	}
-	if (findUser == findChannel->second.getMembers().end()) {
-		notification(op, "442 ERR_NOTONCHANNEL");
-		throw std::runtime_error("[LOG] User not on channel");
-	}
-
-	if (!findChannel->second.isOperator(op->getFd())) {
-		notification(op, "482 ERR_CHANOPRIVSNEEDED");
-		throw std::runtime_error("[LOG] User is not operator");
-	}
-	if (!findChannel->second.isMember(findUser->second->getFd())) {
-		notification(op, "441 ERR_USERNOTINCHANNEL");
-		throw std::runtime_error("[LOG] User is not in channel");
-	}
-
-	findChannel->second.removeMember(findUser->second);
+	
+	// If every guards are OK, kick user
+	channel.removeMember(kicked); // Remove it from the channel
+	
+	// Build kick message
 	std::string id = ":" + op->getNickname() + "!" + op->getRealname() + "@" + op->getHostname();
-	std::string kickMessage = " KICK " + findChannel->second.getName() + " " + findUser->second->getNickname();
+	std::string kickMessage = " KICK " + channel.getName() + " " + kicked->getNickname();
 	std::string message = id + kickMessage;
-	broadcast(findChannel->second, findUser->second, message);
+	
+	// Send message
+	broadcast(channel, kicked, message);
 	notification(kicked, "You've been kicked from the channel");
 }
 
-void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {
-	if (!Parser::checkNameChannel(channel.getName())) {
-		notification(op, "Name channel must start with #");
-		throw std::runtime_error("[LOG] Name channel must start with #");
+void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op, Parser &parser) {
+	// Check if sender is on the channel
+	if (!channel.isMember(op->getFd())) {
+		sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");
+		throw std::runtime_error("[LOG] Sender is not on the channel");
+	}
+	
+	// Check if sender get operator rights
+	else if (!channel.isOperator(op->getFd())) {
+		sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator priviledge to do this");
+		throw std::runtime_error("[LOG] Sender doesn't get operator priviledge");
 	}
 
-	std::map<std::string, Channel>::iterator findChannel = _channels.find(channel.getName());
-	if (findChannel == _channels.end()) {
-		notification(op, "403 ERR_NOSUCHCHANNEL");
-		throw std::runtime_error("[LOG] Channel doesn't exist");
+	// Check if target is on the channel
+	else if (!channel.isMember(kicked->getFd())) {
+		sendReply(*op, ERR_USERNOTINCHANNEL, "User you trying to kick is not on this channel");
+		throw std::runtime_error("[LOG] Kicked is not on the channel");
 	}
 
-	std::map<int, User *>::const_iterator findUser = findChannel->second.getMembers().begin();
-	for (; findUser != findChannel->second.getMembers().end(); ++findUser) {
-		if (findUser->second->getNickname() == kicked->getNickname())
-			break;
-	}
-	if (findUser == findChannel->second.getMembers().end()) {
-		notification(op, "442 ERR_NOTONCHANNEL");
-		throw std::runtime_error("[LOG] User not on the channel.");
-	}
-
-	if (!findChannel->second.isOperator(op->getFd())) {
-		notification(op, "482 ERR_CHANOPRIVSNEEDED");
-		throw std::runtime_error("[LOG] User is not operator");
-	}
-	if (!findChannel->second.isMember(findUser->second->getFd())) {
-		notification(op, "441 ERR_USERNOTINCHANNEL");
-		throw std::runtime_error("[LOG] User is not in channel");
-	}
-
-	findChannel->second.removeMember(findUser->second);
+	// If every guards are OK, kick user
+	channel.removeMember(kicked);
+	
+	// Build kick message
 	std::string id = ":" + op->getNickname() + "!" + op->getRealname() + "@" + op->getHostname();
-	std::string kickMessage = " KICK " + findChannel->second.getName() + " " + findUser->second->getNickname() + ": " + reason;
+	std::string kickMessage = " KICK " + channel.getName() + " " + kicked->getNickname() + ":" + reason;
 	std::string message = id + kickMessage;
-	broadcast(findChannel->second, findUser->second, message);
+	
+	// Send message
+	broadcast(channel, kicked, message);
 	notification(kicked, "You've been kicked from the channel");
 }

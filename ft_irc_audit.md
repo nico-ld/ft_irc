@@ -16,7 +16,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → Add a `MAX_CLIENTS` constant and reject `accept()` past it; optionally track a `map<ip,count>` for a per-IP cap.
 
 ### includes/Parser.hpp
-- ⚪ **Parser is entirely static/shared, mutable global state (`_prefix`, `_command`, `_parameters`…).**  
+- **_[FIXED]_** ⚪ **Parser is entirely static/shared, mutable global state (`_prefix`, `_command`, `_parameters`…).**  
   This works only because the loop is single-threaded and strictly sequential; it's a latent trap the moment anyone parallelizes I/O.
   It also makes the parser impossible to unit-test in isolation from the rest of the program.
   → Make `Parser::parse()` return a `ParsedMessage` value/struct instead of stashing results in static members.
@@ -97,46 +97,46 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   That ambiguity lets a second client "shadow" an existing nick — private messages or kicks aimed at one user can resolve to the wrong socket, which is an impersonation/message-interception risk, not just a cosmetic bug.
   → Validate against RFC nick-name grammar and reject with `ERR_ERRONEUSNICKNAME` (432); reject duplicates with `ERR_NICKNAMEINUSE` (433) via a lookup before accepting the new nick.
 
-- 🟡 **`checkNameChannel()` / `getlistChannel()` don't handle empty or malformed names safely.**  
+- **_[FIXED]_** ~~🟡 **`checkNameChannel()` / `getlistChannel()` don't handle empty or malformed names safely.**~~  
   `checkNameChannel` indexes `nameChannel[0]` without checking the string isn't empty, and a channel list like `"#a,,#b"` silently produces an empty-named `Channel`.
   Depending on standard-library behavior this is undefined access on an empty string, and empty-named channels can end up stored in `_channels`, corrupting later lookups.
   → Guard with `if (nameChannel.empty()) return false;` and skip zero-length tokens when splitting comma lists.
 
 ### src/parser/Parser/ParserInit.cpp
-- 🟡 **No `QUIT` command and no `PING`/`PONG` keep-alive support.**  
+- **_[NICO TASK]_** 🟡 **No `QUIT` command and no `PING`/`PONG` keep-alive support.**  
   The command tables only cover join/kick/invite/topic/mode/part, privmsg/notice(unhandled), and user/nick/pass — there's no graceful disconnect command and no liveness check.
   Dead or NAT-dropped connections never get cleaned up (no way to detect them), slowly leaking fds and memory, and other clients never see a proper "X has quit" message.
   → Add `quit` to `_commandsUser` (broadcast a quit message, then `removeUser()`), and implement periodic `PING`/expect-`PONG` with a timeout-based disconnect.
 
 ### src/commands/Join.cpp
-- 🟠 **No limit on how many channels one user can join.**  
+- **_[FIXED]_** ~~🟠 **No limit on how many channels one user can join.**~~  
   `ERR_TOOMANYCHANNELS` (405) is defined in `Replies.hpp` but never used anywhere — a single client can `JOIN` an unbounded number of channels.
   Each joined channel consumes memory and grows every broadcast fan-out for that user, so this is a straightforward resource-exhaustion vector.
   → Track a per-user join count and reject further `JOIN`s past a reasonable cap (e.g. 10–20) with 405.
 
-- ⚪ **Off-by-one inconsistency between the two `join()` overloads for `+l`.**  
+- **_[FIXED]_** ~~⚪ **Off-by-one inconsistency between the two `join()` overloads for `+l`.**~~  
   The no-key overload rejects at `getMemberCount() >= getUserLimit()`, the keyed overload rejects at `> getUserLimit()` — the keyed path lets a channel exceed its own limit by one member.
   This is a small correctness gap, but it means the `+l` mode isn't reliably enforced depending on which join path a client takes.
   → Use the same `>=` comparison in both overloads.
 
-- ⚪ **`broadcast()` fires before `addMember()` in the keyed-join path.**  
+- **_[FIXED]_** ~~⚪ **`broadcast()` fires before `addMember()` in the keyed-join path.**~~  
   The joining member is notified of their own join *before* they're actually in `_members`, and other members receive the message off-order relative to the actual state change.
   It's mostly cosmetic today, but it's the kind of ordering bug that turns into a real race once writes become asynchronous (see the unused `NetworkBuffer` in Part 3).
   → Call `addMember()` first, then `broadcast()`, consistently in both overloads.
 
 ### src/commands/Part.cpp
-- 🔴 **`part(vector<Channel>&, User*)` dereferences `_channels.find()` without checking for `end()`.**  
+- **_[FIXED]_** 🔴 **`part(vector<Channel>&, User*)` dereferences `_channels.find()` without checking for `end()`.**  
   If a client sends `PART` for a channel name that doesn't exist in `_channels`, `getChan->second` dereferences the end iterator directly.
   This is undefined behavior reachable from a single, unauthenticated, one-line client message — a trivial remote crash/DoS.
   → Add `if (getChan == _channels.end()) { notification(...ERR_NOSUCHCHANNEL 403...); throw ...; }` before touching `getChan->second`, matching the pattern already used in `Kick.cpp`/`Mode.cpp`.
 
-- 🟠 **`part(vector<Channel>&, std::string reason, User*)` operates on throwaway local `Channel` copies instead of the real channel in `_channels`.**  
+- **_[NICO TASK]_** 🟠 **`part(vector<Channel>&, std::string reason, User*)` operates on throwaway local `Channel` copies instead of the real channel in `_channels`.**  
   The `it` iterator here comes straight from `Parser::getlistChannel()` — a freshly-constructed `Channel` with no members ever added — so `it->isMember(...)` is always false and the reasoned-PART feature can never succeed for a real user.
   If this gets "fixed" naively by removing the `isMember` guard, the code would then call `it->getMembers().empty()` (always true on the local copy) and `_channels.erase(it->getName())`, deleting the *real* channel even while it still has members — turning a broken feature into a data-loss bug.
   → Rewrite this overload to `_channels.find(it->getName())` first (exactly like the other `part()` overload) and operate on that entry, not on the parser's temporary object.
 
 ### src/commands/Kick.cpp
-- 🟡 **The kicked user's `_joinedChannels` list isn't updated, and the reply code is semantically wrong.**  
+- **_[FIXED]_** ~~🟡 **The kicked user's `_joinedChannels` list isn't updated, and the reply code is semantically wrong.**~~  
   `removeMember()` cleans up the `Channel` side, but nothing calls `kicked->leaveChannel(...)`; separately, "user not on channel" replies with `442 ERR_NOTONCHANNEL`, which per RFC means *"you (the sender) aren't on that channel"*, not *"the target isn't"* — that's `441 ERR_USERNOTINCHANNEL`.
   The first leaves user-side state stale (ties into the Part 1 finding on unused `joinChannel`/`leaveChannel`); the second will confuse any real IRC client trying to interpret the reply.
   → Call `kicked->leaveChannel(channel.getName())` alongside `removeMember()`, and swap the reply code to 441.
@@ -192,7 +192,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   → On repeated/fatal send errors (e.g. `EPIPE`, `ECONNRESET`), call the same cleanup path as `removeUser()` for that client.
 
 ### src/Replies/Replies.cpp
-- 🟡 **`Server::sendReply()` — the only function that builds an RFC-2812-correct numeric reply (`:server CODE nick <text>\r\n`) — is defined but never called anywhere.**  
+- **_[WORK IN PROGRESS (nico)]_** 🟡 **`Server::sendReply()` — the only function that builds an RFC-2812-correct numeric reply (`:server CODE nick <text>\r\n`) — is defined but never called anywhere.**  
   Every actual error/reply in the codebase goes through `notification()` with hand-rolled strings like `"473 ERR_INVITEONLYCHAN"`, which is not a valid IRC protocol line — no `:server` prefix, no proper spacing, and the macro name is sent literally instead of a human-readable message.
   Real IRC clients (irssi, WeeChat, HexChat…) parse replies by position and numeric code; they won't recognize these as server replies at all, so anything beyond a raw `nc` test client will show garbled or missing errors.
   → Replace every `notification(user, "<code> <MACRO_NAME>")` call across `commands/` with `sendReply(user, CODE, "<proper trailing text>")`, using the numerics already defined in `Replies.hpp`.

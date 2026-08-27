@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 12:07:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/19 12:10:46 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/26 13:38:53 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "User.hpp"
 #include <cstdio>
 
-void Server::sendReply(User &user, const std::string &code, const std::string &rest) {
+void Server::sendReply(const User &user, const std::string &code, const std::string &rest) {
 	std::string nick = user.getNickname();
 	if (nick.empty())
 		nick = "*";

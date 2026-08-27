@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/19 12:11:03 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/26 13:44:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,7 @@
 #define BUFFER_SIZE 512
 #define loop while(1)
 
-// Forward declarations to avoid circular dependency
-// class User;
-// class Channel;
+class Parser;
 
 class Server
 {
@@ -85,6 +83,7 @@ class Server
 		/* > Delete the channel */
 		void removeChannel(const std::string &name);
 		
+		
 		// === GETTERS & SETTERS ===
 		/* > Return the server port */
 		int getPort() const { return (_port); }
@@ -101,17 +100,29 @@ class Server
 		/* > Return a Channel object */
 		Channel *getChannelByName(const std::string &name);
 		
-		// COMMANDES 
-		void join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client);
-		void join(std::vector<Channel> &listChannel, User *client);
-		void kick(Channel &channel, User *kicked, const User *op);
-		void kick(Channel &channel, User *kicked, std::string reason, const User *op);
-		void topic(const Channel &channel, User *user);
-		void topic(Channel &channel, std::string newTopic, User *user);
-		void part(std::vector<Channel> &channels, User *user);
-		void part(std::vector<Channel> &channels, std::string reason, User *user);
-		void invite(const std::string &nickname, Channel &channel, const User *user);
-		void mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params = std::vector<std::string>());
+		
+		// === COMMANDS ===
+		// JOIN
+		void join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client, Parser &parser);
+		void join(std::vector<Channel> &listChannel, User *client, Parser &parser);
+
+		// KICK
+		void kick(Channel &channel, User *kicked, const User *op, Parser &parser);
+		void kick(Channel &channel, User *kicked, std::string reason, const User *op, Parser &parser);
+
+		// TOPIC
+		void topic(const Channel &channel, User *user, Parser &parser);
+		void topic(Channel &channel, std::string newTopic, User *user, Parser &parser);
+
+		// PART
+		void part(std::vector<Channel> &channels, User *user, Parser &parser);
+		void part(std::vector<Channel> &channels, std::string reason, User *user, Parser &parser);
+
+		// INVITE
+		void invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser);
+
+		// MODE
+		void mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params = std::vector<std::string>(), Parser &parser);
 		void launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user);
 
 		// Message
@@ -125,7 +136,7 @@ class Server
 
 		// === NULERIC REPLIES ===
 		/* > Send to User a numeric reply of last command */
-		void	sendReply(User &user, const std::string &code, const std::string &rest);
+		void	sendReply(const User &user, const std::string &code, const std::string &rest);
 };
 
 #endif

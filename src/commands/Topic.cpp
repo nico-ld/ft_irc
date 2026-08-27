@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 15:31:36 by afons             #+#    #+#             */
-/*   Updated: 2026/08/03 17:00:48 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/27 08:30:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,39 +18,24 @@
 
 // Shared guard for both overloads: the channel name must be well-formed and
 // the caller must actually be in the channel before any topic access.
-static void checkTopicAccess(const Channel &channel, User *user, Server &server) {
-	if (!Parser::checkNameChannel(channel.getName())) {
-		server.notification(user, "Name channel must start with #");
-		throw std::runtime_error("[LOG] Name channel must start with #");
-	}
-
-	if (!channel.isMember(user->getFd())) {
-		server.notification(user, "442 ERR_NOTONCHANNEL");
-		throw std::runtime_error("[LOG] User is not on channel");
-	}
-}
-
-// TOPIC #chan : read the current topic
 void Server::topic(const Channel &channel, User *user) {
-	checkTopicAccess(channel, user, *this);
-
-	if (channel.getTopic().empty()) {
-		notification(user, "331 RPL_NOTOPIC");
-		return ;
-	}
-	notification(user, channel.getTopic());
+	if (channel.getTopic().empty())
+		sendReply(*user, RPL_NOTOPIC, "No Topic setted on this channel");
+	else
+		sendReply(*user, RPL_TOPIC, "Channel topic is : " + channel.getTopic());
 }
 
 // TOPIC #chan :new topic : change the topic
 void Server::topic(Channel &channel, std::string newTopic, User *user) {
-	checkTopicAccess(channel, user, *this);
-
-	// Hypothesis of +t set, where only operators may change the topic
-	if (channel.isTopicRestricted() && !channel.isOperator(user->getFd())) {
-		notification(user, "482 ERR_CHANOPRIVSNEEDED");
-		throw std::runtime_error("[LOG] User is not operator");
+	// Check is mode topic restricted is enabled (+t)
+	if (channel.isTopicRestricted()) {
+		if (!channel.isOperator(user->getFd())) {
+			sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need operator priviledge to do this");
+			throw std::runtime_error("[LOG] User is not operator");
+		}
 	}
 
+	// Set new topic
 	channel.setTopic(newTopic);
 	std::string message = "New topic of the channel: " + channel.getTopic() + "\r\n";
 	broadcast(channel, message);
