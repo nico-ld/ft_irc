@@ -53,9 +53,15 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			i++;
 			while((*it_modestring)[i]) {
 			    // i : Make the room invite-only
-				if ((*it_modestring)[i] == 'i') channel.setInviteOnly(true);
+				if ((*it_modestring)[i] == 'i') {
+					channel.setInviteOnly(true);
+					broadcast(channel, "Invite mode activated.");
+				}
 				// t : Restrict room topics to administrators choice
-				else if ((*it_modestring)[i] == 't') channel.setTopicRestricted(true);
+				else if ((*it_modestring)[i] == 't') {
+					channel.setTopicRestricted(true);
+					broadcast(channel, "Topic mode activated.");
+				}
 				// k : Set a room password
 				else if ((*it_modestring)[i] == 'k') {
 					if (params.size() <= 0) {
@@ -63,6 +69,8 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 						throw std::runtime_error("need argument");
 					}
 					channel.setKey(*it_params);
+					std::string message = "New topic of the channel: " + *it_params;
+					broadcast(channel, message);
 					it_params++;
 				}
 
@@ -77,6 +85,8 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					int limit;
 					ss >> limit;
 					channel.setUserLimit(limit);
+					std::string message = "New limite of user for the channel: " + *it_params;
+					broadcast(channel, message);
 					it_params++;
 				}
 
@@ -87,6 +97,8 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 						throw std::runtime_error("need argument");
 					}
 					channel.addOperator(user);
+					std::string message = "New operator on the channel: " + user->getNickname();
+					broadcast(channel, message);
 				}
 				// Reject unrecognized settings letter
 				else {
