@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/08/27 08:44:27 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 10:41:20 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 
 			// Reject unrecognized settings letter before anything has been applied
 			if (c != 'i' && c != 't' && c != 'k' && c != 'l' && c != 'o') {
-				sendReply(*user, ERR_UMODEUNKNOWNFLAG, "Unknow MODE flag");
+				sendReply(*user, ERR_UNKNOWNMODE, "Unknow MODE flag");
 				throw std::runtime_error("[LOG] This mode doesn't exist");
 			}
 
@@ -83,7 +83,8 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			if (!needsParam) continue;
 
 			if (it_params == params.end()) {
-				std::string message = "Need more param for " + c;
+				std::string message = "Need more param for ";
+				message += c;
 				message.append(" mode");
 				sendReply(*user, ERR_NEEDMOREPARAMS, message);
 				throw std::runtime_error("[LOG] need argument");
@@ -106,7 +107,7 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					throw std::runtime_error("[LOG] No such nick");
 				}
 				if (!channel.isMember(target->getFd())) {
-					sendReply(*user, ERR_USERNOTINCHANNEL, "User " + *it_params + "' isn't on this channel");
+					sendReply(*user, ERR_USERNOTINCHANNEL, "User '" + *it_params + "' isn't on this channel");
 					throw std::runtime_error("[LOG] User not in channel");
 				}
 			}
@@ -161,7 +162,7 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 void Server::mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params) {
 	// Ensure the user requesting changes is a room administrator
 	if (!channel.isOperator(user->getFd())) {
-		sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need channel operator priviledge to do this");
+		sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need channel operator privilege to do this");
 		throw std::runtime_error("[LOG] You're not channel operator");
 	}
 

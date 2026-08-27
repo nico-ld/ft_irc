@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/26 10:26:44 by nico             ###   ########.fr        #
+#    Updated: 2026/08/27 10:12:59 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,6 +46,7 @@ COMMANDS	:= \
 CORE		:= \
 				$(CORE_DIR)Channel.cpp \
 				$(CORE_DIR)Server.cpp \
+				$(CORE_DIR)ServerHelper.cpp \
 				$(CORE_DIR)User.cpp
 
 NETWORK		:= \

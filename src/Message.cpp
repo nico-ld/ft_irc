@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 15:07:48 by afons             #+#    #+#             */
-/*   Updated: 2026/08/03 17:02:28 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/27 10:16:09 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void Server::notification(const User *user, std::string message) {
 
 void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message) {
 	if (!channel.isMember(src->getFd())) {
-		notification(src, "442 ERR_NOTONCHANNEL");
+		sendReply(*src, ERR_NOTONCHANNEL, "You're not in this channel");
 		throw std::runtime_error("User not on the channel.");
 	}
 	std::string privateMessage = channel.getName() + "-> " + src->getNickname() + ": " + message + "\r\n";

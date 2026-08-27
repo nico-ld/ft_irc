@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/08/26 16:50:25 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 10:44:47 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void Server::kick(Channel &channel, User *kicked, const User *op, Parser &parser
 	
 	// Check if sender get operator rights
 	else if (!channel.isOperator(op->getFd())) {
-		sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator priviledge to do this");
-		throw std::runtime_error("[LOG] Sender doesn't get operator priviledge");
+		sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator privilege to do this");
+		throw std::runtime_error("[LOG] Sender doesn't get operator privilege");
 	}
 
 	// Check if target is on the channel
@@ -58,8 +58,8 @@ void Server::kick(Channel &channel, User *kicked, std::string reason, const User
 	
 	// Check if sender get operator rights
 	else if (!channel.isOperator(op->getFd())) {
-		sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator priviledge to do this");
-		throw std::runtime_error("[LOG] Sender doesn't get operator priviledge");
+		sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator privilege to do this");
+		throw std::runtime_error("[LOG] Sender doesn't get operator privilege");
 	}
 
 	// Check if target is on the channel
