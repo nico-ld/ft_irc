@@ -6,13 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:53:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 14:19:55 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 16:55:18 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Dashboard.hpp"
 
-std::string convertIntToString(int num) {
+std::string toStr(int num) {
 	std::ostringstream oss;
 	oss << num;
 	return (oss.str());

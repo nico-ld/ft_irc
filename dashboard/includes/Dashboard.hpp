@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 16:00:49 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 17:15:26 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 #include <vector>
 #include <ctime>
 #include <iostream>
+#include <iterator>
+
+#define INNER_WIDTH 53 // Between two vertical border
+#define COL_WIDTH 25 // width of each half in two-column rows
 
 struct t_column {
 	std::string	title;
@@ -66,9 +70,13 @@ class Dashboard
 		/* > Display the dashboard with given information */
 		void render( void ) const;
 
-		/* > print the title of the dashboard */
+		/* > Print the title of the dashboard */
 		void printDashTitle( void ) const;
+
+		/* > Print the header of section */
+		void printSectionHeader(size_t index) const;
 		
+		void printDashBottom( void ) const;
 		
 		// === GETTERS ===
 		/* > Return the number of lines with every sections */
@@ -112,12 +120,12 @@ class Dashboard
 
 		// === BOOLEAN ===
 		/* > Check information on section, return True if everything is correct, otherwise False */
-		bool isSectionValid(t_section &section) const;
+		bool isSectionValid(t_section &section);
 		
 };
 
 /* > Convert an Int into a string to use it in message or in dashboard */
-std::string convertIntToString(int num);
+std::string toStr(int num);
 
 /* > Return current time as a string in Hours:Minutes:Seconds format */
 std::string timestamp();

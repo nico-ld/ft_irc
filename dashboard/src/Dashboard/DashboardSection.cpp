@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:34:27 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 15:53:20 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 17:19:59 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 // === METHODS === 
 void Dashboard::addSection(t_section &newSection) {
 	// Check if section is valid
-	if (!isSectionValid(newSection))
+	if (!isSectionValid(newSection)) {
+		log(ERROR_LVL, "Invalid section, aborting addSection");
 		return ;
+	}
 	
 	// Check if title is available
 	if (getSectionByTitle(newSection.title))
@@ -62,8 +64,10 @@ t_section *Dashboard::getSectionByIndex(size_t index) {
 
 // === SETTERS ===
 void Dashboard::setSection(std::string &title, t_section &newSection) {
-	if (!isSectionValid(newSection))
+	if (!isSectionValid(newSection)) {
+		log(ERROR_LVL, "Invalid section, aborting setSection for section named " + title);
 		return ;
+	}
 
 	for (size_t index = 0; index < _sectionList.size(); ++index) {
 		if (_sectionList[index].title == title) {
@@ -76,8 +80,10 @@ void Dashboard::setSection(std::string &title, t_section &newSection) {
 }
 
 void Dashboard::setSection(size_t index, t_section &newSection) {
-	if (!isSectionValid(newSection))
+	if (!isSectionValid(newSection)) {
+		log(ERROR_LVL, "Invalid section, aborting setSection for index " + toStr(index));
 		return ;
+	}
 	else if (index >= _sectionList.size())
 		addSection(newSection);
 	else
@@ -85,7 +91,7 @@ void Dashboard::setSection(size_t index, t_section &newSection) {
 }
 
 // === BOOLEAN ===
-bool Dashboard::isSectionValid(t_section &section) const {
+bool Dashboard::isSectionValid(t_section &section) {
 	// Sections must have a title
 	if (section.title.empty())
 		return (false);

@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/27 13:50:51 by nico             ###   ########.fr        #
+#    Updated: 2026/08/27 17:04:45 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,11 +26,22 @@ YELLOW		:= \033[93m
 
 # ~~ Sources dir ~~
 SRC_DIR		:= src/
-
+DASH_DIR	:= $(SRC_DIR)Dashboard/
+HELP_DIR	:= $(SRC_DIR)helper/
 # ~~ Sources files ~~
 
+DASHBOARD	:= \
+				$(DASH_DIR)Dashboard.cpp \
+				$(DASH_DIR)DashboardRender.cpp \
+				$(DASH_DIR)DashboardRenderHelper.cpp \
+				$(DASH_DIR)DashboardSection.cpp
+
+HELPER		:= $(HELP_DIR)helper.cpp
+
 SRC			:= \
-				main.cpp
+				$(HELPER) \
+				$(DASHBOARD) \
+				$(SRC_DIR)main.cpp
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/
