@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 14:34:50 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 15:16:32 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 15:23:04 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,16 @@ void Dashboard::printTwoElemList(size_t index) const {
 
 	// Print left title
 	std::string title;
-	title = (leftColumn.elemListTitle.size() > COL_WIDTH - 3) ? leftColumn.elemListTitle.substr(0, COL_WIDTH - 4).append(".") : leftColumn.elemListTitle;
-	std::cout << "│ " << title << " :" << std::string(COL_WIDTH - 3 - title.size(), ' ') << " | ";
-	
+	if (!leftColumn.elemList.empty()) {
+		title = (leftColumn.elemListTitle.size() > COL_WIDTH - 3) ? leftColumn.elemListTitle.substr(0, COL_WIDTH - 4).append(".") : leftColumn.elemListTitle;
+		std::cout << "│ " << title << " :" << std::string(COL_WIDTH - 3 - title.size(), ' ') << " | ";
+	}
+
 	// Print right title
-	title = (rightColumn.elemListTitle.size() > COL_WIDTH - 3) ? rightColumn.elemListTitle.substr(0, COL_WIDTH - 4).append(".") : rightColumn.elemListTitle;
-	std::cout << title << " :" << std::string(COL_WIDTH - 3 - title.size(), ' ') << " │\n";
+	if (!rightColumn.elemList.empty()) {
+		title = (rightColumn.elemListTitle.size() > COL_WIDTH - 3) ? rightColumn.elemListTitle.substr(0, COL_WIDTH - 4).append(".") : rightColumn.elemListTitle;
+		std::cout << title << " :" << std::string(COL_WIDTH - 3 - title.size(), ' ') << " │\n";
+	}
 
 	size_t leftListIndex = 0;
 	size_t leftElemIndex = 0;
@@ -91,7 +95,7 @@ void Dashboard::printTwoElemList(size_t index) const {
 		std::cout << " | ";
 
 		// Print right
-		if (!newRightLine && rightListIndex < leftColumn.elemList.size()) {
+		if (!newRightLine && rightListIndex < rightColumn.elemList.size()) {
 			// Print content
 			std::cout << createInfo(rightColumn.elemList[rightListIndex][rightElemIndex].first, rightColumn.elemList[rightListIndex][rightElemIndex].second);
 			

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 15:20:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 15:00:14 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 15:40:25 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,6 @@ void Dashboard::render( void ) const {
 			t_section section = _sectionList[index];
 			printSectionHeader(index);
 			
-			// Check if there is a second column
-			if (section.secondColumn) {
-				if (!section.leftColumn.infoList.empty() || !section.rightColumn.infoList.empty())
-					printTwoColumn(index);
-				if (!section.leftColumn.elemList.empty() || !section.rightColumn.elemList.empty())
-					printTwoElemList(index);
-			}
-			else {
-				if (!section.leftColumn.infoList.empty() || !section.rightColumn.infoList.empty())
-					printColumn(index);
-				if (!section.leftColumn.elemList.empty() || !section.rightColumn.elemList.empty())
-					printElemList(index);
-			}
 			
 			// Print separator
 			if (index + 1 < _sectionList.size())

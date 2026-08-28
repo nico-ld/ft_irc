@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 15:01:05 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 16:32:14 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@
 #define SEP_WIDTH 3 // Width of separator between two column
 
 struct t_column {
+	bool		hasTitle;
+	bool		hasSimpleInfo;
+	bool		hasElemList;
+	bool		hasContent;
 	std::string	title;
 	std::string elemListTitle;
 	std::vector<std::pair<std::string, std::string> > infoList;
@@ -34,11 +38,13 @@ struct t_column {
 };
 
 struct t_section {
-	bool		secondColumn;
+	bool		hasLeftColumn;
+	bool		hasRightColumn;
+	bool		hasMainInfo;
 	t_column	leftColumn;
 	t_column	rightColumn;
 	std::string	title;
-	std::pair<std::string, std::string>	mainStatInfo;
+	std::pair<std::string, std::string>	mainInfo;
 };
 
 class Dashboard
@@ -136,9 +142,15 @@ class Dashboard
 
 
 		// === BOOLEAN ===
-		/* > Check information on section, return True if everything is correct, otherwise False */
+		/* > Check information on section, return True if everything is correct, otherwise False. 
+		Also it trigger every flags in function of each element detected */
 		bool isSectionValid(t_section &section);
 		
+		/* > Check section title and main information */
+		bool sectionInfoValid(t_section &section);
+
+		/* > Check column informations */
+		bool columnInfoValid(t_column &column, std::string sectionTitle);
 };
 
 /* > Convert an Int into a string to use it in message or in dashboard */
