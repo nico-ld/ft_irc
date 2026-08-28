@@ -6,11 +6,12 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 15:18:54 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 09:53:45 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 10:16:45 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Dashboard.hpp"
+#include <unistd.h>
 
 int main(void) {
 	t_section section;
@@ -27,8 +28,22 @@ int main(void) {
 	userPart.leftColumn.infoList.push_back(std::make_pair("Users", "42"));
 	
 	Dashboard dash("ircserv", "ircserv.log");
+	dash.render();
+	
+	sleep(2);
+	
 	dash.addSection(section);
 	dash.addSection(userPart);
+
+	dash.render();
+
+	sleep(2);
+	
+	t_section userPart2;
+	userPart2.title = "USER";
+	userPart2.leftColumn.infoList.push_back(std::make_pair("Users", "72"));
+
+	dash.setSection(userPart.title, userPart2);
 
 	dash.render();
 }

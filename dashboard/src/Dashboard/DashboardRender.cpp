@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 15:20:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 09:54:26 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 10:16:22 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,28 @@
 // === MAIN METHOD ===
 // 
 void Dashboard::render( void ) const {
+	eraseScreen();
+	
 	printDashTitle();
 
-	for (size_t index = 0; index < _sectionList.size(); ++index) {
-		t_section section = _sectionList[index];
-		printSectionHeader(index);
-		
-		// Check if there is a second column
-		if (section.secondColumn)
-			printTwoColumn(index);
-		else
-			printColumn(index);
+	if (_sectionList.empty()) {
+		std::cout << "│" << std::string(INNER_WIDTH, ' ') << "│\n";
+		std::cout << "│" << centerText("No section added", INNER_WIDTH) << "│\n";
+	}
+	else {
+		for (size_t index = 0; index < _sectionList.size(); ++index) {
+			t_section section = _sectionList[index];
+			printSectionHeader(index);
 			
-		if (index + 1 < _sectionList.size())
-			printSeparator();
+			// Check if there is a second column
+			if (section.secondColumn)
+				printTwoColumn(index);
+			else
+				printColumn(index);
+				
+			if (index + 1 < _sectionList.size())
+				printSeparator();
+		}
 	}
 
 	printDashBottom();

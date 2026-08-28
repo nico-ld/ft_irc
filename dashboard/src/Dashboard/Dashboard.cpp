@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:07:04 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 17:19:36 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 10:02:16 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 // === Constructor & Destructor ===
 Dashboard::Dashboard(std::string title, std::string logPath) : _title(title), _logPath(logPath)
 {
+	// Clear screen to only display the dashboard
+	std::cout << setCursor(1, 1) << SCREEN_CLEAR;
+	
 	// Open _logFile
 	_logFile.open(_logPath.c_str(), std::ios::app);
 	if (!_logFile.is_open())
@@ -60,4 +63,15 @@ int Dashboard::log(const std::string &level, const std::string &message)
 
 	_logFile.close();
 	return (0);
+}
+
+void Dashboard::eraseScreen( void ) const {
+	int nbLines = getNbLines();
+	std::cout << setCursor(1, 1);
+	
+	for (int i = 0; i < nbLines; ++i) {
+		std::cout << RIGHT_CLEAR << moveDown(1);
+	}
+
+	std::cout << setCursor(1, 1);
 }

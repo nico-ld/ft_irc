@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 08:59:31 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 10:14:42 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,9 @@ class Dashboard
 
 		/* > Write log into log file, return -1 on error */
 		int		log(const std::string &level, const std::string &message);
+
+		/* > Erase the full screen to draw the new dashboard */
+		void	eraseScreen( void ) const;
 
 		
 		/*===========================*\
@@ -144,4 +147,4 @@ std::string toStr(int num);
 std::string timestamp();
 
 /* > Return a text centered */
-std::string centerText(std::string &text, size_t width);
+std::string centerText(std::string text, size_t width);

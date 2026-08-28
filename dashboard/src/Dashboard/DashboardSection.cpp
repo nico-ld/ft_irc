@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:34:27 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 17:31:07 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 10:10:44 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ t_section *Dashboard::getSectionByIndex(size_t index) {
 // === SETTERS ===
 void Dashboard::setSection(std::string &title, t_section &newSection) {
 	if (!isSectionValid(newSection)) {
-		log(ERROR_LVL, "Invalid section, aborting setSection for section named " + title);
+		log(DEBUG, "Invalid section, aborting setSection for section named " + title);
 		return ;
 	}
 
@@ -93,13 +93,16 @@ void Dashboard::setSection(size_t index, t_section &newSection) {
 // === BOOLEAN ===
 bool Dashboard::isSectionValid(t_section &section) {
 	// Sections must have a title
-	if (section.title.empty())
+	if (section.title.empty()){
+		log(ERROR_LVL, "Invalid section : missing title");
 		return (false);
+	}	
 	
 	// Sections must have somes content
 	if (section.leftColumn.infoList.empty() && section.leftColumn.elemInfoList.empty()) {
-		if (section.rightColumn.infoList.empty() && section.rightColumn.elemInfoList.empty())
-			return (false);
+		if (section.rightColumn.infoList.empty() && section.rightColumn.elemInfoList.empty()) {
+			log(ERROR_LVL, "Empty section : need at least 1 content");
+		}
 		
 		// In case of empty left column, change right column to left
 		if (!section.rightColumn.infoList.empty()) {
