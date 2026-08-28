@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 15:45:41 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 16:32:58 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 17:50:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,12 @@ bool Dashboard::columnInfoValid(t_column &column, std::string sectionTitle) {
 
 	// Check if element list get element of same size everywhere
 	if (column.hasElemList) {
+		// Check title
+		if (column.elemListTitle.empty()) {
+			log(ERROR_LVL, "Invalid element [" + sectionTitle + "] : Missing title for element list");
+			return (false);
+		}
+		
 		// Take first size as reference
 		size_t refSize = column.elemList[0].size();
 		

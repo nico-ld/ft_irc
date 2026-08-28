@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/28 15:18:32 by nico             ###   ########.fr        #
+#    Updated: 2026/08/28 18:03:05 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,21 +27,32 @@ YELLOW		:= \033[93m
 # ~~ Sources dir ~~
 SRC_DIR		:= src/
 DASH_DIR	:= $(SRC_DIR)dashboard/
+REND_DIR	:= $(SRC_DIR)render/
+SECT_DIR	:= $(SRC_DIR)sections/
 HELP_DIR	:= $(SRC_DIR)helper/
 # ~~ Sources files ~~
 
 DASHBOARD	:= \
 				$(DASH_DIR)Dashboard.cpp \
-				$(DASH_DIR)DashboardRender.cpp \
-				$(DASH_DIR)DashboardRenderHelper.cpp \
-				$(DASH_DIR)DashboardSection.cpp \
 				$(DASH_DIR)DashboardElemList.cpp
 
 HELPER		:= $(HELP_DIR)helper.cpp
 
+RENDER		:= \
+				$(REND_DIR)Render.cpp \
+				$(REND_DIR)RenderHelper.cpp \
+				$(REND_DIR)RenderColumn.cpp \
+				$(REND_DIR)RenderTitles.cpp
+
+SECTIONS	:= \
+				$(SECT_DIR)SectionCore.cpp \
+				$(SECT_DIR)SectionParser.cpp
+
 SRC			:= \
-				$(HELPER) \
 				$(DASHBOARD) \
+				$(HELPER) \
+				$(RENDER) \
+				$(SECTIONS) \
 				$(SRC_DIR)main.cpp
 
 # ~~ Objects ~~

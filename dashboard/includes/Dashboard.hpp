@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 16:32:14 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 18:01:09 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,19 +84,17 @@ class Dashboard
 		void render( void ) const;
 
 		/* > Print the header of section */
-		void printSectionHeader(size_t index) const;
+		void printSectionHeader(t_section &section) const;
 
-		/* > Print the information column */
-		void printColumn(size_t index) const;
+		/* > Print columns titles if necessary */
+		void printColumnsTitles(t_section &section) const;
 
-		/* > Print the information of two columns */
-		void printTwoColumn(size_t index) const;
+		/* > Print content line by line */
+		void printSectionContent(t_section &section) const;
 
-		/* > Print elemList content */
-		void printElemList(size_t index) const;
+		/* > Print only one column */
+		void oneColumnCase(t_column &column) const;
 
-		/* > Print elemList left and right */
-		void printTwoElemList(size_t index) const;
 		
 		// === GETTERS ===
 		/* > Return the number of lines with every sections */

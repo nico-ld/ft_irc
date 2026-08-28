@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DashboardRenderHelper.cpp                          :+:      :+:    :+:   */
+/*   RenderHelper.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 15:35:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 15:00:21 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 16:44:33 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,33 +63,5 @@ int Dashboard::getNbLines( void ) const {
 	
 	// Return number of lines
 	return (nbLines);
-}
-
-std::string centerText(std::string text, size_t width) {
-	if (text.size() >= width)
-		return (text);
-
-	size_t total = width - text.size();
-	size_t left = total / 2;
-	size_t right = total - left;
-	return (std::string(left, ' ') + text + std::string(right, ' '));
-}
-
-std::string createInfo(std::string key, std::string value) {
-	const size_t maxWidth = (COL_WIDTH - 2) / 2;
-
-	// Get size
-	size_t leftWidth = (maxWidth < key.size()) ? maxWidth : key.size();
-	size_t rightWidth = (maxWidth < value.size()) ? maxWidth : value.size();
-	size_t totalWidth = leftWidth + rightWidth + SEP_WIDTH;
-
-	// Trim element
-	if (key.size() > maxWidth)
-		key = key.substr(0, maxWidth - 1).append(".");
-	if (value.size() > maxWidth)
-		value = value.substr(0, maxWidth - 1).append(".");
-
-	// Return element
-	return (key + " : " + value + std::string(COL_WIDTH - 1 - totalWidth, ' '));
 }
 
