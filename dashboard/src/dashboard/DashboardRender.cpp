@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 15:20:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 10:16:22 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 15:00:14 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,13 @@
 void Dashboard::render( void ) const {
 	eraseScreen();
 	
-	printDashTitle();
+	// Dashboard title
+	std::cout << _title << CYAN " Dashboard" RESET << std::endl;
+
+	// Top border of dashboard
+	std::cout << "┌";
+	std::fill_n(std::ostream_iterator<std::string>(std::cout), INNER_WIDTH, "─");
+	std::cout << "┐\n";
 
 	if (_sectionList.empty()) {
 		std::cout << "│" << std::string(INNER_WIDTH, ' ') << "│\n";
@@ -30,17 +36,34 @@ void Dashboard::render( void ) const {
 			printSectionHeader(index);
 			
 			// Check if there is a second column
-			if (section.secondColumn)
-				printTwoColumn(index);
-			else
-				printColumn(index);
-				
+			if (section.secondColumn) {
+				if (!section.leftColumn.infoList.empty() || !section.rightColumn.infoList.empty())
+					printTwoColumn(index);
+				if (!section.leftColumn.elemList.empty() || !section.rightColumn.elemList.empty())
+					printTwoElemList(index);
+			}
+			else {
+				if (!section.leftColumn.infoList.empty() || !section.rightColumn.infoList.empty())
+					printColumn(index);
+				if (!section.leftColumn.elemList.empty() || !section.rightColumn.elemList.empty())
+					printElemList(index);
+			}
+			
+			// Print separator
 			if (index + 1 < _sectionList.size())
-				printSeparator();
+				std::cout << "│" << std::string(INNER_WIDTH, '-') << "│\n";
 		}
 	}
 
-	printDashBottom();
+	// Print dashboard bottom
+	std::cout << "│" << std::string(INNER_WIDTH, ' ') << "│\n";
+
+	// Print bottom border
+	std::cout << "└";
+	std::fill_n(std::ostream_iterator<std::string>(std::cout), INNER_WIDTH, "─");
+	std::cout << "┘\n";
+	
+	// Print log File info
 	std::cout << std::endl << "Logs -> " << _logPath << " (tail -f " << _logPath << ")" << std::endl;
 }
 
@@ -51,16 +74,6 @@ void Dashboard::render( void ) const {
 // 
 
 // === BORDER ===
-void Dashboard::printDashTitle( void ) const {
-	// Dashboard title
-	std::cout << _title << CYAN " Dashboard" RESET << std::endl;
-
-	// Top border of dashboard
-	std::cout << "┌";
-	std::fill_n(std::ostream_iterator<std::string>(std::cout), INNER_WIDTH, "─");
-	std::cout << "┐\n";
-}
-
 void Dashboard::printSectionHeader(size_t index) const {
 	std::string title = _sectionList[index].title;
 	std::string key = _sectionList[index].mainStatInfo.first;
@@ -89,29 +102,8 @@ void Dashboard::printSectionHeader(size_t index) const {
 	std::cout << " │\n";
 
 	// Print second line
-	std::cout << "│";
-	std::fill_n(std::ostream_iterator<std::string>(std::cout), INNER_WIDTH, " ");
-	std::cout << "│\n";
+	std::cout << "│" << std::string(INNER_WIDTH, ' ') << "│\n";
 }
-
-void Dashboard::printDashBottom( void ) const {
-	// Print last line
-	std::cout << "│";
-	std::fill_n(std::ostream_iterator<std::string>(std::cout), INNER_WIDTH, " ");
-	std::cout << "│\n";
-
-	// Print bottom border
-	std::cout << "└";
-	std::fill_n(std::ostream_iterator<std::string>(std::cout), INNER_WIDTH, "─");
-	std::cout << "┘\n";
-}
-
-void Dashboard::printSeparator( void ) const {
-	std::cout << "│";
-	std::fill_n(std::ostream_iterator<std::string>(std::cout), INNER_WIDTH, "-");
-	std::cout << "│\n";
-}
-
 
 // === SECTION CONTENT ===
 
@@ -170,24 +162,6 @@ void Dashboard::printColumn(size_t index) const {
 		std::cout << "│ " << leftContent << " : " << rightContent 
 				<< std::string((INNER_WIDTH - 2) - totalWidth, ' ') << " │\n";
 	}
-}
-
-static std::string createInfo(std::string key, std::string value) {
-	const size_t maxWidth = (COL_WIDTH - 2) / 2;
-
-	// Get size
-	size_t leftWidth = (maxWidth < key.size()) ? maxWidth : key.size();
-	size_t rightWidth = (maxWidth < value.size()) ? maxWidth : value.size();
-	size_t totalWidth = leftWidth + rightWidth + SEP_WIDTH;
-
-	// Trim element
-	if (key.size() > maxWidth)
-		key = key.substr(0, maxWidth - 1).append(".");
-	if (value.size() > maxWidth)
-		value = value.substr(0, maxWidth - 1).append(".");
-
-	// Return element
-	return (key + " : " + value + std::string(COL_WIDTH - 1 - totalWidth, ' '));
 }
 
 void Dashboard::printTwoColumn(size_t index) const {

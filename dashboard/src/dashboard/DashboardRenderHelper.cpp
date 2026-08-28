@@ -6,13 +6,29 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 15:35:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 10:14:55 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 15:00:21 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Dashboard.hpp"
 
+int Dashboard::getElemLines(t_section section) const {
+	t_column leftColumn = section.leftColumn;
+	t_column rightColumn = section.rightColumn;
 
+	// Get the number of element in the list => number of new line (+ 1)
+	int leftLines = leftColumn.elemList.size();
+	int rightLines = rightColumn.elemList.size();
+
+	// Get number of line with content writtent (minus the +1 line in the previous step)
+	if (leftLines != 0)
+		leftLines += (leftColumn.elemList.size() * leftColumn.elemList[0].size()) - 1;
+	if (rightLines != 0)
+		rightLines += (rightColumn.elemList.size() * rightColumn.elemList[0].size()) - 1;
+	
+	// Return the biggest number
+	return (std::max(leftLines, rightLines));
+}
 
 int Dashboard::getNbLines( void ) const {
 	int nbLines = 4; // Defaults lines
@@ -40,6 +56,9 @@ int Dashboard::getNbLines( void ) const {
 
 		// Add the max line
 		nbLines += std::max(leftLines, rightLines);
+
+		// Add the number of lines in the elemList
+		nbLines += getElemLines(*it);
 	}
 	
 	// Return number of lines
@@ -55,3 +74,22 @@ std::string centerText(std::string text, size_t width) {
 	size_t right = total - left;
 	return (std::string(left, ' ') + text + std::string(right, ' '));
 }
+
+std::string createInfo(std::string key, std::string value) {
+	const size_t maxWidth = (COL_WIDTH - 2) / 2;
+
+	// Get size
+	size_t leftWidth = (maxWidth < key.size()) ? maxWidth : key.size();
+	size_t rightWidth = (maxWidth < value.size()) ? maxWidth : value.size();
+	size_t totalWidth = leftWidth + rightWidth + SEP_WIDTH;
+
+	// Trim element
+	if (key.size() > maxWidth)
+		key = key.substr(0, maxWidth - 1).append(".");
+	if (value.size() > maxWidth)
+		value = value.substr(0, maxWidth - 1).append(".");
+
+	// Return element
+	return (key + " : " + value + std::string(COL_WIDTH - 1 - totalWidth, ' '));
+}
+

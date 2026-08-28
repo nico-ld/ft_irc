@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:07:04 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 10:02:16 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 13:59:13 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ Dashboard::~Dashboard() {
 }
 
 // === METHODS ===
-int Dashboard::log(const std::string &level, const std::string &message)
+int Dashboard::log(const std::string level, const std::string message)
 {
 	if (!_logFile.is_open()) {
 		_logFile.open(_logPath.c_str(), std::ios::app);

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 10:14:42 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 15:01:05 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@
 
 struct t_column {
 	std::string	title;
+	std::string elemListTitle;
 	std::vector<std::pair<std::string, std::string> > infoList;
-	std::vector<std::pair<std::string, std::string> > elemInfoList;
+	std::vector<std::vector<std::pair<std::string, std::string> > > elemList;
 };
 
 struct t_section {
@@ -60,7 +61,7 @@ class Dashboard
 		// === GLOBAL METHODS ===
 
 		/* > Write log into log file, return -1 on error */
-		int		log(const std::string &level, const std::string &message);
+		int		log(const std::string level, const std::string message);
 
 		/* > Erase the full screen to draw the new dashboard */
 		void	eraseScreen( void ) const;
@@ -76,27 +77,27 @@ class Dashboard
 		/* > Display the dashboard with given information */
 		void render( void ) const;
 
-		/* > Print the title of the dashboard */
-		void printDashTitle( void ) const;
-
 		/* > Print the header of section */
 		void printSectionHeader(size_t index) const;
-
-		/* > The bottom border of dashboard */
-		void printDashBottom( void ) const;
-
-		/* > Print a line of '-' between two section */
-		void printSeparator( void ) const;
 
 		/* > Print the information column */
 		void printColumn(size_t index) const;
 
 		/* > Print the information of two columns */
 		void printTwoColumn(size_t index) const;
+
+		/* > Print elemList content */
+		void printElemList(size_t index) const;
+
+		/* > Print elemList left and right */
+		void printTwoElemList(size_t index) const;
 		
 		// === GETTERS ===
 		/* > Return the number of lines with every sections */
 		int	getNbLines( void ) const;
+
+		/* > Return the number of line of the longest element list in the section */
+		int getElemLines(t_section section) const;
 
 		
 		/*===========================*\
@@ -148,3 +149,6 @@ std::string timestamp();
 
 /* > Return a text centered */
 std::string centerText(std::string text, size_t width);
+
+/* > Create a string in right format for a double column situation */
+std::string createInfo(std::string key, std::string value);

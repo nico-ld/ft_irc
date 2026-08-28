@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 09:43:24 by nico              #+#    #+#             */
-/*   Updated: 2026/08/19 08:49:35 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 10:34:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ inline std::string setCursor(int row, int column) {
 /* === PATERNS === */
 #define ERROR RED BOLD "ERROR: " RESET
 #define ROUXBOT BOLD ORANGE "Roux" PURPLE "Bot" RESET
+#define IRCSERV BOLD "IRCserv" RESET
 
 /* === LOG LEVEL === */
 // Server main information
