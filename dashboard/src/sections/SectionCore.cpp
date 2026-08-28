@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DashboardSection.cpp                               :+:      :+:    :+:   */
+/*   SectionCore.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:34:27 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 15:46:06 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 18:29:00 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void Dashboard::addSection(t_section &newSection) {
 		return ;
 	
 	_sectionList.push_back(newSection);
+
+	log(SUCCESS, "Section '" + newSection.title + "' successfully added to dashboard");
 }
 
 void Dashboard::removeSection(std::string &title) {

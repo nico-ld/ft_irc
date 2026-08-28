@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/28 18:03:05 by nico             ###   ########.fr        #
+#    Updated: 2026/08/28 18:16:11 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,8 +33,7 @@ HELP_DIR	:= $(SRC_DIR)helper/
 # ~~ Sources files ~~
 
 DASHBOARD	:= \
-				$(DASH_DIR)Dashboard.cpp \
-				$(DASH_DIR)DashboardElemList.cpp
+				$(DASH_DIR)Dashboard.cpp
 
 HELPER		:= $(HELP_DIR)helper.cpp
 

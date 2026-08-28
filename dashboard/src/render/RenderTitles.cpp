@@ -6,13 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 16:41:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 17:27:30 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 18:11:18 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Dashboard.hpp"
 
-void Dashboard::printSectionHeader(t_section &section) const {
+void Dashboard::printSectionHeader(t_section &section) {
 	std::string title = section.title;
 	std::string key = section.mainInfo.first;
 	std::string value = section.mainInfo.second;
@@ -38,12 +38,13 @@ void Dashboard::printSectionHeader(t_section &section) const {
 	else
 		std::cout << "   "; // Replace sep emplacement by spaces
 	std::cout << " │\n";
-
+	
 	// Print second line
 	std::cout << "│" << std::string(INNER_WIDTH, ' ') << "│\n";
+	_lineWritten += 2;
 }
 
-void Dashboard::printColumnsTitles(t_section &section) const {
+void Dashboard::printColumnsTitles(t_section &section) {
 	t_column leftColumn = section.leftColumn;
 	t_column rightColumn = section.rightColumn;
 
@@ -98,4 +99,5 @@ void Dashboard::printColumnsTitles(t_section &section) const {
 
 		std::cout << "│ " << centerText(leftTitle, COL_WIDTH - 1) << " | " << centerText(rightTitle, COL_WIDTH - 1) << " │\n";
 	}
+	_lineWritten += 1;
 }

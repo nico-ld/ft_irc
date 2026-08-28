@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 18:01:09 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 18:08:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ class Dashboard
 {
 	private:
 		// Dashboard content
+		size_t					_lineWritten;
 		std::string				_title;
 		std::vector<t_section>	_sectionList;
 
@@ -81,19 +82,19 @@ class Dashboard
 		
 		// === METHODS ===
 		/* > Display the dashboard with given information */
-		void render( void ) const;
+		void render( void );
 
 		/* > Print the header of section */
-		void printSectionHeader(t_section &section) const;
+		void printSectionHeader(t_section &section);
 
 		/* > Print columns titles if necessary */
-		void printColumnsTitles(t_section &section) const;
+		void printColumnsTitles(t_section &section);
 
 		/* > Print content line by line */
-		void printSectionContent(t_section &section) const;
+		void printSectionContent(t_section &section);
 
 		/* > Print only one column */
-		void oneColumnCase(t_column &column) const;
+		void oneColumnCase(t_column &column);
 
 		
 		// === GETTERS ===

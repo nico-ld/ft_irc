@@ -6,16 +6,19 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 15:45:41 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 17:50:31 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 18:33:48 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Dashboard.hpp"
+#include <algorithm>
 
 bool Dashboard::isSectionValid(t_section &section) {
 	// Parse section
 	if (!sectionInfoValid(section))
 		return (false);
+
+	std::transform(section.title.begin(), section.title.end(), section.title.begin(), ::toupper);
 	
 	// Parse left column
 	if (!columnInfoValid(section.leftColumn, section.title))
@@ -50,9 +53,9 @@ bool Dashboard::sectionInfoValid(t_section &section) {
 		log(ERROR_LVL, "Invalid section [" + section.title + "] : There is an empty string in main info");
 		return (false);
 	}
-	// If first string isn't empty the second too
-	else if (!section.mainInfo.first.empty())
-		section.hasMainInfo = true;
+	// If there is the first element, the second one is here too
+	else
+		section.hasMainInfo = !section.mainInfo.first.empty();
 
 	return (true);
 }
@@ -62,7 +65,7 @@ bool Dashboard::columnInfoValid(t_column &column, std::string sectionTitle) {
 	column.hasTitle = !column.title.empty();
 
 	// Check if there is simple informations
-	column.hasSimpleInfo = !column.title.empty();
+	column.hasSimpleInfo = !column.infoList.empty();
 
 	// Check if there is list of elements
 	column.hasElemList = !column.elemList.empty();

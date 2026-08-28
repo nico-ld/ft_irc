@@ -6,14 +6,14 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 16:42:46 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 18:02:19 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 18:12:58 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Dashboard.hpp"
 
 // === ONE COLUMN CASE ===
-void Dashboard::oneColumnCase(t_column &column) const {
+void Dashboard::oneColumnCase(t_column &column) {
 	// Simple informations
 	if (column.hasSimpleInfo) {
 		std::vector<std::pair<std::string, std::string> >::const_iterator info;
@@ -34,9 +34,11 @@ void Dashboard::oneColumnCase(t_column &column) const {
 
 			// Print line
 			std::cout << "│ " << key << " : " << value << std::string(spacesRemaining, ' ') << " │\n";
+			_lineWritten += 1;
 		}
 		
 		std::cout << "│" << std::string(INNER_WIDTH, ' ') << "│\n";
+		_lineWritten += 1;
 	}
 
 	// List of elements
@@ -46,6 +48,7 @@ void Dashboard::oneColumnCase(t_column &column) const {
 		std::cout << "│ " 
 				<< centerText(((title.size() < INNER_WIDTH - 2) ? title.substr(0, INNER_WIDTH - 3).append(".") : title), INNER_WIDTH - 2)
 				<< " │\n";
+		_lineWritten += 1;
 		
 		// Print each elements
 		for (size_t index = 0; index < column.elemList.size(); ++index) {
@@ -68,10 +71,12 @@ void Dashboard::oneColumnCase(t_column &column) const {
 
 				// Print line
 				std::cout << "│ " << key << " : " << value << std::string(spaceRemaining, ' ') << " │\n";
+				_lineWritten += 1;
 			}
 			
 			// Print an empty line after each element
 			std::cout << "│" << std::string(INNER_WIDTH, ' ') << "│\n";
+			_lineWritten += 1;
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:07:04 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 13:59:13 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 18:16:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ Dashboard::Dashboard(std::string title, std::string logPath) : _title(title), _l
 	// Close _logFile to avoid fd leaks
 	if (_logFile.is_open())
 		_logFile.close();
+
+	_lineWritten = 0;
 }
 
 Dashboard::~Dashboard() {
@@ -66,10 +68,9 @@ int Dashboard::log(const std::string level, const std::string message)
 }
 
 void Dashboard::eraseScreen( void ) const {
-	int nbLines = getNbLines();
 	std::cout << setCursor(1, 1);
 	
-	for (int i = 0; i < nbLines; ++i) {
+	for (size_t i = 0; i < _lineWritten; ++i) {
 		std::cout << RIGHT_CLEAR << moveDown(1);
 	}
 
