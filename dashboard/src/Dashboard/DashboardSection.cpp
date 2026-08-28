@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:34:27 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 17:19:59 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 17:31:07 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,12 @@ bool Dashboard::isSectionValid(t_section &section) {
 			section.rightColumn.elemInfoList.clear();
 		}
 	}
+
+	// If there is content on second column, trigger the flag
+	if (!section.rightColumn.infoList.empty())
+		section.secondColumn = true;
+	else
+		section.secondColumn = false;
 
 	return (true);
 }

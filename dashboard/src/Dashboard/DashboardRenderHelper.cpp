@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 15:35:13 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 15:58:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 17:44:28 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,14 @@ int Dashboard::getNbLines( void ) const {
 	
 	// Return number of lines
 	return (nbLines);
+}
+
+std::string centerText(std::string &text, size_t width) {
+	if (text.size() >= width)
+		return (text);
+
+	size_t total = width - text.size();
+	size_t left = total / 2;
+	size_t right = total - left;
+	return (std::string(left, ' ') + text + std::string(right, ' '));
 }

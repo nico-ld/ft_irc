@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 17:15:26 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/27 18:09:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <ctime>
 #include <iostream>
 #include <iterator>
+#include <iomanip>
 
 #define INNER_WIDTH 53 // Between two vertical border
 #define COL_WIDTH 25 // width of each half in two-column rows
@@ -31,6 +32,7 @@ struct t_column {
 };
 
 struct t_section {
+	bool		secondColumn;
 	t_column	leftColumn;
 	t_column	rightColumn;
 	std::string	title;
@@ -75,8 +77,18 @@ class Dashboard
 
 		/* > Print the header of section */
 		void printSectionHeader(size_t index) const;
-		
+
+		/* > The bottom border of dashboard */
 		void printDashBottom( void ) const;
+
+		/* > Print a line of '-' between two section */
+		void printSeparator( void ) const;
+
+		/* > Print the information column */
+		void printColumn(size_t index) const;
+
+		/* > Print the information of two columns */
+		void printTwoColumn(size_t index) const;
 		
 		// === GETTERS ===
 		/* > Return the number of lines with every sections */
@@ -129,3 +141,6 @@ std::string toStr(int num);
 
 /* > Return current time as a string in Hours:Minutes:Seconds format */
 std::string timestamp();
+
+/* > Return a text centered */
+std::string centerText(std::string &text, size_t width);

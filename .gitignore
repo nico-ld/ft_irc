@@ -1,9 +1,13 @@
+# Files possibly created by program
 *.json
-ircserv
+*.log
 obj/
-RouxBot
-bot.log
-vgcore.*
-src/maintest.cpp
 
+# Executable
+ircserv
+RouxBot
+Dashboard
+
+# Other garbage
+vgcore.*
 compile_commands.json
