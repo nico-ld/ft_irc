@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 18:09:12 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/28 08:59:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 #include <iomanip>
 
 #define INNER_WIDTH 53 // Between two vertical border
-#define COL_WIDTH 25 // width of each half in two-column rows
+#define COL_WIDTH 25 // Width of each half in two-column rows
+#define SEP_WIDTH 3 // Width of separator between two column
 
 struct t_column {
 	std::string	title;
