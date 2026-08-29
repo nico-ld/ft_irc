@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/28 18:16:11 by nico             ###   ########.fr        #
+#    Updated: 2026/08/29 10:55:14 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,8 @@ RENDER		:= \
 				$(REND_DIR)Render.cpp \
 				$(REND_DIR)RenderHelper.cpp \
 				$(REND_DIR)RenderColumn.cpp \
-				$(REND_DIR)RenderTitles.cpp
+				$(REND_DIR)RenderTitles.cpp \
+				$(REND_DIR)RenderTwoColumns.cpp
 
 SECTIONS	:= \
 				$(SECT_DIR)SectionCore.cpp \

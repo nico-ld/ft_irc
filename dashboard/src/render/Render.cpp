@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 15:20:06 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 18:31:57 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 10:55:30 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void Dashboard::render( void ) {
 			
 			// If there is 2 columns
 			else
-				log(DEBUG, "Not handled");
+				printSectionContent(section);
 			
 			// Print separator
 			if (index + 1 < _sectionList.size()) {
