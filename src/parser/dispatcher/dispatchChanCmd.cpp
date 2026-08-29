@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 10:05:16 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 11:33:01 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		
 		// Dispatch
 		if (parameters.size() > 2)
-			server.kick(*channel, kicked, parameters[2], &user, parser);
+			server.kick(*channel, kicked, parameters[2], &user);
 		else
-			server.kick(*channel, kicked, &user, parser);
+			server.kick(*channel, kicked, &user);
 	}
 
 	// === PART ===
@@ -114,7 +114,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 			throw std::runtime_error("[LOG] channel doesn't exist");
 		}
 
-		server.invite(parameters[0], *channel, &user, parser);
+		server.invite(parameters[0], *channel, &user);
 	}
 
 	// === TOPIC ===

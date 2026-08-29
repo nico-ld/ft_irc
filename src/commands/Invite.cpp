@@ -6,17 +6,16 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 17:25:04 by afons             #+#    #+#             */
-/*   Updated: 2026/08/26 16:50:52 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 11:31:01 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
-#include "../../includes/Parser.hpp" // absolute path to avoid conflict with bot Parser
 #include <stdexcept>
 
-void Server::invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser) {
+void Server::invite(const std::string &nickname, Channel &channel, const User *user) {
 	// Check if User that send command is in the channel
 	if (!channel.isMember(user->getFd())) {
 		sendReply(*user, ERR_NOTONCHANNEL, "You're not in channel '" + channel.getName() + "'");

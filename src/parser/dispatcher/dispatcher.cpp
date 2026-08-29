@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/26 10:50:52 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 11:32:05 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,13 @@ void dispatchCommand(Server &server, User &user, std::string command) {
 				channelCommandsDispatch(server, command, user, parser);
 			else
 				server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
-				break ;
+			break ;
 		case 2:
 			if (user.isAuthenticated())
 				messageCommandsDispatch(server, command, user, parser);
 			else
 				server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
-				break ;
+			break ;
 		case 3:
 			userCommandsDispatch(command, user, server, parser);
 			break ;

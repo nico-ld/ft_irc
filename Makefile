@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/27 10:12:59 by nico             ###   ########.fr        #
+#    Updated: 2026/08/29 11:29:37 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -80,6 +80,9 @@ SRC			:= \
 OBJ_DIR		:= obj/
 OBJS		:= $(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)%.o,$(SRC))
 
+DASH_DIR	:= dashboard/
+DASHBOARD	:= $(DASH_DIR)Dashboard.a
+
 # ~~ Loading bar config ~~
 TOTAL_SRCS		:= $(words $(SRCS))
 BAR_WIDTH		:= 30
@@ -109,7 +112,7 @@ endef
 
 # ~~ Rules ~~
 
-all: _init_srcs $(NAME)
+all: $(DASHBOARD) _init_srcs $(NAME)
 
 _init_srcs:
 	@echo 0 > $(COUNTER_FILE)
@@ -124,6 +127,9 @@ _init_srcs:
 $(NAME): $(OBJS)
 	@$(CXX) $(CXXFLAGS) $(INC) $(OBJS) -o $@
 
+$(DASHBOARD):
+	@$(MAKE) --no-print-directory -C $(DASH_DIR)
+
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(dir $@)
 	@$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
@@ -131,10 +137,12 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 
 clean:
 	@rm -rf $(OBJ_DIR)
+	@$(MAKE) --no-print-directory -C $(DASH_DIR) clean
 	@printf "$(RED) ✘$(RESET)  Objects removed\n"
 
 fclean: clean
 	@rm -f $(NAME)
+	@$(MAKE) --no-print-directory -C $(DASH_DIR) fclean
 	@printf "$(RED) ✘$(RESET)  $(NAME) removed\n"
 
 re: fclean all

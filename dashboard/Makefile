@@ -6,11 +6,11 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/29 10:55:14 by nico             ###   ########.fr        #
+#    Updated: 2026/08/29 11:29:03 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		:= Dashboard
+NAME 		:= Dashboard.a
 CXXFLAGS	:= -Wall -Wextra -Werror -g -std=c++98
 CXX			:= c++
 INC			:= -Iincludes
@@ -52,8 +52,7 @@ SRC			:= \
 				$(DASHBOARD) \
 				$(HELPER) \
 				$(RENDER) \
-				$(SECTIONS) \
-				$(SRC_DIR)main.cpp
+				$(SECTIONS)
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/
@@ -101,7 +100,7 @@ _init_srcs:
 	fi
 
 $(NAME): $(OBJS)
-	@$(CXX) $(CXXFLAGS) $(INC) $(OBJS) -o $@
+	@ar rcs $(NAME) $(OBJS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(dir $@)
@@ -110,11 +109,10 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 
 clean:
 	@rm -rf $(OBJ_DIR)
-	@printf "$(RED) ✘$(RESET)  Objects removed\n"
 
 fclean: clean
 	@rm -f $(NAME)
-	@printf "$(RED) ✘$(RESET)  $(NAME) removed\n"
+	@rm -f ircserv.log
 
 re: fclean all
 

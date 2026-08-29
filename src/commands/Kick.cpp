@@ -6,18 +6,17 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/08/27 10:44:47 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 11:31:08 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
-#include "Parser.hpp"
 #include <stdexcept>
 #include <iostream>
 
-void Server::kick(Channel &channel, User *kicked, const User *op, Parser &parser) {
+void Server::kick(Channel &channel, User *kicked, const User *op) {
 	// Check if sender is on the channel
 	if (!channel.isMember(op->getFd())) {
 		sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");
@@ -49,7 +48,7 @@ void Server::kick(Channel &channel, User *kicked, const User *op, Parser &parser
 	notification(kicked, "You've been kicked from the channel");
 }
 
-void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op, Parser &parser) {
+void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {
 	// Check if sender is on the channel
 	if (!channel.isMember(op->getFd())) {
 		sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");
