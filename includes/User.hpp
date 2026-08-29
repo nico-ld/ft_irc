@@ -15,6 +15,7 @@
 
 #include <string>
 #include <vector>
+#include "NetworkBuffer.hpp"
 
 class User {
 	public:
@@ -78,10 +79,15 @@ class User {
 		// === SERVER INPUT ===
 		std::string inputBuffer;
 
+		// === OUTGOING BACKPRESSURE BUFFER ===
+		/* > Return the user's outgoing write-buffer (queued data pending an EPOLLOUT flush) */
+		NetworkBuffer& getNetworkBuffer() { return (_netBuffer); }
+
 	private:
 		// Hardware Connection Details
 		int         _fd;
 		std::string _hostname;
+		NetworkBuffer _netBuffer; // Queued outgoing data waiting to be flushed once the socket is writable
 
 		// Identity Information
 		std::string _nickname;

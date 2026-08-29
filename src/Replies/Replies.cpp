@@ -20,6 +20,7 @@ void Server::sendReply(const User &user, const std::string &code, const std::str
 		nick = "*";
 	
 	std::string msg = ":ircserv " + code + " " + nick + " " + rest + "\r\n";
-	if (send(user.getFd(), msg.c_str(), msg.size(), MSG_NOSIGNAL) == -1)
-		std::perror("send crashed");
+	// Routed through the buffered write path (see ServerHelper.cpp) instead of
+	// a raw send(), so a slow client doesn't silently lose the reply.
+	queueWrite(const_cast<User &>(user), msg);
 }

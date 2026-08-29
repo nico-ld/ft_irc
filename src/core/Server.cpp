@@ -128,11 +128,22 @@ void Server::startLoop() {
                     addUnauthenticatedUser(clientFd);
                     std::cout << "New client connected on fd: " << clientFd << std::endl;
                 }
-            } 
-            // Case B: the incoming client is already connected and registered through epoll
-			// events[i].events & EPOLLIN means there are incoming bytes waiting from currentFd
-			// We therefore create a buffer in which we'll receive all the incoming bytes
-            else if (events[i].events & EPOLLIN) {
+            }
+            // Case B / C: an already-connected client fd fired. EPOLLOUT and
+			// EPOLLIN are checked independently (not else-if) because epoll
+			// can report both bits set on the same fd in the same pass.
+            else {
+            // Case B: the client's socket became writable again (EPOLLOUT).
+			// This fires only while data is queued in the user's NetworkBuffer
+			// (see Server::queueWrite/setEpollWriteInterest); flush what we can.
+            if (events[i].events & EPOLLOUT) {
+                flushWrite(currentFd);
+            }
+
+            // Case C: events[i].events & EPOLLIN means there are incoming
+			// bytes waiting from currentFd. We therefore create a buffer in
+			// which we'll receive all the incoming bytes
+            if (events[i].events & EPOLLIN) {
                 char buffer[BUFFER_SIZE];
                 memset(buffer, 0, BUFFER_SIZE);
                 
@@ -163,6 +174,7 @@ void Server::startLoop() {
             		}
         		}
     		}
+			}
 		}
 	}
 }
