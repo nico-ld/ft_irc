@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 16:41:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 18:11:18 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 11:19:10 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ void Dashboard::printSectionHeader(t_section &section) {
 		value = value.substr(0, ((COL_WIDTH - SEP_WIDTH) / 2) - 1).append(".");
 
 	// Print first line
-	std::cout << "│ " << title << std::string((INNER_WIDTH - 2) - totalWidth, ' ');
+	std::cout << "│ " BOLD << title << RESET << std::string((INNER_WIDTH - 2) - totalWidth, ' ');
 	if (!key.empty())
-		std::cout << key << " : " << value;
+		std::cout << BOLD <<  key << " : " RESET << value;
 	else
 		std::cout << "   "; // Replace sep emplacement by spaces
 	std::cout << " │\n";
@@ -66,7 +66,7 @@ void Dashboard::printColumnsTitles(t_section &section) {
 			if (title.size() > INNER_WIDTH - 2)
 				title = title.substr(0, INNER_WIDTH - 3).append(".");
 				
-			std::cout << "│ " << centerText(title, INNER_WIDTH - 2) << "│ \n";
+			std::cout << "│ " BOLD << centerText(title, INNER_WIDTH - 2) <<  RESET "│ \n";
 		}
 		
 		// If left title
@@ -74,7 +74,7 @@ void Dashboard::printColumnsTitles(t_section &section) {
 			if (title.size() > COL_WIDTH - 1)
 				title = title.substr(0, COL_WIDTH - 2).append(".");
 
-			std::cout << "│ " << centerText(title, COL_WIDTH - 1) << " | " << std::string(COL_WIDTH, ' ') << "│\n";
+			std::cout << "│ " BOLD << centerText(title, COL_WIDTH - 1) << RESET " | " << std::string(COL_WIDTH, ' ') << "│\n";
 		}
 
 		// If right title
@@ -82,7 +82,7 @@ void Dashboard::printColumnsTitles(t_section &section) {
 			if (title.size() > COL_WIDTH - 1)
 				title = title.substr(0, COL_WIDTH - 2).append(".");
 
-			std::cout << "│ " << std::string(COL_WIDTH - 1, ' ') << " | " << centerText(title, COL_WIDTH - 1) << " │\n";
+			std::cout << "│ " << std::string(COL_WIDTH - 1, ' ') << " | " BOLD << centerText(title, COL_WIDTH - 1) << RESET " │\n";
 		}
 	}
 
@@ -97,7 +97,7 @@ void Dashboard::printColumnsTitles(t_section &section) {
 		if (rightTitle.size() > COL_WIDTH - 1)
 			rightTitle = rightTitle.substr(0, COL_WIDTH - 2).append(".");
 
-		std::cout << "│ " << centerText(leftTitle, COL_WIDTH - 1) << " | " << centerText(rightTitle, COL_WIDTH - 1) << " │\n";
+		std::cout << "│ " BOLD << centerText(leftTitle, COL_WIDTH - 1) << RESET " | " BOLD << centerText(rightTitle, COL_WIDTH - 1) << RESET " │\n";
 	}
 	_lineWritten += 1;
 }

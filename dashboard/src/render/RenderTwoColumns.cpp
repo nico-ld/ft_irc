@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 18:05:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/29 11:11:29 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 11:15:10 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ static int printElemInfo(t_column &column, size_t *eleIdx, size_t *infoIdx, bool
 	if (!*titlePrinted) {
 		std::string title = column.elemListTitle;
 		
-		if (title.size() > COL_WIDTH - 1)
-			title = title.substr(0, COL_WIDTH - 2).append(".");
-		std::cout << title << std::string(COL_WIDTH - 1 - title.size(), ' ');
+		if (title.size() > COL_WIDTH - 3)
+			title = title.substr(0, COL_WIDTH - 4).append(".");
+		std::cout << UNDERLINE << title  << " :" RESET << std::string(COL_WIDTH - 3 - title.size(), ' ');
 
 		*titlePrinted = true;
 		return (0);
