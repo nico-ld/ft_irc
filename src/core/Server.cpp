@@ -12,6 +12,7 @@
 
 #include "ft_irc.hpp"
 #include "Channel.hpp"
+#include "NetworkUtils.hpp"
 
 //serverFd and epollFd are set at -1, because that's a Unix convention saying the fd is closed / not init
 Server::Server(int port, const std::string& password) 
@@ -126,6 +127,14 @@ void Server::startLoop() {
                     epoll_ctl(_epollFd, EPOLL_CTL_ADD, clientFd, &ev);
 
                     addUnauthenticatedUser(clientFd);
+
+                    // Resolve and store where this client is actually connecting
+					// from (reverse-DNS via NetworkUtils, falling back to the raw
+					// IP) so we have a real audit trail for bans/rate-limits/logs.
+                    User *newUser = getUserById(clientFd);
+                    if (newUser)
+                        newUser->setHostname(NetworkUtils::getHostname(clientAddr));
+
                     std::cout << "New client connected on fd: " << clientFd << std::endl;
                 }
             }
