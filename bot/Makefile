@@ -5,7 +5,6 @@ INC			:= -Iincludes
 
 # ~~ Source directories ~~
 SRC_DIR		:= src/
-LOG_DIR		:= $(SRC_DIR)dashboard/
 CLT_DIR		:= $(SRC_DIR)client/
 ENG_DIR		:= $(SRC_DIR)game/engine/
 UNO_DIR		:= $(SRC_DIR)game/Uno/
@@ -13,10 +12,6 @@ HELP_DIR	:= $(SRC_DIR)helper/
 PARS_DIR	:= $(SRC_DIR)parser/
 
 # ~~ Source files ~~
-LOG			:= \
-				$(LOG_DIR)dashboard.cpp \
-				$(LOG_DIR)dashboardInit.cpp
-
 PARSER		:= \
 				$(PARS_DIR)Parser.cpp \
 				$(PARS_DIR)handleCommands.cpp \
@@ -48,7 +43,6 @@ HELPER		:= \
 
 SRC			:= \
 				$(CLIENT) \
-				$(LOG) \
 				$(ENGINE) \
 				$(UNO) \
 				$(PARSER) \
@@ -58,6 +52,9 @@ SRC			:= \
 
 OBJ_DIR		:= obj/
 OBJ			:= $(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)%.o,$(SRC))
+
+DASH_DIR	:= ../dashboard/
+DASHBOARD	:= $(DASH_DIR)Dashboard.a
 
 # ~~ ANSI code ~~
 RESET		:= \033[0m
@@ -97,7 +94,7 @@ endef
 
 # ~~ Rules ~~
 
-all: _init_srcs $(NAME)
+all: $(DASHBOARD) _init_srcs $(NAME)
 
 _init_srcs:
 	@echo 0 > $(COUNTER_FILE)
@@ -110,7 +107,10 @@ _init_srcs:
 	fi
 
 $(NAME): $(OBJ)
-	@$(CXX) $(CXXFLAGS) $(INC) $(OBJ) -o $@
+	@$(CXX) $(CXXFLAGS) $(INC) $(OBJ) $(DASHBOARD) -o $@
+
+$(DASHBOARD):
+	@$(MAKE) --no-print-directory -C $(DASH_DIR)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(dir $@)
@@ -124,6 +124,7 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@printf "$(RED) ✘$(RESET)  $(NAME) removed\n"
+	@printf "To remove $(BOLD)Dasboard.a$(RESET), use IRC makefile.\n"
 	@rm -f bot.log
 
 re: fclean all

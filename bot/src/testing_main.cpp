@@ -8,22 +8,57 @@ int main(void) {
 	std::srand(std::time(NULL));
 
 	// Init dashboard
-	DashData data;
-	initData(data, "127.0.0.1", 6667);
-	data.server.mode = "Simulation";
-	data.server.connected = true;
-	data.bot.channelsJoined = 1;
-	data.bot.state = "Up";
+	// Server
+	t_column serverInfo;
+	serverInfo.infoList.push_back(std::make_pair("Connection", "OK"));
+	serverInfo.infoList.push_back(std::make_pair("Port", "6667"));
+	serverInfo.infoList.push_back(std::make_pair("Server name", "ircserv"));
+
+	t_section server;
+	server.title = "server";
+	server.mainInfo = std::make_pair("MODE", "Simulation");
+	server.leftColumn = serverInfo;
+
+	// Bot
+	t_column botGlobal;
+	botGlobal.title = "Global info";
+	botGlobal.infoList.push_back(std::make_pair("Chan. joined", "0"));
+	botGlobal.infoList.push_back(std::make_pair("Games", "0"));
+	botGlobal.infoList.push_back(std::make_pair("Player amount", "0"));
+
+	t_column lastTask;
+	lastTask.title = "Last command";
+	lastTask.infoList.push_back(std::make_pair("Command", "None"));
+	lastTask.infoList.push_back(std::make_pair("Game", "Uno"));
+	lastTask.infoList.push_back(std::make_pair("Channel", "None"));
+
+	t_section bot;
+	bot.title = "bot";
+	bot.mainInfo = std::make_pair("STATE", "Up");
+	bot.leftColumn = botGlobal;
+	bot.rightColumn = lastTask;
+
+	// Games
+	t_column uno;
+	uno.title = "UNO";
+	uno.infoList.push_back(std::make_pair("Games", "0"));
+	uno.infoList.push_back(std::make_pair("Player", "0"));
+	uno.elemListTitle = "Info by channel";
+
+	t_section game;
+	game.title = "game";
+	game.leftColumn = uno;
 
 	Dashboard dash(ROUXBOT, "bot.log");
-	dash.setServerInfo(data.server);
-	dash.setBotInfo(data.bot);
-	dash.setGames(data.games);
+	dash.addSection(server);
+	dash.addSection(bot);
+	dash.addSection(game);
 	dash.render();
 
+
+	// Init botData
 	t_bot_data botData;
 	botData.sock = 27;
-	botData.data = data;
 	botData.dash = &dash;
 
 	// init game

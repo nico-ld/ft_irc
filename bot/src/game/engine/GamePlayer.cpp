@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:05:05 by nico              #+#    #+#             */
-/*   Updated: 2026/08/16 14:02:46 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 17:25:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,20 +34,21 @@ void Game::addPlayer(std::string playerName, t_bot_data &botData) {
 	sendMessage(botData, _channel, playerName + " join the " + convertType(_gameType) + " !", INFO);
 
 	// Update Dashboard
-	// Find channel in dashboard data
-	size_t index = findGameByChannel(botData.data.games[_gameType].channels, _channel);
-	if (index == std::string::npos) {
-		botData.dash->log(ERROR_LVL, _channel + " isn't registered in the dashboard");
+	std::vector<INFO_LIST> *elemList = botData.dash->getElemList(botData.dash->getSectionByIndex(2), LEFT);
+	if (!elemList)
 		return ;
+
+	for (size_t index = 0; index < elemList->size(); ++index) {
+		if ((*elemList)[index][0].first == _channel) {
+			(*elemList)[index][2].second = convertState(READY);
+			(*elemList)[index][1].second = toStr(toInt((*elemList)[index][1].second) + 1);
+			break ;
+		}
 	}
 
-	// Update dashboard data
-	botData.data.games[_gameType].channels[index].gameState = "READY";
-	botData.data.games[_gameType].channels[index].playerAmount += 1;
-	botData.data.games[_gameType].playerAmount += 1;
-	botData.data.bot.playerAmount += 1;
-		
-	applyDashData(botData);
+	botData.dash->increaseInfo(botData.dash->getSectionByIndex(1), LEFT, 2); // Increase player amount for BOT
+	botData.dash->increaseInfo(botData.dash->getSectionByIndex(1), LEFT, 2); // Increase player amount for BOT
+	botData.dash->render();
 }
 
 void Game::removePlayer(std::string playerName, t_bot_data &botData, bool isKicked) {
@@ -71,32 +72,37 @@ void Game::removePlayer(std::string playerName, t_bot_data &botData, bool isKick
 	sendMessage(botData, _channel, (isKicked) ? playerName + " has been kicked of the game." : playerName + " leave the " + convertType(_gameType) + " !", INFO);
 	
 	// If game state have to be updated
+	// If 1 player remaining
 	if (_playerList.size() == 1) {
+		// If game was on READY, not anymore enough player
 		if (_gameState == READY)
 			setGameState(WAITING, botData);
+		// If game was started, stop it, not enough player to continue
 		else if (_gameState == STARTED) {
 			endGame(botData);
 			return ;
 		}
 	}
+	// If not anymore player, stop the game
 	else if (_playerList.empty()) {
 		endGame(botData);
 		return ;
 	}
 	
-	// Update dashboard
-	// Find the channel in dashboard data
-	size_t index = findGameByChannel(botData.data.games[_gameType].channels, _channel);
-	if (index == std::string::npos) {
-		botData.dash->log(ERROR_LVL, _channel + " isn't registered in the dashboard");
+	// Update Dashboard
+	std::vector<INFO_LIST> *elemList = botData.dash->getElemList(botData.dash->getSectionByIndex(2), LEFT);
+	if (!elemList)
 		return ;
-	}	
 
-	// Update dashboard data
-	botData.data.games[_gameType].channels[index].gameState = convertState(_gameState);
-	botData.data.games[_gameType].channels[index].playerAmount -= 1;
-	botData.data.games[_gameType].playerAmount -= 1;
-	botData.data.bot.playerAmount -= 1;
+	for (size_t index = 0; index < elemList->size(); ++index) {
+		if ((*elemList)[index][0].first == _channel) {
+			(*elemList)[index][2].second = convertState(_gameState);
+			(*elemList)[index][1].second = toStr(toInt((*elemList)[index][1].second) - 1);
+			break ;
+		}
+	}
 
-	applyDashData(botData);
+	botData.dash->decreaseInfo(botData.dash->getSectionByIndex(2), LEFT, 1); // decrease player amount for GAME
+	botData.dash->decreaseInfo(botData.dash->getSectionByIndex(1), LEFT, 2); // decrease player amount for BOT
+	botData.dash->render();
 }

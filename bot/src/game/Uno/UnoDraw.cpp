@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 09:46:28 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 16:35:05 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 17:29:21 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void Uno::draw(t_bot_data &botData, t_player_info &player) {
 	if (player.drawAmount > 0) {
 		sendCard(botData, player, player.drawAmount);
 		_playerTurn = nextPlayer(false);
-		sendMessage(botData, _channel, player.name + " drew " + convertIntToString(player.drawAmount) + " cards. This is at " + _playerTurn + " to play !", CLIENT);
+		sendMessage(botData, _channel, player.name + " drew " + toStr(player.drawAmount) + " cards. This is at " + _playerTurn + " to play !", CLIENT);
 		player.drawAmount = 0;
 	}
 	else
@@ -66,7 +66,7 @@ void Uno::draw(t_bot_data &botData, t_player_info &player) {
 			player.deck.push_back(newCard);
 			
 			if (newCard < WILD) {
-				playCard(botData, player, convertIntToString(player.deck.size() - 1), "");
+				playCard(botData, player, toStr(player.deck.size() - 1), "");
 			}
 			else {
 				player.wildDrawed = true;

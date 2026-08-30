@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:34:27 by nico              #+#    #+#             */
-/*   Updated: 2026/08/29 18:41:34 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 17:45:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,12 @@ void Dashboard::setSection(size_t index, t_section &newSection) {
 		addSection(newSection);
 	else
 		_sectionList[index] = newSection;
+}
+
+void Dashboard::updateMainInfo(t_section *section, std::string newValue) {
+	if (sectionIsNull(section, this))
+		return ;
+	
+	section->mainInfo.second = newValue;
+	render();
 }

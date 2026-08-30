@@ -6,14 +6,14 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/30 14:59:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 16:17:06 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 17:49:11 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/Dashboard.hpp"
 
 std::vector<INFO_LIST> *Dashboard::getElemList(t_section *section, e_side colSide) {
-	if (sectionIsNull)
+	if (sectionIsNull(section, this))
 		return (NULL);
 
 	if (colSide == LEFT)

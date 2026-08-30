@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/29 11:41:19 by nico             ###   ########.fr        #
+#    Updated: 2026/08/30 10:49:32 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -125,7 +125,7 @@ _init_srcs:
 	fi
 
 $(NAME): $(OBJS)
-	@$(CXX) $(CXXFLAGS) $(INC) $(OBJS) -o $@
+	@$(CXX) $(CXXFLAGS) $(INC) $(OBJS) $(DASHBOARD) -o $@
 
 $(DASHBOARD):
 	@$(MAKE) --no-print-directory -C $(DASH_DIR)

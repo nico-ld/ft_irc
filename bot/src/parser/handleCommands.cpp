@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 16:36:26 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 14:42:21 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,25 @@
 static void clearEndedGame(t_bot_data &botData) {
 	std::time_t currentTime = std::time(NULL);
 
+	// Check every games states
 	for (std::vector<Game *>::iterator it = botData.games.begin(); it != botData.games.end(); ) 
 	{
+		// If a game is ended ended, it is removed from the dashboard after 3 seconds
 		if ((*it)->getGameState() == ENDED && currentTime - (*it)->getTimeSinceEnd() > 3) {
-			// Remove game from dashboard
-			for (size_t gameIndex = 0; gameIndex < botData.games.size(); ++gameIndex) {
-				
-				std::vector<GameChannelInfo> &channel = botData.data.games[gameIndex].channels;
-				std::vector<GameChannelInfo>::iterator itDash;
-				
-				for (itDash = channel.begin(); itDash != channel.end(); ++itDash) {
-					if ((*it)->getChannel() == itDash->name) {
-						channel.erase(itDash);
+			
+			// Get the section of dashboard
+			t_section *section = botData.dash->getSectionByIndex(2);
+
+			// Search for UNO game (for LEFT or RIGHT in dashboard)
+			if ((*it)->getGameType() == UNO) {
+				for (size_t index = 0; index < section->leftColumn.elemList.size(); ++index) {
+					
+					// If game get the same channel name, and the Game is ended
+					if (section->leftColumn.elemList[index][0].second == (*it)->getChannel()
+						&& section->leftColumn.elemList[index][2].second == convertState(ENDED))
+					{
+						// Remove game from dashboard
+						botData.dash->removeElem(section, LEFT, index);
 						break ;
 					}
 				}
@@ -40,8 +47,6 @@ static void clearEndedGame(t_bot_data &botData) {
 		else
 			++it;
 	}
-
-	applyDashData(botData);
 }
 
 void catchCommand(std::string line, t_bot_data &botData)
@@ -86,9 +91,7 @@ void catchCommand(std::string line, t_bot_data &botData)
 			return ;
 		}
 		
-		botData.data.bot.currentTask.channel = channel;
-		botData.data.bot.currentTask.command = commandGrp + " " + command;
-		botData.data.bot.currentTask.game = "Uno";
-		applyDashData(botData);
+		botData.dash->updateInfo(botData.dash->getSectionByIndex(1), RIGHT, 0, channel);
+		botData.dash->updateInfo(botData.dash->getSectionByIndex(1), RIGHT, 2, commandGrp + " " + command);
 	}
 }

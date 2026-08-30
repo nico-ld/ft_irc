@@ -6,31 +6,22 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/11 17:14:20 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 10:24:33 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 11:11:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
 #include "Game.hpp"
 
-size_t findGameByChannel(std::vector<GameChannelInfo> &channels, std::string &target)
-{
-	size_t index = 0;
-	for ( ; index < channels.size(); ++index) {
-		if (channels[index].name == target)
-			return (index);
-	}
-	return (std::string::npos);
-}
+std::vector<std::pair<std::string, std::string> > 
+addGame(std::string name, std::string playerAmount, std::string gameState) {
+	std::vector<std::pair<std::string, std::string> > newGame;
 
-void applyDashData(t_bot_data &botData) {
-	// Refresh data
-	botData.dash->setBotInfo(botData.data.bot);
-	botData.dash->setGames(botData.data.games);
-	botData.dash->setServerInfo(botData.data.server);
+	newGame.push_back(std::make_pair("Channel", name));
+	newGame.push_back(std::make_pair("Player", playerAmount));
+	newGame.push_back(std::make_pair("Game state", gameState));
 
-	// Refresh dashboard
-	botData.dash->render();
+	return (newGame);
 }
 
 void sendMessage(t_bot_data &botData, std::string target, std::string content, std::string level) {
@@ -42,10 +33,4 @@ void sendMessage(t_bot_data &botData, std::string target, std::string content, s
 	std::string message = "PRIVMSG " + target + " :" + content + "\r\n";
 	send(botData.sock, message.c_str(), message.size(), MSG_NOSIGNAL);
 	botData.dash->log(level, message);
-}
-
-std::string convertIntToString(int num) {
-	std::ostringstream oss;
-	oss << num;
-	return (oss.str());
 }

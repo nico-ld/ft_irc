@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 16:14:24 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 17:44:26 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,9 @@ class Dashboard
 
 		/* > Set information for a section (with index) */
 		void setSection(size_t index, t_section &newSection);
+
+		/* > Update the main information of a section */
+		void	updateMainInfo(t_section *section, std::string newValue);
 
 
 };

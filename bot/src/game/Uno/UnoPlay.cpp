@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 16:12:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 17:03:31 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 17:29:58 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void Uno::playCard(t_bot_data &botData, t_player_info &player, std::string deckI
 	{
 		if (!cardPlayable(card, _lastCard, colorToInt(_currentColor))) {
 			sendMessage(botData, _channel, "You can't play this card, please try another card, or take a new one", WARNING);
-			botData.dash->log(DEBUG, "player card : " + convertCard(card) + "; last card : " + convertCard(_lastCard) + "; game color : " + convertIntToString(colorToInt(color)) + "; player card color : " + convertIntToString(card / 13));
+			botData.dash->log(DEBUG, "player card : " + convertCard(card) + "; last card : " + convertCard(_lastCard) + "; game color : " + toStr(colorToInt(color)) + "; player card color : " + toStr(card / 13));
 			return ;
 		}
 

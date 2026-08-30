@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:43 by nico              #+#    #+#             */
-/*   Updated: 2026/08/19 08:55:10 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 17:46:11 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ int	registerBot(t_bot_data &botData, std::string password)
 		}
 	}
 	
-	botData.data.server.connected = true;
-	applyDashData(botData);
+	botData.dash->updateInfo(botData.dash->getSectionByIndex(0), LEFT, 0, "OK");
+	botData.dash->updateMainInfo(botData.dash->getSectionByIndex(1), "Up");
 	return (0);
 }
 

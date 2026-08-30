@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 17:17:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 11:16:38 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 14:45:23 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void handleGame(t_bot_data &botData, std::string channel, std::string command)
 	// Get value from parser
 	std::vector<std::string> param = botData.parser.getGameCmdParam();
 
+	// Command Create
 	if (command == "create") {
 		// Check if there is already a game in this channel
 		for (std::vector<Game *>::iterator it = botData.games.begin(); it != botData.games.end(); ++it) {
