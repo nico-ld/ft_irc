@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/27 09:51:21 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 09:15:24 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,26 @@
 
 //serverFd and epollFd are set at -1, because that's a Unix convention saying the fd is closed / not init
 Server::Server(int port, const std::string& password) 
-    : _port(port), _password(password), _serverFd(-1), _epollFd(-1) {}
+    : _port(port), _password(password), _serverFd(-1), _epollFd(-1) 
+{
+    dash = new Dashboard(IRCSERV, "ircserv.log");
+    dash->render();
+}
 
 Server::~Server() {
     stop();
+    dash->log(SYSTEM, "Server is down");
+    delete dash;
 }
 
 void Server::init() {
     // Turn _serverFd into a the master socket, meaning the first socket created (usually to listen)
 	// AF_INET = IPv4, SOCK_STREAM = TCP, 0 = default protocol for those params
     _serverFd = socket(AF_INET, SOCK_STREAM, 0);
-    if (_serverFd < 0) throw std::runtime_error("socket error: failed to create socket");
+    if (_serverFd < 0) {
+        dash->log(ERROR_LVL, "socket() error: failed to create socket");
+        throw std::runtime_error("socket error: failed to create socket");
+    }
 
     // Needed to restart the server without going through the TIME_WAIT syscall
 	// _serverFd = configured socket, SOL_SOCKET = where to seek the options of the socket, 
@@ -33,6 +42,7 @@ void Server::init() {
 	// the sizeof operation is needed because setsockopt is generic, so we must tell it what we're sending 
     int opt = 1;
     if (setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        dash->log(ERROR_LVL, "setsockopt() error: SO_REUSEADDR failed on master socket");
         throw std::runtime_error("setsockopt error: SO_REUSEADDR failed on master socket");
 	}
 
@@ -40,12 +50,14 @@ void Server::init() {
 	// _serverFd = fd to change permissions of, F_GETFL = gets the flags to be saved, so they're not overriden at the later if
 	int flags = fcntl(_serverFd, F_GETFL, 0);
 	if (flags < 0) {
+        dash->log(ERROR_LVL, "fcntl() error: F_GETFL failed on master socket");
     	throw std::runtime_error("fcntl error: F_GETFL failed on master socket");
 	}
 
 	// F_SETFL = tells to change / override the fd flags with the next args
 	// O_NONBLOCK = configure to open fd in non blocking, so cmd like accept or send won't block program running
 	if (fcntl(_serverFd, F_SETFL, flags | O_NONBLOCK) < 0) {
+        dash->log(ERROR_LVL, "fcntl() error: O_NONBLOCK failed on master socket");
     	throw std::runtime_error("fcntl error: O_NONBLOCK failed on master socket");
 	}
 
@@ -60,19 +72,26 @@ void Server::init() {
     address.sin_port = htons(_port);
 
 	// 	The bind function is used to claim a port, in order to receive traffic
-    if (bind(_serverFd, (struct sockaddr*)&address, sizeof(address)) < 0)
+    if (bind(_serverFd, (struct sockaddr*)&address, sizeof(address)) < 0) {
+        dash->log(ERROR_LVL, "bind() error: unable to bind the server to a port");
         throw std::runtime_error("Bind error: unable to bind the server to a port");
+    }
 
 	// Listen takes to args, the socket that receive packets, and the size of the queue 
     // SOMAXCONN means we give maximum size allowed by the OS for the queue
-    if (listen(_serverFd, SOMAXCONN) < 0)
+    if (listen(_serverFd, SOMAXCONN) < 0) {
+        dash->log(ERROR_LVL, "listen() error : unable to set the server to liste");
         throw std::runtime_error("Listen error : unable to set the server to listen");
+    }
 
     // Create epoll instance, and instance is a monitoring tool that warns if there's
 	// a change in the monitored socket (more efficient memory-wise that multi-threading)
 	// The parameter is a flag, 0 means standart behavior for an epoll instance
     _epollFd = epoll_create1(0);
-    if (_epollFd < 0) throw std::runtime_error("Epoll_create1 error : failed to create epoll instance");
+    if (_epollFd < 0) {
+        dash->log(ERROR_LVL, "Epoll_create1() error : failed to create epoll instance");
+        throw std::runtime_error("Epoll_create1 error : failed to create epoll instance");
+    }
 
     // Add master server socket to epoll
 	// The struct tells the kernel what to watch for (EPOLLIN = read data) 
@@ -85,10 +104,38 @@ void Server::init() {
 	// epoll_ctl is the API to control the dashboard built by epoll_create1
 	// 4 args: dashboard, operation to do, target of the operation, pointer to the epoll_event struct
 	// Here, we're _serverFd to the watchlist
-    if (epoll_ctl(_epollFd, EPOLL_CTL_ADD, _serverFd, &ev) < 0)
+    if (epoll_ctl(_epollFd, EPOLL_CTL_ADD, _serverFd, &ev) < 0) {
+        dash->log(ERROR_LVL, "epoll_ctl error : failed to add master socket to wacthlist");
         throw std::runtime_error("epoll_ctl error : failed to add master socket to watchlist");
+    }
 
-    std::cout << "IRC Server successfully launched on port " << _port << std::endl;
+    dash->log(SUCCESS, "'ircserv' server successfully launched on port " + toStr(_port));
+
+    // === Server informations ===
+    t_column serverInfo;
+    serverInfo.infoList.push_back(std::make_pair("State", "UP"));
+    serverInfo.infoList.push_back(std::make_pair("Port", toStr(_port)));
+    serverInfo.infoList.push_back(std::make_pair("Server fd", toStr(_serverFd)));
+    serverInfo.infoList.push_back(std::make_pair("Epoll fd", toStr(_epollFd)));
+
+    t_section server;
+    server.title = "server";
+    server.mainInfo = std::make_pair("mode", "Real");
+    server.leftColumn = serverInfo;
+    
+    t_column userInfo;
+    userInfo.infoList.push_back(std::make_pair("Channel created", "0"));
+    userInfo.infoList.push_back(std::make_pair("Total User", "0"));
+    userInfo.infoList.push_back(std::make_pair("Non Auth. User", "0"));
+    userInfo.infoList.push_back(std::make_pair("Auth. User", "0"));
+
+    t_section user;
+    user.title = "user";
+    user.leftColumn = userInfo;
+
+    dash->addSection(server);
+    dash->addSection(user);
+    dash->render();
 }
 
 void Server::startLoop() {
@@ -101,7 +148,7 @@ void Server::startLoop() {
 		// -1 = it's the timeout arg, -1 means the socket is under sleep indefinitely until an event happen
         int numEvents = epoll_wait(_epollFd, events, MAX_EVENTS, -1);
         if (numEvents < 0) {
-            std::cerr << "epoll_wait error: unable to pause the socket" << std::endl;
+            dash->log(ERROR_LVL, "epoll_wait() error: unable to pause the socket");
             break; 
         }
 
@@ -126,7 +173,12 @@ void Server::startLoop() {
                     epoll_ctl(_epollFd, EPOLL_CTL_ADD, clientFd, &ev);
 
                     addUnauthenticatedUser(clientFd);
-                    std::cout << "New client connected on fd: " << clientFd << std::endl;
+                    
+                    dash->log(INFO, "New client connected on fd : " + toStr(clientFd));
+                    
+                    // update dashboard
+                    dash->increaseInfo(dash->getSectionByIndex(1), LEFT, 1);
+                    dash->increaseInfo(dash->getSectionByIndex(1), LEFT, 2);
                 }
             }
             // Case B / C: an already-connected client fd fired. EPOLLOUT and
@@ -151,12 +203,14 @@ void Server::startLoop() {
 
 				// if <= 0, it means the network disconnected during the process
                 if (bytesRead <= 0) {
-                    std::cout << "Client disconnected on fd: " << currentFd << std::endl;
+                    dash->log(INFO, "Client disconnected on fd : " + toStr(currentFd));
                     removeUser(currentFd, "Client disconnected");
                 } else {
 					std::map<int, User>::iterator currentUser = _users.find(currentFd);
-					if (currentUser == _users.end())
-						throw std::runtime_error("Error: User not found");
+					if (currentUser == _users.end()) {
+                        dash->log(WARNING, "Error : User not found for fd : " + toStr(currentFd));
+                        continue ;
+                    }
 					
     				// Append the newly read bytes to the client's buffer
 					// Then process all complete commands (so closed with either \r\n or \n) in the buffer
@@ -168,6 +222,9 @@ void Server::startLoop() {
 						// To finally execute the command, such as IRC PASS, NICK or JOIN
         				std::string command = currentUser->second.inputBuffer.substr(0, pos);
         				currentUser->second.inputBuffer.erase(0, pos + 2);
+                        
+                        dash->log(CLIENT, command);
+
         				if (!command.empty()) {
 							dispatchCommand(*this, currentUser->second, command);
 						}

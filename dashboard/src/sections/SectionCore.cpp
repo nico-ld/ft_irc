@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:34:27 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 18:29:00 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 18:41:34 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,9 @@ void Dashboard::removeSection(size_t index) {
 		_sectionList.erase(_sectionList.begin() + index);
 }
 
+
 // === GETTERS ===
+
 std::vector<t_section> Dashboard::getSectionList( void ) const { return (_sectionList); }
 
 t_section *Dashboard::getSectionByTitle(std::string &title) {
@@ -64,7 +66,9 @@ t_section *Dashboard::getSectionByIndex(size_t index) {
 		return (&(_sectionList[index]));
 }
 
+
 // === SETTERS ===
+
 void Dashboard::setSection(std::string &title, t_section &newSection) {
 	if (!isSectionValid(newSection)) {
 		log(DEBUG, "Invalid section, aborting setSection for section named " + title);

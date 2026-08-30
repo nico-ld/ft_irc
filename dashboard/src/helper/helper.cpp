@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:53:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 16:39:52 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 18:45:17 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@ std::string toStr(int num) {
 	std::ostringstream oss;
 	oss << num;
 	return (oss.str());
+}
+
+int toInt(std::string str) {
+	std::stringstream ss(str);
+	int num;
+	ss >> num;
+	return (num);
 }
 
 std::string timestamp() {

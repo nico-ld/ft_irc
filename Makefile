@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/29 11:29:37 by nico             ###   ########.fr        #
+#    Updated: 2026/08/29 11:41:19 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -143,6 +143,7 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@$(MAKE) --no-print-directory -C $(DASH_DIR) fclean
+	@rm -f ircserv.log
 	@printf "$(RED) ✘$(RESET)  $(NAME) removed\n"
 
 re: fclean all

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/29 11:32:05 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 09:19:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,17 @@ void dispatchCommand(Server &server, User &user, std::string command) {
 	switch (flag)
 	{
 		case 1: // Prefix empty or invalid
-			// Add log (no numeric reply for this error)
+			server.dash->log(WARNING, "Empty or Invalid prefix");
 			return ;
 			
 		case 2: // Command unknow
+			server.dash->log(WARNING, "Command unknow");
 			server.sendReply(user, ERR_UNKNOWNCOMMAND, "Command " + command + " is unknow");
 			return ;
 			
 		case 3: // Error while trying to get param
-			// Add log (no numeric reply for this error)
+			server.dash->log(WARNING, "Impossible to get command parameters");
+			server.sendReply(user, ERR_NEEDMOREPARAMS, "Impossible to get command parameters, please try again");
 			return ;
 		
 		default:
@@ -44,21 +46,25 @@ void dispatchCommand(Server &server, User &user, std::string command) {
 		case 1:
 			if (user.isAuthenticated())
 				channelCommandsDispatch(server, command, user, parser);
-			else
+			else {
+				server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User is not registered yet");
 				server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
+			}
 			break ;
 		case 2:
 			if (user.isAuthenticated())
 				messageCommandsDispatch(server, command, user, parser);
-			else
+			else {
+				server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User is not registered yet");
 				server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
+			}
 			break ;
 		case 3:
 			userCommandsDispatch(command, user, server, parser);
 			break ;
 
 		default:
-			// Impossible case, but Add log
+			server.dash->log(ERROR_LVL, "How the fuck did you get here ?? This is mathematically impossible ! XoX");
 			break ;
 	}
 }

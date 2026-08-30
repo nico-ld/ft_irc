@@ -6,13 +6,37 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/29 11:33:01 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 09:52:48 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "../../../includes/Parser.hpp"
 #include "Channel.hpp"
+
+/* > If amount of parameter is lower than expected, send an error message */
+static bool missingParameter(User &user, Server &server, std::string command,
+						size_t size, size_t expected)
+{
+	if (size >= expected)
+		return (false);
+
+	std::transform(command.begin(), command.end(), command.begin(), ::toupper);
+
+	server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Missing parameter(s) for " + command + " command");
+	server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter(s) for " + command + " command");
+	return (true);
+}
+
+/* > If pointer on channel is NULL, channel doesn't exist, so an error message is send*/
+static bool channelNotExist(User &user, Server &server, Channel *channel, std::string chanName) {
+	if (channel)
+		return (false);
+	
+	server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Channel '" + chanName + "' doesn't exist");
+	server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + chanName + "' doesn't exist");
+	return (true);
+}
 
 void	channelCommandsDispatch(Server &server, std::string command, User &user, Parser &parser) {
 	std::vector<std::string> parameters = parser.getParameters();
@@ -29,10 +53,8 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		}
 		
 		// Dispatch on channels amount
-		if (parameters.size() == 0) {
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing channel name for JOIN command");
-			throw std::runtime_error("[LOG] Need a channel name.");
-		}
+		if (missingParameter(user, server, command, parameters.size(), 1))
+			return ;
 		else if (parameters.size() > 1) {
 			listKey = parser.getKeyList(parameters[1]);
 			server.join(listChannel, listKey, &user, parser);
@@ -44,25 +66,19 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 	// === KICK ===
 	else if (command == "kick") {
 		// Check user enter every parameters
-		if (parameters.size() == 0) {
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing channel and nickname for KICK command");
-			throw std::runtime_error("Need a channel name.");
-		}
-		else if (parameters.size() == 1) {
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing a parameter for KICK command");
-			throw std::runtime_error("Need a nickname.");
-		}
+		if (missingParameter(user, server, command, parameters.size(), 2))
+			return ;
 		
 		// Parse parameters
 		Channel *channel = server.getChannelByName(parameters[0]);
-		if (!channel) {
-			server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + parameters[0] + "' doesn't exist");
-			throw std::runtime_error("[LOG] channel doesn't exist");
-		}
+		if (channelNotExist(user, server, channel, parameters[0]))
+			return ;
+
 		User *kicked = server.getUserByNickname(parameters[1]);
 		if (!kicked) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User '" + parameters[0] + "' doesn't exist");
 			server.sendReply(user, ERR_NOSUCHNICK, "User '" + parameters[0] + "' doesn't exist");
-			throw std::runtime_error("[LOG] User doesn't exist");
+			return ;
 		}
 		
 		// Dispatch
@@ -75,10 +91,8 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 	// === PART ===
 	else if (command == "part") {
 		// Check if there is a channel name
-		if (parameters.size() == 0) {
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing channel name for PART command");
-			throw std::runtime_error("Need a channel name.");
-		}
+		if (missingParameter(user, server, command, parameters.size(), 1))
+			return ;
 		
 		// Dispatch
 		listChannel = parser.getChannelList(parameters[0]);
@@ -98,21 +112,13 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 	// === INVITE ===
 	else if (command == "invite") {
 		// Check parameters amount
-		if (parameters.size() == 0) {
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing channel and nickname for INVITE command");
-			throw std::runtime_error("[LOG] Need a nickname and a channel name.");
-		}
-		else if (parameters.size() == 1) {
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing a parameter for INVITE command");
-			throw std::runtime_error("[LOG] Need a channel name.");
-		}
+		if (missingParameter(user, server, command, parameters.size(), 2))
+			return ;
 
 		// Parse channel name
 		Channel *channel = server.getChannelByName(parameters[1]);
-		if (!channel) {
-			server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + parameters[1] + "' doesn't exist");
-			throw std::runtime_error("[LOG] channel doesn't exist");
-		}
+		if (channelNotExist(user, server, channel, parameters[0]))
+			return ;
 
 		server.invite(parameters[0], *channel, &user);
 	}
@@ -121,21 +127,24 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 	else if (command == "topic") {
 		// Check if there is a channel name
 		if (parameters.size() == 0) {
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing channel name for TOPIC command");
-			throw std::runtime_error("Need a channel name.");
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Missing parameter for TOPIC command");
+			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for TOPIC command");
+			return ;
 		}
 
 		// Parse channel name
 		Channel *channel = server.getChannelByName(parameters[0]);
 		if (!channel) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Channel '" + parameters[0] + "' doesn't exist");
 			server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + parameters[0] + "' doesn't exist");
-			throw std::runtime_error("This channel doesn't exist.");
+			return ;
 		}
 
 		// Check if user is on the channel
 		if (!channel->isMember(user.getFd())) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User not on channel target ('" + parameters[0] + "')");
 			server.sendReply(user, ERR_NOTONCHANNEL, "You're not on this channel");
-			throw std::runtime_error("[LOG] user not on channel");
+			return ;
 		}
 
 		// Dispatch
@@ -148,22 +157,19 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 	// === MODE ===
 	else if (command == "mode") {
 		// Check if there is a channel name
-		if (parameters.size() == 0) {
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing channel name for MODE command");
-			throw std::runtime_error("Need a channel name.");
-		}
+		if (missingParameter(user, server, command, parameters.size(), 1))
+			return ;
 
 		// Ensure channel on server 
 		Channel *channel = server.getChannelByName(parameters[0]);
-		if (!channel) {
-			server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + parameters[0] + "' doesn't exist");
-			throw std::runtime_error("[LOG] channel doesn't exist");
-		}
+		if (channelNotExist(user, server, channel, parameters[0]))
+			return ;
 		
-		// Check command parameters amount
+		// Check command parameters amount => WRONG IMPLEMENTATION
 		if (parameters.size() == 1) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Missing parameter for MODE command");
 			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for MODE command");
-			throw std::runtime_error("Need a mode.");
+			return ;
 		}
 		
 		// Dispatch

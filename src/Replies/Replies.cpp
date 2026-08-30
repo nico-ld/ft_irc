@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 12:07:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/26 13:38:53 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 19:07:45 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,5 @@ void Server::sendReply(const User &user, const std::string &code, const std::str
 	// Routed through the buffered write path (see ServerHelper.cpp) instead of
 	// a raw send(), so a slow client doesn't silently lose the reply.
 	queueWrite(const_cast<User &>(user), msg);
+	dash->log(SERVER, msg);
 }

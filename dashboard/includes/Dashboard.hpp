@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 18:08:37 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 18:49:47 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@
 #define INNER_WIDTH 53 // Between two vertical border
 #define COL_WIDTH 25 // Width of each half in two-column rows
 #define SEP_WIDTH 3 // Width of separator between two column
+
+enum e_side {
+	LEFT,
+	RIGHT
+};
 
 struct t_column {
 	bool		hasTitle;
@@ -73,6 +78,18 @@ class Dashboard
 		/* > Erase the full screen to draw the new dashboard */
 		void	eraseScreen( void ) const;
 
+		/* > Update an information in a specific section (with title) */
+		void	updateInfo(t_section *section, e_side colSide, std::string title, std::string newValue);
+
+		/* > Update an information in a specific section (with index) */
+		void	updateInfo(t_section *section, e_side colSide, size_t index, std::string newValue);
+
+		/* > Increase a numeric info by one */
+		void	increaseInfo(t_section *section, e_side colSide, size_t index);
+
+		/* > Decrease a numeric info by one */
+		void	decreaseInfo(t_section *section, e_side colSide, size_t index);
+		
 		
 		/*===========================*\
 		|							  |
@@ -119,7 +136,6 @@ class Dashboard
 
 		/* > Remove a section on dashboard (with index) */
 		void	removeSection(size_t index);
-
 		
 		// === GETTERS ===		
 		/* > Get the full list of sections */
@@ -154,6 +170,9 @@ class Dashboard
 
 /* > Convert an Int into a string to use it in message or in dashboard */
 std::string toStr(int num);
+
+/* > Convert a string into a Int */
+int 		toInt(std::string str);
 
 /* > Return current time as a string in Hours:Minutes:Seconds format */
 std::string timestamp();

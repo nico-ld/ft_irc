@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/29 11:31:21 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/29 11:39:59 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "Replies.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
+#include "../dashboard/includes/Dashboard.hpp"
 
 #include <map>
 #include <vector>
@@ -60,6 +61,8 @@ class Server
 		Server(int port, const std::string &password);
 		~Server();
 
+		// === Dashboard ===
+		Dashboard *dash;
 		
 		// === 	CORE SERVER LIFECYCLE ===
 		/* > Set up sockets & epoll */
