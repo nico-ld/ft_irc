@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/30 11:36:55 by nico             ###   ########.fr        #
+#    Updated: 2026/08/30 16:15:42 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,6 +46,7 @@ RENDER		:= \
 SECTIONS	:= \
 				$(SECT_DIR)SectionCore.cpp \
 				$(SECT_DIR)SectionInfo.cpp \
+				$(SECT_DIR)SectionElem.cpp \
 				$(SECT_DIR)SectionParser.cpp
 
 SRC			:= \

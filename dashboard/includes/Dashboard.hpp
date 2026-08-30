@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 11:52:33 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 16:14:24 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 #define INNER_WIDTH 53 // Between two vertical border
 #define COL_WIDTH 25 // Width of each half in two-column rows
 #define SEP_WIDTH 3 // Width of separator between two column
+
+#define INFO_LIST std::vector<std::pair<std::string, std::string> > // List of information from dashboard
 
 enum e_side {
 	LEFT,
@@ -106,6 +108,11 @@ class Dashboard
 		/* > Display the dashboard with given information */
 		void 	render( void );
 
+		// === Simple info ===
+		
+		/* > Return a pointer on the list of simple imformation */
+		INFO_LIST	*getSimpleInfo(t_section *section, e_side colSide);
+		
 		/* > Update an information in a specific section (with index) */
 		void	updateInfo(t_section *section, e_side colSide, size_t index, std::string newValue);
 
@@ -121,12 +128,22 @@ class Dashboard
 		/* > Remove a simple information */
 		void	removeSimpleInfo(t_section *section, e_side colSide, size_t index);
 
+		// === List of elements === 
+		
+		/* > Return the list of element */
+		std::vector<INFO_LIST> *getElemList(t_section *section, e_side colSide);
+
+		/* > Return a point on an element from the element list */
+		INFO_LIST *getElem(t_section *section, e_side colSide, size_t index);
+		
 		/* > Add an element to the element list */
-		void	addElem(t_section *section, e_side colSide,
-						std::vector<std::pair<std::string, std::string> > newElem);
+		void	addElem(t_section *section, e_side colSide, INFO_LIST newElem);
 						
 		/* > Remove an element from the element list */
 		void 	removeElem(t_section *section, e_side colSide, size_t index);
+
+		/* > Set an element with new values */
+		void setElem(t_section *section, e_side colSide, size_t index, INFO_LIST newElem);
 				
 
 		/*===========================*\
@@ -179,3 +196,9 @@ std::string centerText(std::string text, size_t width);
 
 /* > Create a string in right format for a double column situation */
 std::string createInfo(std::string key, std::string value);
+
+/* > Helper for user methods, return true if the section is NULL */
+bool sectionIsNull(t_section *section, Dashboard *dash);
+
+/* > Helper for user methods, return true if the index is out of range */
+bool indexOutOfRange(Dashboard *dash, size_t index, size_t size);

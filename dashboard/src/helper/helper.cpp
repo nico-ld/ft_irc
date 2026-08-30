@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:53:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/29 18:45:17 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 16:13:51 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,3 +59,19 @@ std::string createInfo(std::string key, std::string value) {
 	// Return element
 	return (key + " : " + value + std::string(COL_WIDTH - 1 - totalWidth, ' '));
 }
+
+bool sectionIsNull(t_section *section, Dashboard *dash) {
+	if (!section) {
+		dash->log(ERROR_LVL, "Section unknow : cannot modify information");
+		return (true);
+	}
+	return (false);
+}
+
+bool indexOutOfRange(Dashboard *dash, size_t index, size_t size) {
+	if (index >= size) {
+		dash->log(ERROR_LVL, "Index out of range : cannot modify information");
+		return ;
+	}
+}
+
