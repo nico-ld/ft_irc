@@ -13,6 +13,8 @@
 #include "Server.hpp"
 #include <cstdio>
 #include <cstring>
+#include <cerrno>
+#include <algorithm>
 
 // Adds or removes EPOLLOUT from the set of events epoll watches for this fd,
 // without disturbing EPOLLIN (a client's incoming data must always be watched).
@@ -23,6 +25,43 @@ void Server::setEpollWriteInterest(int fd, bool enable) {
 	ev.data.fd = fd;
 	ev.events = enable ? (EPOLLIN | EPOLLOUT) : EPOLLIN;
 	epoll_ctl(_epollFd, EPOLL_CTL_MOD, fd, &ev);
+}
+
+// EAGAIN/EWOULDBLOCK/EINTR just mean "not right now" on a non-blocking
+// socket - the data is worth queuing and retrying on the next EPOLLOUT.
+// Anything else (EPIPE, ECONNRESET, EBADF, ENOTCONN, ...) means the peer
+// or the fd itself is gone for good: no amount of retrying will fix that.
+bool Server::isFatalSendError(int err) const {
+	return (err != EAGAIN && err != EWOULDBLOCK && err != EINTR);
+}
+
+// Marks clientFd for removeUser() cleanup on the next processPendingRemovals()
+// pass, instead of erasing it immediately. queueWrite()/flushWrite() are
+// called from inside loops over _users/_channels (broadcastServer, broadcast),
+// and removeUser() erases from _users - doing that mid-iteration would
+// invalidate the very iterator those loops are using.
+void Server::scheduleRemoval(int fd, const std::string &reason) {
+	if (std::find(_pendingRemovals.begin(), _pendingRemovals.end(), fd) != _pendingRemovals.end())
+		return; // already scheduled, avoid a double removeUser() on the same fd
+	std::cerr << "[LOG] fd " << fd << " scheduled for removal: " << reason << std::endl;
+	_pendingRemovals.push_back(fd);
+}
+
+// Drains _pendingRemovals, calling the exact same cleanup path as a normal
+// disconnect (removeUser()). Using a pop-based loop (rather than an iterator)
+// so that if removeUser() itself schedules further removals - e.g. because
+// notifying a channel about this departure fails on another dead fd - those
+// get processed too, safely, in the same pass.
+void Server::processPendingRemovals() {
+	while (!_pendingRemovals.empty()) {
+		int fd = _pendingRemovals.back();
+		_pendingRemovals.pop_back();
+
+		// Might already be gone (e.g. a normal recv()==0 disconnect handled
+		// it earlier in the same event batch) - nothing left to clean up.
+		if (getUserById(fd))
+			removeUser(fd, "Write error: connection lost");
+	}
 }
 
 // Sends data to a user through their NetworkBuffer instead of a raw send() call.
@@ -39,12 +78,19 @@ void Server::queueWrite(User &user, const std::string &data) {
 		return;
 	}
 
+	errno = 0;
 	ssize_t sent = send(user.getFd(), data.c_str(), data.size(), MSG_NOSIGNAL);
 
 	if (sent < 0) {
-		// Nothing went out (e.g. EAGAIN/EWOULDBLOCK on a non-blocking socket):
-		// queue the whole message and wait for the socket to become writable.
+		int err = errno;
 		std::perror("send crashed");
+		if (isFatalSendError(err)) {
+			// The connection is dead: no point queuing data for it anymore.
+			scheduleRemoval(user.getFd(), "Write error: connection lost");
+			return;
+		}
+		// Transient (EAGAIN/EWOULDBLOCK/EINTR): queue the whole message and
+		// wait for the socket to become writable.
 		buffer.queueWriteData(data);
 		setEpollWriteInterest(user.getFd(), true);
 		return;
@@ -71,9 +117,13 @@ void Server::flushWrite(int fd) {
 		return;
 	}
 
+	errno = 0;
 	ssize_t sent = send(fd, pending.c_str(), pending.size(), MSG_NOSIGNAL);
 	if (sent < 0) {
+		int err = errno;
 		std::perror("send crashed");
+		if (isFatalSendError(err))
+			scheduleRemoval(fd, "Write error: connection lost");
 		return; // stay armed for the next EPOLLOUT, data remains queued
 	}
 
