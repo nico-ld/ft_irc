@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/29 18:58:19 by nico             ###   ########.fr        #
+#    Updated: 2026/08/30 11:36:55 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,6 @@ HELPER		:= $(HELP_DIR)helper.cpp
 
 RENDER		:= \
 				$(REND_DIR)Render.cpp \
-				$(REND_DIR)RenderHelper.cpp \
 				$(REND_DIR)RenderColumn.cpp \
 				$(REND_DIR)RenderTitles.cpp \
 				$(REND_DIR)RenderTwoColumns.cpp

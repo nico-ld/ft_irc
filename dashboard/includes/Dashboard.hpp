@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/29 18:49:47 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 11:52:33 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,43 +64,7 @@ class Dashboard
 		std::string _logPath;
 		std::ofstream _logFile;
 
-	public:
-		// Constructor & destructor
-		Dashboard(std::string title, std::string logPath);
-		~Dashboard();
-
-
-		// === GLOBAL METHODS ===
-
-		/* > Write log into log file, return -1 on error */
-		int		log(const std::string level, const std::string message);
-
-		/* > Erase the full screen to draw the new dashboard */
-		void	eraseScreen( void ) const;
-
-		/* > Update an information in a specific section (with title) */
-		void	updateInfo(t_section *section, e_side colSide, std::string title, std::string newValue);
-
-		/* > Update an information in a specific section (with index) */
-		void	updateInfo(t_section *section, e_side colSide, size_t index, std::string newValue);
-
-		/* > Increase a numeric info by one */
-		void	increaseInfo(t_section *section, e_side colSide, size_t index);
-
-		/* > Decrease a numeric info by one */
-		void	decreaseInfo(t_section *section, e_side colSide, size_t index);
-		
-		
-		/*===========================*\
-		|							  |
-		|       RENDER MANAGEMENT     |
-		|							  |
-		\*===========================*/
-		
-		// === METHODS ===
-		/* > Display the dashboard with given information */
-		void render( void );
-
+		// === RENDER ===
 		/* > Print the header of section */
 		void printSectionHeader(t_section &section);
 
@@ -113,15 +77,58 @@ class Dashboard
 		/* > Print only one column */
 		void oneColumnCase(t_column &column);
 
-		
-		// === GETTERS ===
-		/* > Return the number of lines with every sections */
-		int	getNbLines( void ) const;
-
-		/* > Return the number of line of the longest element list in the section */
-		int getElemLines(t_section section) const;
+		/* > Erase the full screen to draw the new dashboard */
+		void	eraseScreen( void ) const;
 
 		
+		// === BOOLEAN ===
+		/* > Check information on section, return True if everything is correct, otherwise False. 
+		Also it trigger every flags in function of each element detected */
+		bool isSectionValid(t_section &section);
+		
+		/* > Check section title and main information */
+		bool sectionInfoValid(t_section &section);
+
+		/* > Check column informations */
+		bool columnInfoValid(t_column &column, std::string sectionTitle);
+		
+	public:
+		// Constructor & destructor
+		Dashboard(std::string title, std::string logPath);
+		~Dashboard();
+
+
+		// === GLOBAL METHODS ===
+
+		/* > Write log into log file, return -1 on error */
+		int		log(const std::string level, const std::string message);
+
+		/* > Display the dashboard with given information */
+		void 	render( void );
+
+		/* > Update an information in a specific section (with index) */
+		void	updateInfo(t_section *section, e_side colSide, size_t index, std::string newValue);
+
+		/* > Increase a numeric info by one */
+		void	increaseInfo(t_section *section, e_side colSide, size_t index);
+
+		/* > Decrease a numeric info by one */
+		void	decreaseInfo(t_section *section, e_side colSide, size_t index);
+
+		/* > Add a new simple information */
+		void	addSimpleInfo(t_section *section, e_side colSide, std::string key, std::string value);
+
+		/* > Remove a simple information */
+		void	removeSimpleInfo(t_section *section, e_side colSide, size_t index);
+
+		/* > Add an element to the element list */
+		void	addElem(t_section *section, e_side colSide,
+						std::vector<std::pair<std::string, std::string> > newElem);
+						
+		/* > Remove an element from the element list */
+		void 	removeElem(t_section *section, e_side colSide, size_t index);
+				
+
 		/*===========================*\
 		|							  |
 		|      SECTION MANAGEMENT     |
@@ -156,16 +163,6 @@ class Dashboard
 		void setSection(size_t index, t_section &newSection);
 
 
-		// === BOOLEAN ===
-		/* > Check information on section, return True if everything is correct, otherwise False. 
-		Also it trigger every flags in function of each element detected */
-		bool isSectionValid(t_section &section);
-		
-		/* > Check section title and main information */
-		bool sectionInfoValid(t_section &section);
-
-		/* > Check column informations */
-		bool columnInfoValid(t_column &column, std::string sectionTitle);
 };
 
 /* > Convert an Int into a string to use it in message or in dashboard */
