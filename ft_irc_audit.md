@@ -179,7 +179,7 @@ Severity tags: 🔴 Critical (crash/auth-bypass/privilege-escalation) · 🟠 Hi
   Without this buffer (or equivalent `EPOLLOUT` handling), a slow client can cause `send()` to fail/partially-write under load, and that data is simply lost — no queuing, no retry.
   → Wire `NetworkBuffer` into the per-user send path: queue via `queueWriteData()`, register `EPOLLOUT` when `hasPendingWrite()`, and flush on the write-ready event.
 
-### src/network/NetworkUtils.cpp / NetworkUtils.hpp
+### src/network/NetworkUtils.cpp / NetworkUtils.hpp : DONE
 - 🟡 **`getIpString()` / `getHostname()` are fully implemented but never called.**  
   This is the same root cause as the Part 1 finding on `Server.cpp` not capturing client addresses — the utility to do it correctly already exists and just isn't wired in.
   Without it, the server has no real audit trail of who connected from where, and no way to build IP-based bans, rate limits, or abuse detection later.
