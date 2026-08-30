@@ -185,6 +185,12 @@ void Server::startLoop() {
     		}
 			}
 		}
+
+		// Clean up any connection whose send() hit a fatal error (EPIPE,
+		// ECONNRESET, ...) during this batch of events. Deferred to here,
+		// once we're safely out of every _users/_channels iteration, so
+		// removeUser()'s erase from _users can't invalidate a live loop.
+		processPendingRemovals();
 	}
 }
 
