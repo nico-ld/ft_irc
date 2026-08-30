@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 15:07:48 by afons             #+#    #+#             */
-/*   Updated: 2026/08/27 10:16:09 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 10:47:10 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,18 @@
 
 void Server::broadcastServer(std::string message) {
 	std::map<int, User>::iterator it = _users.begin();
+	
 	for (; it != _users.end(); ++it) {
+		dash->log(SERVER, message);
     	queueWrite(it->second, message);
 	}
 }
 
 void Server::broadcast(const Channel &channel, std::string message) {
 	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
+	
 	for (; it != channel.getMembers().end(); ++it) {
+		dash->log(SERVER, message);
     	queueWrite(*it->second, message);
 	}
 }
@@ -37,27 +41,46 @@ void Server::broadcast(const Channel &channel, std::string message) {
 void Server::broadcast(const Channel &channel, const User *user, std::string message) {
 	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
 	std::string messageError = user->getUsername() + message;
+	
 	for (; it != channel.getMembers().end(); ++it) {
+		dash->log(SERVER, messageError);
     	queueWrite(*it->second, messageError);
 	}
 }
 
 void Server::notification(const User *user, std::string message) {
-	std::string messageError = message + "\r\n";
+	std::string messageError = message;
+	
+	if (message.find("\r\n") == std::string::npos)
+		messageError.append("\r\n");
+	
+	dash->log(SERVER, messageError);
 	queueWrite(*const_cast<User *>(user), messageError);
 }
 
 void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message) {
 	if (!channel.isMember(src->getFd())) {
+		dash->log(WARNING, "Fd : " + toStr(src->getFd()) + ", Is not on the channel");
 		sendReply(*src, ERR_NOTONCHANNEL, "You're not in this channel");
-		throw std::runtime_error("User not on the channel.");
+		return ;
 	}
-	std::string privateMessage = channel.getName() + "-> " + src->getNickname() + ": " + message + "\r\n";
-	for (std::map<int, User *>::const_iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); ++it)
+
+	std::string privateMessage = channel.getName() + "-> " + src->getNickname() + ": " + message;
+	if (message.find("\r\n") == std::string::npos)
+		privateMessage.append("\n\r");
+	
+	for (std::map<int, User *>::const_iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); ++it) {
+		dash->log(SERVER, message);
 		queueWrite(*it->second, privateMessage);
+	}
 }
 
 void Server::privateMessageUser(const User *src, const User *dest, std::string message) {
-	std::string privateMessage = src->getNickname() + ": " + message + "\r\n";
+	std::string privateMessage = src->getNickname() + ": " + message;
+	
+	if (message.find("\r\n") == std::string::npos)
+		privateMessage.append("\r\n");
+	
+	dash->log(SERVER, privateMessage);
 	queueWrite(*const_cast<User *>(dest), privateMessage);
 }
