@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 09:52:48 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 10:36:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ static bool channelNotExist(User &user, Server &server, Channel *channel, std::s
 	return (true);
 }
 
+/* > Dispatcher */
 void	channelCommandsDispatch(Server &server, std::string command, User &user, Parser &parser) {
 	std::vector<std::string> parameters = parser.getParameters();
 	std::vector<Channel> listChannel;
@@ -45,6 +46,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 	
 	// === JOIN ===
 	if (command == "join") {
+		// Check if there is somes parameters
+		if (missingParameter(user, server, command, parameters.size(), 1))
+			return ;
 		listChannel = parser.getChannelList(parameters[0]);
 		
 		// Get channel(s) from command input
@@ -53,9 +57,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		}
 		
 		// Dispatch on channels amount
-		if (missingParameter(user, server, command, parameters.size(), 1))
-			return ;
-		else if (parameters.size() > 1) {
+		if (parameters.size() > 1) {
 			listKey = parser.getKeyList(parameters[1]);
 			server.join(listChannel, listKey, &user, parser);
 		}
@@ -85,7 +87,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		if (parameters.size() > 2)
 			server.kick(*channel, kicked, parameters[2], &user);
 		else
-			server.kick(*channel, kicked, &user);
+			server.kick(*channel, kicked, "", &user);
 	}
 
 	// === PART ===
@@ -99,7 +101,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		if (parameters.size() > 1)
 			server.part(listChannel, parameters[1], &user);
 		else
-			server.part(listChannel, &user);
+			server.part(listChannel, "", &user);
 	}
 
 	// === QUIT ===

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 15:31:36 by afons             #+#    #+#             */
-/*   Updated: 2026/08/27 10:44:26 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 10:34:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,9 @@ void Server::topic(Channel &channel, std::string newTopic, User *user) {
 	// Check is mode topic restricted is enabled (+t)
 	if (channel.isTopicRestricted()) {
 		if (!channel.isOperator(user->getFd())) {
+			dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ", Doesn't get operator privilege to change topic");
 			sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need operator privilege to do this");
-			throw std::runtime_error("[LOG] User is not operator");
+			return ;
 		}
 	}
 

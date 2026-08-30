@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/08/29 11:31:08 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 10:36:24 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,64 +16,49 @@
 #include <stdexcept>
 #include <iostream>
 
-void Server::kick(Channel &channel, User *kicked, const User *op) {
-	// Check if sender is on the channel
-	if (!channel.isMember(op->getFd())) {
-		sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");
-		throw std::runtime_error("[LOG] Sender is not on the channel");
-	}
+/* > Check if sender is on the channel and get operator rights, then if kicked user is on the channel*/
+static bool commandValid(Server *server, Channel &channel, User *kicked, const User *op) {
+	int opFd = op->getFd();
 	
-	// Check if sender get operator rights
-	else if (!channel.isOperator(op->getFd())) {
-		sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator privilege to do this");
-		throw std::runtime_error("[LOG] Sender doesn't get operator privilege");
+	// Check if sender is on the channel
+	if (!channel.isMember(opFd)) {
+		server->dash->log(WARNING, "Fd : " + toStr(opFd) + ", Is not on the channel");
+		server->sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");
+		return (false);
 	}
 
-	// Check if target is on the channel
-	else if (!channel.isMember(kicked->getFd())) {
-		sendReply(*op, ERR_USERNOTINCHANNEL, "User you trying to kick is not on this channel");
-		throw std::runtime_error("[LOG] Kicked is not on the channel");
+	// Check if sender get operator rights
+	if (!channel.isOperator(opFd)) {
+		server->dash->log(WARNING, "Fd : " + toStr(opFd) + ", doesn't get operator privilege to kick");
+		server->sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator privilege to kick someone");
+		return (false);
 	}
-	
-	// If every guards are OK, kick user
-	channel.removeMember(kicked); // Remove it from the channel
-	
-	// Build kick message
-	std::string id = ":" + op->getNickname() + "!" + op->getRealname() + "@" + op->getHostname();
-	std::string kickMessage = " KICK " + channel.getName() + " " + kicked->getNickname();
-	std::string message = id + kickMessage;
-	
-	// Send message
-	broadcast(channel, kicked, message);
-	notification(kicked, "You've been kicked from the channel");
+
+	// Check if target is on channel
+	if (!channel.isMember(kicked->getFd())) {
+		server->dash->log(WARNING, "Fd : " + toStr(opFd) + ", Try to kick someone that is not on the channel");
+		server->sendReply(*op, ERR_USERNOTINCHANNEL, "User you trying to kick is not on this channel");
+		return (false);
+	}
+
+	return (true);
 }
 
 void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {
-	// Check if sender is on the channel
-	if (!channel.isMember(op->getFd())) {
-		sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");
-		throw std::runtime_error("[LOG] Sender is not on the channel");
-	}
-	
-	// Check if sender get operator rights
-	else if (!channel.isOperator(op->getFd())) {
-		sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator privilege to do this");
-		throw std::runtime_error("[LOG] Sender doesn't get operator privilege");
-	}
-
-	// Check if target is on the channel
-	else if (!channel.isMember(kicked->getFd())) {
-		sendReply(*op, ERR_USERNOTINCHANNEL, "User you trying to kick is not on this channel");
-		throw std::runtime_error("[LOG] Kicked is not on the channel");
-	}
+	// Check if command is valid
+	if (!commandValid(this, channel, kicked, op))
+		return ;
 
 	// If every guards are OK, kick user
 	channel.removeMember(kicked);
 	
 	// Build kick message
 	std::string id = ":" + op->getNickname() + "!" + op->getRealname() + "@" + op->getHostname();
-	std::string kickMessage = " KICK " + channel.getName() + " " + kicked->getNickname() + ":" + reason;
+	std::string kickMessage = " KICK " + channel.getName() + " " + kicked->getNickname();
 	std::string message = id + kickMessage;
+
+	if (!reason.empty())
+		message.append(" :" + reason);
 	
 	// Send message
 	broadcast(channel, kicked, message);

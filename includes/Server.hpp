@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/29 11:39:59 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 10:36:43 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,6 @@ class Server
 		void join(std::vector<Channel> &listChannel, User *client, Parser &parser);
 
 		// KICK
-		void kick(Channel &channel, User *kicked, const User *op);
 		void kick(Channel &channel, User *kicked, std::string reason, const User *op);
 
 		// TOPIC
@@ -132,7 +131,6 @@ class Server
 		void topic(Channel &channel, std::string newTopic, User *user);
 
 		// PART
-		void part(std::vector<Channel> &channels, User *user);
 		void part(std::vector<Channel> &channels, std::string reason, User *user);
 
 		// INVITE

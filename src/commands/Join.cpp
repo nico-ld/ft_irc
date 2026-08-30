@@ -9,14 +9,16 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
 		// Check if user has joined too many channels or not
 		if (client->getJoinedChannels().size() > 15) {
+			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Joined too many channel");
 			sendReply(*client, ERR_TOOMANYCHANNELS, "You have joined too many channel");
-			throw std::runtime_error("[LOG] User joined too many channels");
+			return ;
 		}
 
 		// Check if channel name is correct
 		if (!parser.checkChannelName(getChan->getName())) {
+			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Invalid channel name");
 			sendReply(*client, ERR_NOSUCHCHANNEL, "Invalid channel name");
-			throw std::runtime_error("[LOG] Name channel must start with #");
+			return ;
 		}
 
 		// Check if channel already exist
@@ -26,20 +28,23 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 		if (it != _channels.end()) {
 			// Check channel is on invite only (+i)
 			if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd())) {
+				dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is on invite only mode");
 				sendReply(*client, ERR_INVITEONLYCHAN, "Channel is on invite only mode (+i)");
-				throw std::runtime_error("[LOG] Channel is in invite only.");
+				return ;
 			}
 
 			// Check if the channel get a user limit and if there is too many user for that limit (+l)
 			if (it->second.getUserLimit() != -1 && it->second.getMemberCount() >= it->second.getUserLimit()) {
+				dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is full");
 				sendReply(*client, ERR_CHANNELISFULL, "Channel is full, you cannot join it (+l)");
-				throw std::runtime_error("[LOG] Channel is full.");
+				return ;
 			}
 
 			// Check if channel need a key to be joined (+k)
 			if (it->second.getKey().size() > 0) {
+				dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", This channel need a key");
 				sendReply(*client, ERR_BADCHANNELKEY, "This channel need a key to join it");
-				throw std::runtime_error("[LOG] This channel need a key");
+				return ;
 			}
 
 			// If every guard is OK, join the channel
@@ -61,6 +66,9 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 			// Send message
 			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 			broadcast(channel, client, message);
+
+			// Update dashboard
+			dash->increaseInfo(dash->getSectionByIndex(1), LEFT, 0);
 			continue;
 		}
 	}
@@ -73,14 +81,16 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
 		// Check if user has joined too many channels or not
 		if (client->getJoinedChannels().size() > 15) {
+			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Joined too many channel");
 			sendReply(*client, ERR_TOOMANYCHANNELS, "You have joined too many channel");
-			throw std::runtime_error("[LOG] User joined too many channels");
+			return ;
 		}
 
 		// Check if channel name is correct
 		if (!parser.checkChannelName(getChan->getName())) {
+			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Invalid channel name");
 			sendReply(*client, ERR_NOSUCHCHANNEL, "Invalid channel name");
-			throw std::runtime_error("[LOG] Name channel must start with #");
+			return ;
 		}
 
 		// Check if there still is somes key in the given list
@@ -90,22 +100,25 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 
 			// If channel exist
 			if (it != _channels.end()) {
-				// Check if channel is on invite only (+i)
+				// Check channel is on invite only (+i)
 				if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd())) {
+					dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is on invite only mode");
 					sendReply(*client, ERR_INVITEONLYCHAN, "Channel is on invite only mode (+i)");
-					throw std::runtime_error("[LOG] Channel is in invite only");
+					return ;
 				}
 
 				// Check if the channel get a user limit and if there is too many user for that limit (+l)
 				if (it->second.getUserLimit() != -1 && it->second.getMemberCount() >= it->second.getUserLimit()) {
+					dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is full");
 					sendReply(*client, ERR_CHANNELISFULL, "Channel is full, you cannot join it (+l)");
-					throw std::runtime_error("[LOG] Channel is full");
+					return ;
 				}
 
 				// Check if the key is valid
 				if (it->second.getKey() != listKey[i]) {
+					dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Invalid channel key");
 					sendReply(*client, ERR_BADCHANNELKEY, "Invalid channel key");
-					throw std::runtime_error("User cannot join the channel : key error");
+					return ;
 				}
 
 				// If every guard are OK, user can join the channel
@@ -127,13 +140,16 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 				// Send message
 				std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
 				broadcast(channel, client, message);
+
+				// Update dashboard
+				dash->increaseInfo(dash->getSectionByIndex(1), LEFT, 0);
 				continue;
 			}	
 		}
 
 		// If not anymore keys, continue on the other JOIN
 		else {
-			std::vector<Channel> restOfListChannel(getChan, listChannel.end()); 
+			std::vector<Channel> restOfListChannel(getChan, listChannel.end());
 			join(restOfListChannel, client, parser);
 			return ;
 		}
