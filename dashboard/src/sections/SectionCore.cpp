@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 14:34:27 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 17:45:35 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 18:12:02 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ void Dashboard::addSection(t_section &newSection) {
 		return ;
 	
 	_sectionList.push_back(newSection);
-
-	log(SUCCESS, "Section '" + newSection.title + "' successfully added to dashboard");
 }
 
 void Dashboard::removeSection(std::string &title) {

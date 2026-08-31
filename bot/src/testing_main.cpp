@@ -3,9 +3,11 @@
 #include "Uno.hpp"
 
 #include <iostream>
+#include <unistd.h>
 
 int main(void) {
 	std::srand(std::time(NULL));
+	Dashboard dash(ROUXBOT, "bot.log");
 
 	// Init dashboard
 	// Server
@@ -49,12 +51,10 @@ int main(void) {
 	game.title = "game";
 	game.leftColumn = uno;
 
-	Dashboard dash(ROUXBOT, "bot.log");
 	dash.addSection(server);
 	dash.addSection(bot);
 	dash.addSection(game);
 	dash.render();
-
 
 	// Init botData
 	t_bot_data botData;

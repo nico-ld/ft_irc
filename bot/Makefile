@@ -124,9 +124,12 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@printf "$(RED) ✘$(RESET)  $(NAME) removed\n"
-	@printf "To remove $(BOLD)Dasboard.a$(RESET), use IRC makefile.\n"
+	@printf "To remove $(BOLD)Dasboard.a$(RESET), use IRC or Dashboard makefile.\n"
 	@rm -f bot.log
 
-re: fclean all
+re: fclean dashboard all
 
-.PHONY: all clean fclean re
+dashboard:
+	@$(MAKE) --no-print-directory -C $(DASH_DIR) re
+
+.PHONY: all clean fclean re dashboard

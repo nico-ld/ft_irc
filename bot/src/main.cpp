@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 17:42:29 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 18:44:46 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ int main(int ac, char **av) {
 	t_bot_data botData;
 	botData.sock = sock;
 	botData.dash = &dash;
+
+	std::srand(std::time(NULL));
 
 	if (registerBot(botData, password) == 0) {
 		serverLoop(botData);

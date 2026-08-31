@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:05:05 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 17:25:31 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 18:05:54 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void Game::addPlayer(std::string playerName, t_bot_data &botData) {
 		}
 	}
 
-	botData.dash->increaseInfo(botData.dash->getSectionByIndex(1), LEFT, 2); // Increase player amount for BOT
+	botData.dash->increaseInfo(botData.dash->getSectionByIndex(2), LEFT, 1); // Increase player amount for GAME
 	botData.dash->increaseInfo(botData.dash->getSectionByIndex(1), LEFT, 2); // Increase player amount for BOT
 	botData.dash->render();
 }

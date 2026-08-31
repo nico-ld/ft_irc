@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 18:39:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 16:15:15 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 08:54:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,15 @@ void Dashboard::addSimpleInfo(t_section *section, e_side colSide, std::string ke
 		return ;
 	}
 		
-	if (colSide == LEFT)
+	if (colSide == LEFT) {
 		section->leftColumn.infoList.push_back(std::make_pair(key, value));
-	else
+		section->leftColumn.hasSimpleInfo = true;
+	}
+	else {
 		section->rightColumn.infoList.push_back(std::make_pair(key, value));
-
+		section->leftColumn.hasSimpleInfo = true;
+	}
+	
 	render();
 }
 
@@ -97,10 +101,14 @@ void Dashboard::removeSimpleInfo(t_section *section, e_side colSide, size_t inde
 		return ;
 
 	if (colSide == LEFT && !indexOutOfRange(this, index, section->leftColumn.infoList.size())) {
-		section->leftColumn.infoList.erase(section->leftColumn.infoList.begin() + index);
+		section->leftColumn.infoList.erase(section->leftColumn.infoList.begin() + index); 
+		if (section->leftColumn.infoList.empty())
+			section->leftColumn.hasSimpleInfo = false;
 	}
 	else if (colSide == RIGHT && !indexOutOfRange(this, index, section->rightColumn.infoList.size())) {
 		section->rightColumn.infoList.erase(section->rightColumn.infoList.begin() + index);
+		if (section->rightColumn.infoList.empty())
+			section->rightColumn.hasSimpleInfo = false;
 	}
 	else
 		return ;

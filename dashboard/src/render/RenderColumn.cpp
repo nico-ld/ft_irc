@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 16:42:46 by nico              #+#    #+#             */
-/*   Updated: 2026/08/28 18:12:58 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 08:55:53 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,14 @@ void Dashboard::oneColumnCase(t_column &column) {
 		// Print title
 		std::string title = column.elemListTitle;
 		std::cout << "│ " 
-				<< centerText(((title.size() < INNER_WIDTH - 2) ? title.substr(0, INNER_WIDTH - 3).append(".") : title), INNER_WIDTH - 2)
+				<< centerText(((title.size() > INNER_WIDTH - 2) ? title.substr(0, INNER_WIDTH - 3).append(".") : title), INNER_WIDTH - 2)
 				<< " │\n";
 		_lineWritten += 1;
-		
+
 		// Print each elements
 		for (size_t index = 0; index < column.elemList.size(); ++index) {
-			std::vector<std::pair<std::string, std::string> > element;
-			std::vector<std::pair<std::string, std::string> >::const_iterator info;
+			INFO_LIST element = column.elemList[index];
+			INFO_LIST::const_iterator info;
 
 			for (info = element.begin(); info != element.end(); ++info) {
 				// Get values

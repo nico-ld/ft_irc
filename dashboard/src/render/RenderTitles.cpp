@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 16:41:02 by nico              #+#    #+#             */
-/*   Updated: 2026/08/29 11:19:10 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/30 17:55:16 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void Dashboard::printColumnsTitles(t_section &section) {
 			if (title.size() > INNER_WIDTH - 2)
 				title = title.substr(0, INNER_WIDTH - 3).append(".");
 				
-			std::cout << "│ " BOLD << centerText(title, INNER_WIDTH - 2) <<  RESET "│ \n";
+			std::cout << "│ " BOLD << centerText(title, INNER_WIDTH - 2) <<  RESET " │\n";
 		}
 		
 		// If left title

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/30 14:59:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 17:49:11 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 08:55:20 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ std::vector<INFO_LIST> *Dashboard::getElemList(t_section *section, e_side colSid
 INFO_LIST *Dashboard::getElem(t_section *section, e_side colSide, size_t index) {
 	if (sectionIsNull(section, this))
 		return (NULL);
-
+	
 	if (colSide == LEFT) {
 		if (indexOutOfRange(this, index, section->leftColumn.elemList.size()))
 			return (NULL);
@@ -50,6 +50,7 @@ void Dashboard::addElem(t_section *section, e_side colSide, INFO_LIST newElem) {
 		else if (section->leftColumn.elemList.empty() && section->leftColumn.elemListTitle.empty())
 			section->leftColumn.elemListTitle = "Info by element";
 		section->leftColumn.elemList.push_back(newElem);
+		section->leftColumn.hasElemList = true;
 	}
 	else {
 		if (!section->rightColumn.elemList.empty() && section->rightColumn.elemList[0].size() != newElem.size()) {
@@ -59,7 +60,9 @@ void Dashboard::addElem(t_section *section, e_side colSide, INFO_LIST newElem) {
 		else if (section->rightColumn.elemList.empty() && section->rightColumn.elemListTitle.empty())
 			section->rightColumn.elemListTitle = "Info by element";
 		section->rightColumn.elemList.push_back(newElem);
+		section->rightColumn.hasElemList = true;
 	}
+
 
 	render();
 }
@@ -70,9 +73,13 @@ void Dashboard::removeElem(t_section *section, e_side colSide, size_t index) {
 	
 	if (colSide == LEFT && !indexOutOfRange(this, index, section->leftColumn.elemList.size())) {
 		section->leftColumn.elemList.erase(section->leftColumn.elemList.begin() + index);
+		if (section->leftColumn.elemList.empty())
+			section->leftColumn.hasElemList = false;
 	}
 	else if (colSide == RIGHT && !indexOutOfRange(this, index, section->rightColumn.elemList.size())) {
 		section->rightColumn.elemList.erase(section->rightColumn.elemList.begin() + index);
+		if (section->rightColumn.elemList.empty())
+			section->rightColumn.hasElemList = false;
 	}
 	else
 		return ;

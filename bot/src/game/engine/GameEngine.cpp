@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:10:53 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 17:23:47 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 08:58:54 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void Game::setGameState(e_state state, t_bot_data &botData) {
 		return ;
 
 	for (size_t index = 0; index < elemList->size(); ++index) {
-		if ((*elemList)[index][0].first == _channel) {
+		if ((*elemList)[index][0].second == _channel) {
 			(*elemList)[index][2].second = convertState(state);
 			break ;
 		}
