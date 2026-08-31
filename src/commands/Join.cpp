@@ -6,7 +6,7 @@
 /* > Reply to the client, send information about channel joined */
 static void joinReply(Server *server, User *client, Channel &channel, Parser &parser) {
 	// Echoes the command
-	server->notification(client,  client->getPrefix() + " " + parser.getRawString());
+	server->broadcast(channel,  client->getPrefix() + " " + parser.getRawString());
 
 	// Send topic information
 	server->topic(channel, client);
@@ -18,8 +18,9 @@ static void joinReply(Server *server, User *client, Channel &channel, Parser &pa
 	for (std::map<int, User*>::iterator it = userList.begin(); it != userList.end(); ++it) {
 		if (message.size() < 400) {
 			// If user is operator, add '@'
-			if (channel.isOperator(it->second->getFd()))
+			if (channel.isOperator(it->second->getFd())) {
 				message.append("@");
+			}
 
 			// Add user name
 			message.append(it->second->getNickname());
@@ -35,9 +36,6 @@ static void joinReply(Server *server, User *client, Channel &channel, Parser &pa
 
 	// End of name list
 	server->sendReply(*client, RPL_ENDOFNAMES, channel.getName() + " :End of user name list");
-
-	// Warn a new user has join
-	server->broadcast(channel, client->getNickname() + " joined channel !");
 }
 
 void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parser) {
@@ -60,7 +58,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 		// Check if channel already exist
 		std::map<std::string, Channel>::iterator it = _channels.find(getChan->getName());
 
-		// If channel exist
+		// === CHANNEL EXIST ===
 		if (it != _channels.end()) {
 			// Check channel is on invite only (+i)
 			if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd())) {
@@ -85,10 +83,11 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 
 			// If every guard is OK, join the channel
 			it->second.addMember(client);
-			joinReply(this, client, *getChan, parser);
+			joinReply(this, client, it->second, parser);
 		}
 
-		// If channel doesn't exist yet
+
+		// === CREATE CHANNEL ===
 		else {
 			// Create new channel
 			Channel channel(getChan->getName());
@@ -103,6 +102,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 
 			// Update dashboard
 			dash->increaseInfo(dash->getSectionByIndex(1), LEFT, 0);
+			dash->log(INFO, "New channel : " + channel.getName() + " have been created");
 			continue;
 		}
 	}
@@ -132,7 +132,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 			// Check if channel alread exist
 			std::map<std::string, Channel>::iterator it = _channels.find(getChan->getName());
 
-			// If channel exist
+			// === CHANNEL EXIST ===
 			if (it != _channels.end()) {
 				// Check channel is on invite only (+i)
 				if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd())) {
@@ -157,10 +157,10 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 
 				// If every guard are OK, user can join the channel
 				it->second.addMember(client);
-				joinReply(this, client, *getChan, parser);
+				joinReply(this, client, it->second, parser);
 			}
 
-			// If channel doesn't exist yet
+			// === CREATE CHANNEL ===
 			else {
 				// Create channel
 				Channel channel(getChan->getName(), listKey[i]);
@@ -175,6 +175,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 
 				// Update dashboard
 				dash->increaseInfo(dash->getSectionByIndex(1), LEFT, 0);
+				dash->log(INFO, "New channel : " + channel.getName() + " have been created");
 				continue;
 			}	
 		}

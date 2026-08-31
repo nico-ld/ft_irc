@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 15:07:48 by afons             #+#    #+#             */
-/*   Updated: 2026/08/31 14:52:12 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 17:03:01 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@
 
 void Server::broadcastServer(std::string message) {
 	std::map<int, User>::iterator it = _users.begin();
+
+	if (message.find("\r\n") == std::string::npos)
+		message.append("\r\n");
+
 	
 	dash->log(SERVER, message);
 	for (; it != _users.end(); ++it) {
@@ -31,6 +35,10 @@ void Server::broadcastServer(std::string message) {
 
 void Server::broadcast(const Channel &channel, std::string message) {
 	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
+
+	if (message.find("\r\n") == std::string::npos)
+		message.append("\r\n");
+
 	
 	dash->log(SERVER, message);
 	for (; it != channel.getMembers().end(); ++it) {
