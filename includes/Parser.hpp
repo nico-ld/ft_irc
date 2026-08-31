@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 10:49:01 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 11:16:51 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 17:23:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ class Parser {
 
 		// === HELPERS ===
 		/* > Return a list of channel from command parameter */
-		std::vector<Channel> getChannelList(std::string parameter);
+		std::vector<Channel> getChannelList(std::string parameter, Server &server, User &user);
 
 		/* > Return a list of key from command parameter */
 		std::vector<std::string> getKeyList(std::string parameter);

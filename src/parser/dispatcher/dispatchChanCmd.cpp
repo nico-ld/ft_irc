@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 14:32:29 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 17:30:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,20 +49,16 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		// Check if there is somes parameters
 		if (missingParameter(user, server, command, parameters.size(), 1))
 			return ;
-		listChannel = parser.getChannelList(parameters[0]);
-		
-		// Get channel(s) from command input
-		for (std::vector<Channel>::iterator it_listChannel = listChannel.begin(); it_listChannel != listChannel.end(); ++it_listChannel) {
-			std::cout << it_listChannel->getName() << std::endl;
-		}
-		
+		listChannel = parser.getChannelList(parameters[0], server, user);
+
 		// Dispatch on channels amount
 		if (parameters.size() > 1) {
 			listKey = parser.getKeyList(parameters[1]);
 			server.join(listChannel, listKey, &user, parser);
 		}
-		else
+		else {
 			server.join(listChannel, &user, parser);
+		}
 	}
 
 	// === KICK ===
@@ -97,7 +93,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 			return ;
 		
 		// Dispatch
-		listChannel = parser.getChannelList(parameters[0]);
+		listChannel = parser.getChannelList(parameters[0], server, user);
 		if (parameters.size() > 1)
 			server.part(listChannel, parameters[1], &user);
 		else

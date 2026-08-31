@@ -6,14 +6,15 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 09:11:31 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 10:04:24 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 17:30:04 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/Parser.hpp" // absolute path to avoid conflict with bot Parser
+#include "Server.hpp"
 #include "Channel.hpp"
 
-std::vector<Channel> Parser::getChannelList(std::string parameter) {
+std::vector<Channel> Parser::getChannelList(std::string parameter, Server &server, User &user) {
 	std::vector<Channel> channelList;
 	size_t search = 0;
 	size_t pos;
@@ -21,8 +22,13 @@ std::vector<Channel> Parser::getChannelList(std::string parameter) {
 	// Loop to split every channel name on ','
 	while ((pos = parameter.find(',', search)) != std::string::npos) {
 		std::string currentName = parameter.substr(search, pos - search);
+		
 		if (checkChannelName(currentName) == true)
 			channelList.push_back(Channel(currentName));
+		else {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Invalid channel name : " + currentName);
+			server.sendReply(user, ERR_NOSUCHCHANNEL, "Invalid channel name : " + currentName);
+		}
 		search = pos + 1;
 	}
 
@@ -31,6 +37,10 @@ std::vector<Channel> Parser::getChannelList(std::string parameter) {
 		std::string currentName = parameter.substr(search);
 		if (checkChannelName(currentName) == true)
 			channelList.push_back(Channel(currentName));
+		else {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Invalid channel name : " + currentName);
+			server.sendReply(user, ERR_NOSUCHCHANNEL, "Invalid channel name : " + currentName);
+		}
 	}
 
 	return (channelList);
