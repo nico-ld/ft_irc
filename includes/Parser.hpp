@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 10:49:01 by nico              #+#    #+#             */
-/*   Updated: 2026/08/26 10:51:25 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 11:16:51 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,11 @@ class Parser {
 
 
 		// === PRIVATE ATTRIBUTS ===
-		std::string _prefix;
-		std::string _command;
-		std::string _trailing;
-		unsigned int _commandListId;
+		std::string		_prefix;
+		std::string		_command;
+		std::string		_trailing;
+		std::string		_rawString;
+		unsigned int	_commandListId;
 		std::vector<std::string> _parameters;
 
 	public:
@@ -63,6 +64,9 @@ class Parser {
 
 		/* > Return the trailing parameter */
 		std::string getTrailing( void ) const { return (_trailing); }
+
+		/* > Return the raw line to echoes input */
+		std::string getRawString ( void ) const { return (_rawString); }
 		
 		/* > Return the command id */
 		unsigned int getCommandId( void ) const { return (_commandListId); }

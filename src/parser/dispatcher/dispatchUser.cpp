@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 10:48:44 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 11:47:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 	// Authenticate user if possible
 	if (user.hasProvidedNick() && user.hasProvidedUser() && user.hasProvidedPassword()) {
 		user.setAuthenticated(true);
-		user.setPrefix(user.getNickname() + "!" + user.getUsername() + "@" + user.getHostname());
+		user.setPrefix(":" + user.getNickname() + "!" + user.getRealname() + "@" + user.getHostname());
 		
 		server.dash->log(SUCCESS, "User '" + user.getNickname() + "' Successfully being authenticated");
 		server.sendReply(user, RPL_WELCOME, "User '" + user.getNickname() + "' successfully registered");

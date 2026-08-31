@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/31 10:45:27 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 10:53:58 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void dispatchCommand(Server &server, User &user, std::string command) {
 			return ;
 			
 		case 2: // Command unknow
-			server.dash->log(WARNING, "Command unknow");
+			server.dash->log(WARNING, "Command unknow : " + command);
 			server.sendReply(user, ERR_UNKNOWNCOMMAND, "Command " + command + " is unknow");
 			return ;
 			

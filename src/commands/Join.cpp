@@ -4,6 +4,40 @@
 #include "Parser.hpp"
 #include <stdexcept>
 
+/* > Reply to the client, send information about channel joined */
+static void joinReply(Server *server, User *client, Channel &channel, Parser &parser) {
+	// Echoes the command
+	server->notification(client, client->getPrefix() + " " + parser.getRawString());
+
+	// Send topic information
+	server->topic(channel, client);
+
+	// Send user name list in channel
+	std::string messagePrefix = "= " + channel.getName() + " :";
+	std::string message;
+	std::map<int, User*> userList = channel.getMembers();
+	for (std::map<int, User*>::iterator it = userList.begin(); it != userList.end(); ++it) {
+		if (message.size() < 400) {
+			// If user is operator, add '@'
+			if (channel.isOperator(it->second->getFd()))
+				message.append("@");
+
+			// Add user name
+			message.append(it->second->getNickname());
+			message.append(" ");
+		} else {
+			server->sendReply(*client, RPL_NAMREPLY, messagePrefix + message);
+			message.clear();
+		}
+	}
+	if (!message.empty()) {
+		server->sendReply(*client, RPL_NAMREPLY, messagePrefix + message);
+	}
+
+	// End of name list
+	server->sendReply(*client, RPL_ENDOFNAMES, channel.getName() + " :End of user name list");
+}
+
 void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parser) {
 	// Parse every channels
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
@@ -49,8 +83,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 
 			// If every guard is OK, join the channel
 			it->second.addMember(client);
-			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
-			broadcast(it->second, client, message);
+			joinReply(this, client, *getChan, parser);
 		}
 
 		// If channel doesn't exist yet
@@ -64,8 +97,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 			_channels.insert(std::make_pair(getChan->getName(), channel)); // Add channel to channel list
 
 			// Send message
-			std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
-			broadcast(channel, client, message);
+			joinReply(this, client, channel, parser);
 
 			// Update dashboard
 			dash->increaseInfo(dash->getSectionByIndex(1), LEFT, 0);
@@ -123,8 +155,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 
 				// If every guard are OK, user can join the channel
 				it->second.addMember(client);
-				std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
-				broadcast(it->second, client, message);
+				joinReply(this, client, *getChan, parser);
 			}
 
 			// If channel doesn't exist yet
@@ -138,8 +169,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 				_channels.insert(std::make_pair(getChan->getName(), channel)); // Insert channel in channel list
 
 				// Send message
-				std::string message = client->getNickname() + " joined " + getChan->getName() + '\n';
-				broadcast(channel, client, message);
+				joinReply(this, client, channel, parser);
 
 				// Update dashboard
 				dash->increaseInfo(dash->getSectionByIndex(1), LEFT, 0);

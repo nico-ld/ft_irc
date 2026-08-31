@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 10:58:49 by nico              #+#    #+#             */
-/*   Updated: 2026/08/26 10:34:51 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 11:16:09 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ int Parser::parse(std::string &line) {
 		std::getline(ss, _trailing);
 	}
 	
+	_rawString = line;
+
 	return (0);
 }
 

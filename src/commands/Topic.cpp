@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 15:31:36 by afons             #+#    #+#             */
-/*   Updated: 2026/08/30 10:34:12 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 11:44:39 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 // the caller must actually be in the channel before any topic access.
 void Server::topic(const Channel &channel, User *user) {
 	if (channel.getTopic().empty())
-		sendReply(*user, RPL_NOTOPIC, "No Topic setted on this channel");
+		sendReply(*user, RPL_NOTOPIC, channel.getName() + " :No Topic setted on this channel");
 	else
-		sendReply(*user, RPL_TOPIC, "Channel topic is : " + channel.getTopic());
+		sendReply(*user, RPL_TOPIC, channel.getName() + " :Channel topic is : " + channel.getTopic());
 }
 
 // TOPIC #chan :new topic : change the topic
