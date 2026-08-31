@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/31 10:53:58 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 14:36:21 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,10 @@ void dispatchCommand(Server &server, User &user, std::string command) {
 	}
 
 	command = parser.getCommand();
-
+	
 	// === QUIT ===
 	if (command == "quit") {
-		std::string message = parser.getMessage();
-		server.removeUser(user.getFd(), message);
+		server.removeUser(user.getFd(), user.getPrefix() + " " + parser.getRawString());
 		return ;
 	}
 

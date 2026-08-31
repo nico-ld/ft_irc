@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/31 10:19:21 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 14:29:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,13 +148,13 @@ class Server
 
 		// TOPIC
 		void topic(const Channel &channel, User *user);
-		void topic(Channel &channel, std::string newTopic, User *user);
+		void topic(Channel &channel, std::string newTopic, User *user, Parser &parser);
 
 		// PART
 		void part(std::vector<Channel> &channels, std::string reason, User *user);
 
 		// INVITE
-		void invite(const std::string &nickname, Channel &channel, const User *user);
+		void invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser);
 
 		// MODE
 		void mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params = std::vector<std::string>());

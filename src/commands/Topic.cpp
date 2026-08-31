@@ -6,14 +6,14 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 15:31:36 by afons             #+#    #+#             */
-/*   Updated: 2026/08/31 11:44:39 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 14:37:30 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
-#include "Parser.hpp"
+#include "../../includes/Parser.hpp"
 #include <stdexcept>
 
 // Shared guard for both overloads: the channel name must be well-formed and
@@ -26,7 +26,7 @@ void Server::topic(const Channel &channel, User *user) {
 }
 
 // TOPIC #chan :new topic : change the topic
-void Server::topic(Channel &channel, std::string newTopic, User *user) {
+void Server::topic(Channel &channel, std::string newTopic, User *user, Parser &parser) {
 	// Check is mode topic restricted is enabled (+t)
 	if (channel.isTopicRestricted()) {
 		if (!channel.isOperator(user->getFd())) {
@@ -38,6 +38,7 @@ void Server::topic(Channel &channel, std::string newTopic, User *user) {
 
 	// Set new topic
 	channel.setTopic(newTopic);
-	std::string message = "New topic of the channel: " + channel.getTopic() + "\r\n";
-	broadcast(channel, message);
+
+	// Reply
+	broadcast(channel,  user->getPrefix() + " " + parser.getRawString());
 }

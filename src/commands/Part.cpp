@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 16:43:41 by afons             #+#    #+#             */
-/*   Updated: 2026/08/30 10:32:16 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 14:27:57 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,18 @@ void Server::part(std::vector<Channel> &channelsList, std::string reason, User *
 		// Remove user from the channel
 		channel->removeMember(user);
 		
-		std::string message;
-		if (reason.empty())
-			message = user->getNickname() + " left the channel.\r\n";
-		else
-			message = user->getNickname() + " left the channel.\n Reason: " + reason + "\r\n";
+		std::string message = user->getPrefix() + " PART " + channel->getName();
+		if (!reason.empty())
+			message.append(" :" + reason);
 		broadcast(*channel, message);
 		
 		// if channel is empty, delete it
 		if (channel->getMembers().empty()) {
 			std::string message = channel->getName() + " has been deleted." + "\r\n";
-			broadcastServer(message);
 			_channels.erase(channel->getName());
 
 			// Update dashboard
-			dash->decreaseInfo(dash->getSectionByIndex(1), LEFT, 0);
+			dash->decreaseInfo(dash->getSectionByIndex(1), LEFT, 0); // Decrease Channel amount
 		}
 	}
 }

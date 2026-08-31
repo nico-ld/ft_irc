@@ -6,16 +6,16 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 17:25:04 by afons             #+#    #+#             */
-/*   Updated: 2026/08/31 10:02:27 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 14:18:39 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
-#include <stdexcept>
+#include "../../includes/Parser.hpp"
 
-void Server::invite(const std::string &nickname, Channel &channel, const User *user) {
+void Server::invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser) {
 	// Check if User that send command is in the channel
 	if (!channel.isMember(user->getFd())) {
 		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to invite on a channel where is not");
@@ -44,6 +44,8 @@ void Server::invite(const std::string &nickname, Channel &channel, const User *u
 
 	// If every guard are OK, invite user on the channel
 	channel.inviteUser(getUserByNickname(nickname));
-	std::string message = user->getNickname() + " invited you on the channel.";
-	notification(getUserByNickname(nickname), message);
+
+	// Reply
+	sendReply(*user, RPL_INVITING, nickname + " " + channel.getName());
+	notification(getUserByNickname(nickname), parser.getRawString());
 }

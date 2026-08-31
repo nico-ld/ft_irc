@@ -6,14 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/08/30 10:36:24 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 14:28:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
-#include <stdexcept>
 #include <iostream>
 
 /* > Check if sender is on the channel and get operator rights, then if kicked user is on the channel*/
@@ -53,12 +52,11 @@ void Server::kick(Channel &channel, User *kicked, std::string reason, const User
 	channel.removeMember(kicked);
 	
 	// Build kick message
-	std::string id = ":" + op->getNickname() + "!" + op->getRealname() + "@" + op->getHostname();
 	std::string kickMessage = " KICK " + channel.getName() + " " + kicked->getNickname();
-	std::string message = id + kickMessage;
+	std::string message = op->getPrefix() + kickMessage + " :";
 
 	if (!reason.empty())
-		message.append(" :" + reason);
+		message.append(reason);
 	
 	// Send message
 	broadcast(channel, kicked, message);

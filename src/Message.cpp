@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 15:07:48 by afons             #+#    #+#             */
-/*   Updated: 2026/08/30 10:47:10 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 14:52:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 void Server::broadcastServer(std::string message) {
 	std::map<int, User>::iterator it = _users.begin();
 	
+	dash->log(SERVER, message);
 	for (; it != _users.end(); ++it) {
-		dash->log(SERVER, message);
     	queueWrite(it->second, message);
 	}
 }
@@ -32,8 +32,8 @@ void Server::broadcastServer(std::string message) {
 void Server::broadcast(const Channel &channel, std::string message) {
 	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
 	
+	dash->log(SERVER, message);
 	for (; it != channel.getMembers().end(); ++it) {
-		dash->log(SERVER, message);
     	queueWrite(*it->second, message);
 	}
 }
@@ -42,8 +42,8 @@ void Server::broadcast(const Channel &channel, const User *user, std::string mes
 	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
 	std::string messageError = user->getUsername() + message;
 	
+	dash->log(SERVER, messageError);
 	for (; it != channel.getMembers().end(); ++it) {
-		dash->log(SERVER, messageError);
     	queueWrite(*it->second, messageError);
 	}
 }
@@ -65,18 +65,19 @@ void Server::privateMessageChannel(const User *src, const Channel &channel, std:
 		return ;
 	}
 
-	std::string privateMessage = channel.getName() + "-> " + src->getNickname() + ": " + message;
+	std::string channelMessage = src->getPrefix() + " PRIVMSG " + channel.getName() + " :" + message;
 	if (message.find("\r\n") == std::string::npos)
-		privateMessage.append("\n\r");
+		channelMessage.append("\n\r");
 	
+	dash->log(SERVER, message);
 	for (std::map<int, User *>::const_iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); ++it) {
-		dash->log(SERVER, message);
-		queueWrite(*it->second, privateMessage);
+		if (it->second->getFd() != src->getFd())
+			queueWrite(*it->second, channelMessage);
 	}
 }
 
 void Server::privateMessageUser(const User *src, const User *dest, std::string message) {
-	std::string privateMessage = src->getNickname() + ": " + message;
+	std::string privateMessage = src->getNickname() + " PRIVMSG " + dest->getNickname() + " :" + message;
 	
 	if (message.find("\r\n") == std::string::npos)
 		privateMessage.append("\r\n");

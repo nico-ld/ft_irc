@@ -1,13 +1,12 @@
 #include "Server.hpp"
 #include "User.hpp"
 #include "Channel.hpp"
-#include "Parser.hpp"
-#include <stdexcept>
+#include "../../includes/Parser.hpp"
 
 /* > Reply to the client, send information about channel joined */
 static void joinReply(Server *server, User *client, Channel &channel, Parser &parser) {
 	// Echoes the command
-	server->notification(client, client->getPrefix() + " " + parser.getRawString());
+	server->notification(client,  client->getPrefix() + " " + parser.getRawString());
 
 	// Send topic information
 	server->topic(channel, client);
@@ -36,6 +35,9 @@ static void joinReply(Server *server, User *client, Channel &channel, Parser &pa
 
 	// End of name list
 	server->sendReply(*client, RPL_ENDOFNAMES, channel.getName() + " :End of user name list");
+
+	// Warn a new user has join
+	server->broadcast(channel, client->getNickname() + " joined channel !");
 }
 
 void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parser) {

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 10:24:42 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 14:32:29 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		if (channelNotExist(user, server, channel, parameters[0]))
 			return ;
 
-		server.invite(parameters[0], *channel, &user);
+		server.invite(parameters[0], *channel, &user, parser);
 	}
 
 	// === TOPIC ===
@@ -144,7 +144,7 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 
 		// Dispatch
 		if (parameters.size() > 1)
-			server.topic(*channel, parameters[1], &user);
+			server.topic(*channel, parameters[1], &user, parser);
 		else
 			server.topic(*channel, &user);
 	}
