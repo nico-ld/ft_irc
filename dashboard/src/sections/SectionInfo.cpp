@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 18:39:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 08:54:40 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 10:50:07 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,11 @@ void Dashboard::decreaseInfo(t_section *section, e_side colSide, size_t index) {
 
 		
 	if (colSide == LEFT && !indexOutOfRange(this, index, section->leftColumn.infoList.size())) {
-		int value = toInt(section->leftColumn.infoList[index].second) + 1;
+		int value = toInt(section->leftColumn.infoList[index].second) - 1;
 		section->leftColumn.infoList[index].second = toStr(value);
 	}
 	else if (colSide == RIGHT && !indexOutOfRange(this, index, section->rightColumn.infoList.size())) {
-		int value = toInt(section->rightColumn.infoList[index].second) + 1;
+		int value = toInt(section->rightColumn.infoList[index].second) - 1;
 		section->rightColumn.infoList[index].second = toStr(value);
 	}
 	else

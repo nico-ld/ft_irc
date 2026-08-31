@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/31 10:20:57 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 10:35:05 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ Server::Server(int port, const std::string& password)
 Server::~Server() {
     stop();
     dash->log(SYSTEM, "Server is down");
+    dash->updateInfo(dash->getSectionByIndex(0), LEFT, 0, "DOWN");
     delete dash;
 }
 

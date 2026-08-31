@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 09:48:37 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 10:48:44 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static bool isNicknameValid(Server &server, User &user, std::string nickname) {
 
 void userCommandsDispatch(std::string command, User &user, Server &server, Parser &parser) {
 	std::vector<std::string> parameters = parser.getParameters();
-
+	
 	// === USER ===
 	if (command == "user") {
 		if (parameters.empty()) {
@@ -92,7 +92,6 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 	}
 	
 	// Authenticate user if possible
-	server.dash->log(DEBUG, "Check if user " + toStr(user.getFd()) + " is fully registered "); // DEBUG
 	if (user.hasProvidedNick() && user.hasProvidedUser() && user.hasProvidedPassword()) {
 		user.setAuthenticated(true);
 		user.setPrefix(user.getNickname() + "!" + user.getUsername() + "@" + user.getHostname());
@@ -102,13 +101,5 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 		
 		server.dash->increaseInfo(server.dash->getSectionByIndex(1), LEFT, 3);
 		server.dash->decreaseInfo(server.dash->getSectionByIndex(1), LEFT, 2);
-	}
-	else {
-		if (!user.hasProvidedNick())
-			server.dash->log(DEBUG, "Missing Nickname");
-		if (!user.hasProvidedUser())
-			server.dash->log(DEBUG, "Missing User name");
-		if (!user.hasProvidedPassword())
-			server.dash->log(DEBUG, "Missing Password");
 	}
 }
