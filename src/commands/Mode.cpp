@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/08/31 16:45:24 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/31 16:56:14 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,10 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					broadcast(channel, message);
 				}
 				// Reject unrecognized settings letter
-				else
+				else {
 					sendReply(*user, ERR_UNKNOWNMODE, "Invalid flag.");
+					return ;
+				}
 				++i;
 			}
 		}
@@ -130,7 +132,10 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					channel.setUserLimit(-1);
 					broadcast(channel, "Limit mode is disabled\r\n");
 				}
-				else sendReply(*user, ERR_UNKNOWNMODE, "Invalid flag.");
+				else {
+					sendReply(*user, ERR_UNKNOWNMODE, "Invalid flag.");
+					return ;
+				}
 
 				i++;
 			}
