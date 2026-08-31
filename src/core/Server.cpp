@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/31 09:06:40 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 10:20:57 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,20 @@
 #include "Channel.hpp"
 #include "NetworkUtils.hpp"
 
+volatile sig_atomic_t g_stop = 0;
+
+void handleInterupt(int signal) {
+	g_stop = signal;
+}
+
 //serverFd and epollFd are set at -1, because that's a Unix convention saying the fd is closed / not init
 Server::Server(int port, const std::string& password) 
     : _port(port), _password(password), _serverFd(-1), _epollFd(-1) 
 {
     dash = new Dashboard(IRCSERV, "ircserv.log");
     dash->render();
+
+   	signal(SIGINT, handleInterupt);
 }
 
 Server::~Server() {
@@ -112,7 +120,7 @@ void Server::init() {
 
     dash->log(SUCCESS, "'ircserv' server successfully launched on port " + toStr(_port));
 
-    // === Server informations ===
+    // === Server informations for Dashboard ===
     t_column serverInfo;
     serverInfo.infoList.push_back(std::make_pair("State", "UP"));
     serverInfo.infoList.push_back(std::make_pair("Port", toStr(_port)));
@@ -143,12 +151,22 @@ void Server::startLoop() {
     struct epoll_event events[MAX_EVENTS];
 
     loop {
+        // Check if SIGINT have been received to shutdown properly the Server
+        if (g_stop == SIGINT) {
+            dash->log(INFO, "Shutdown signal received, stopping server");
+            break ;
+        }
+        
         // Pause the socket until an event happens
 		// _epollFd = the socket to watch over, events = An array of struct epoll_event
 		// MAX_EVENTS = the size of the events array
 		// -1 = it's the timeout arg, -1 means the socket is under sleep indefinitely until an event happen
         int numEvents = epoll_wait(_epollFd, events, MAX_EVENTS, -1);
         if (numEvents < 0) {
+            if (errno == EINTR) {
+                // Interrupted by a signal, check if signal is SIGINT
+                continue ;
+            }
             dash->log(ERROR_LVL, "epoll_wait() error: unable to pause the socket");
             break; 
         }

@@ -24,6 +24,7 @@ int main(int ac, char **av) {
 		return (1);
 	}
 
+
 	try {
 		Server server(port, av[2]);
 		server.init();
