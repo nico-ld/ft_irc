@@ -148,10 +148,8 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user) {
 		}
 		
 		// Check command parameters amount
-		if (parameters.size() == 1) {
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for MODE command");
-			throw std::runtime_error("Need a mode.");
-		}
+		if (parameters.size() == 1)
+			server.sendReply(user, RPL_CHANNELMODEIS, server.displayChannelStatus(*channel));
 		
 		// Dispatch
 		if (parameters.size() == 2)
