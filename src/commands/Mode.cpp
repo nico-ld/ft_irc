@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/08/03 18:43:40 by afons            ###   ########.fr       */
+/*   Updated: 2026/08/31 16:45:24 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,11 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 				// k : Set a room password
 				else if ((*it_modestring)[i] == 'k') {
 					if (params.size() <= 0) {
-						notification(user, "461 ERR_NEEDMOREPARAMS");
-						throw std::runtime_error("need argument");
+						sendReply(*user, ERR_NEEDMOREPARAMS, "Need more params");
+						i++;
+						continue ;
 					}
+
 					channel.setKey(*it_params);
 					std::string message = "The new key of the channel is: " + *it_params+"\r\n";
 					broadcast(channel, message);
@@ -77,18 +79,15 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 
 				// l : Set a maximum user limit for the room
 				else if ((*it_modestring)[i] == 'l') {
-					if (params.size() <= 0) {
-						notification(user, "461 ERR_NEEDMOREPARAMS");
-						throw std::runtime_error("need argument");
-					}
+					if (params.size() <= 0)
+						sendReply(*user, ERR_NEEDMOREPARAMS, "Limit of user need to be more than 0");
 
 					std::stringstream ss(*it_params);
 					int limit;
 					ss >> limit;
-					if (limit <= 0) {
+					if (limit <= 0)
 						sendReply(*user, ERR_UNKNOWNMODE, "Limit of user need to be more than 0");
-						throw std::runtime_error("501 ERR_UNKNOWNMODE");
-					}
+
 					channel.setUserLimit(limit);
 					std::string message = "The new limit of users for this channel is: " + *it_params + "\r\n";
 					broadcast(channel, message);
@@ -97,19 +96,15 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 
 				// o : Grant administrator/operator privileges to another user (requires user's name as parameter)
 				else if ((*it_modestring)[i] == 'o') {
-					if (params.size() <= 0) {
-						notification(user, "461 ERR_NEEDMOREPARAMS");
-						throw std::runtime_error("need argument");
-					}
+					if (params.size() <= 0)
+						sendReply(*user, ERR_NEEDMOREPARAMS, "Need more params");
 					channel.addOperator(getUserByNickname(*it_params));
 					std::string message = *it_params + " has just been promoted as an operator\r\n";
 					broadcast(channel, message);
 				}
 				// Reject unrecognized settings letter
-				else {
-					notification(user, "This mode doesn't exist.");
-					throw std::runtime_error("This mode doesn't exist");
-				}
+				else
+					sendReply(*user, ERR_UNKNOWNMODE, "Invalid flag.");
 				++i;
 			}
 		}
@@ -117,17 +112,27 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 		// Handling letter setting for REMOVING, removing ends the rules defined by adding
 		// so removing t, for exemple, means everyone can select a topic for the room
 		else if ((*it_modestring)[i] == '-') {
+			i++;
 			while((*it_modestring)[i]) {
-				i++;
-
-				if ((*it_modestring)[i] == 'i') channel.setInviteOnly(false);
-				else if ((*it_modestring)[i] == 't') channel.setTopicRestricted(false);
-				else if ((*it_modestring)[i] == 'k') channel.setKey("");
-				else if ((*it_modestring)[i] == 'l') channel.setUserLimit(-1);
-				else {
-					notification(user, "This mode doesn't exist.");
-					throw std::runtime_error("This mode doesn't exist");
+				if ((*it_modestring)[i] == 'i') {
+					channel.setInviteOnly(false);
+					broadcast(channel, "Invite mode is disabled\r\n");
 				}
+				else if ((*it_modestring)[i] == 't') {
+					channel.setTopicRestricted(false);
+					broadcast(channel, "Topic mode is disabled\r\n");
+				}
+				else if ((*it_modestring)[i] == 'k') {
+					channel.setKey("");
+					broadcast(channel, "Key has been deleted\r\n");
+				}
+				else if ((*it_modestring)[i] == 'l') {
+					channel.setUserLimit(-1);
+					broadcast(channel, "Limit mode is disabled\r\n");
+				}
+				else sendReply(*user, ERR_UNKNOWNMODE, "Invalid flag.");
+
+				i++;
 			}
 		}
 	}
