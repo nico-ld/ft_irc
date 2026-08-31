@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:50:45 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/26 15:11:45 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 09:58:20 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ Channel& Channel::operator=(const Channel& src) {
         _key = src._key;
         _userLimit = src._userLimit;
     }
-    return *this;
+    return (*this);
 }
 
 // ==========================================
@@ -85,15 +85,15 @@ void Channel::removeMember(User* user) {
 }
 
 bool Channel::isMember(int fd) const {
-    return _members.find(fd) != _members.end();
+    return (_members.find(fd) != _members.end());
 }
 
 const std::map<int, User*>& Channel::getMembers() const {
-    return _members;
+    return (_members);
 }
 
 int Channel::getMemberCount() const {
-    return _members.size();
+    return (_members.size());
 }
 
 // ==========================================
@@ -113,7 +113,7 @@ void Channel::removeOperator(User* user) {
 }
 
 bool Channel::isOperator(int fd) const {
-    return _operators.find(fd) != _operators.end();
+    return (_operators.find(fd) != _operators.end());
 }
 
 // ==========================================
@@ -127,7 +127,7 @@ void Channel::inviteUser(User* user) {
 }
 
 bool Channel::isInvited(int fd) const {
-    return _invitedUsers.find(fd) != _invitedUsers.end();
+    return (_invitedUsers.find(fd) != _invitedUsers.end());
 }
 
 void Channel::clearInvite(int fd) {
@@ -138,14 +138,14 @@ void Channel::clearInvite(int fd) {
 // 6. CHANNEL MODE CONFIGURATIONS (Person C)
 // ==========================================
 
-bool Channel::isInviteOnly() const { return _isInviteOnly; }
+bool Channel::isInviteOnly() const { return (_isInviteOnly); }
 void Channel::setInviteOnly(bool state) { _isInviteOnly = state; }
 
-bool Channel::isTopicRestricted() const { return _isTopicRestricted; }
+bool Channel::isTopicRestricted() const { return (_isTopicRestricted); }
 void Channel::setTopicRestricted(bool state) { _isTopicRestricted = state; }
 
-const std::string& Channel::getKey() const { return _key; }
+const std::string& Channel::getKey() const { return (_key); }
 void Channel::setKey(const std::string& key) { _key = key; }
 
-int Channel::getUserLimit() const { return _userLimit; }
+int Channel::getUserLimit() const { return (_userLimit); }
 void Channel::setUserLimit(long limit) { _userLimit = limit; }

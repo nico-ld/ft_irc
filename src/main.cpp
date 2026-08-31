@@ -4,7 +4,7 @@
 
 int main(int ac, char **av) {
 	if (ac != 3) {
-		std::cerr << "Error: " 
+		std::cerr << ERROR
 					<< ((ac < 3) ? "not enought" : "too many") 
 					<< " arguments." 
 					<< std::endl;
@@ -15,12 +15,12 @@ int main(int ac, char **av) {
 	char	*ptrEnd;
 	int		port = (int)strtol(av[1], &ptrEnd, 10);
 	if (*ptrEnd) {
-		std::cerr << "Error: invalid value for server port." << std::endl;
+		std::cerr << ERROR "invalid value for server port." << std::endl;
 		return (1);
 	}
 
 	if (port < 6665 || port > 6669) {
-		std::cerr << "Error: invalid port, please port in a valid range [6665 - 6669]" << std::endl;
+		std::cerr << ERROR "invalid port, please port in a valid range [6665 - 6669]" << std::endl;
 		return (1);
 	}
 

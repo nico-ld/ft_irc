@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 09:41:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/27 10:00:55 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 09:57:14 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ bool Server::isFatalSendError(int err) const {
 void Server::scheduleRemoval(int fd, const std::string &reason) {
 	if (std::find(_pendingRemovals.begin(), _pendingRemovals.end(), fd) != _pendingRemovals.end())
 		return; // already scheduled, avoid a double removeUser() on the same fd
-	std::cerr << "[LOG] fd " << fd << " scheduled for removal: " << reason << std::endl;
+	
+	dash->log(INFO, "Fd " + toStr(fd) + " scheduled for removal: " + reason);
 	_pendingRemovals.push_back(fd);
 }
 
@@ -83,7 +84,7 @@ void Server::queueWrite(User &user, const std::string &data) {
 
 	if (sent < 0) {
 		int err = errno;
-		std::perror("send crashed");
+		dash->log(ERROR_LVL, "queueWrite(): send crashed");
 		if (isFatalSendError(err)) {
 			// The connection is dead: no point queuing data for it anymore.
 			scheduleRemoval(user.getFd(), "Write error: connection lost");
@@ -121,7 +122,7 @@ void Server::flushWrite(int fd) {
 	ssize_t sent = send(fd, pending.c_str(), pending.size(), MSG_NOSIGNAL);
 	if (sent < 0) {
 		int err = errno;
-		std::perror("send crashed");
+		dash->log(ERROR_LVL, "flushWrite(): send crashed");
 		if (isFatalSendError(err))
 			scheduleRemoval(fd, "Write error: connection lost");
 		return; // stay armed for the next EPOLLOUT, data remains queued
@@ -140,7 +141,8 @@ void Server::removeUser(int clientFd, std::string message) {
 	// Get user
 	User* user = getUserById(clientFd);
 	if (!user) {
-		throw std::runtime_error("[LOG] Unknow Fd");
+		dash->log(WARNING, "Unknow Fd : " + toStr(clientFd));
+		return ;
 	}
 	
 	// Get joined channels
@@ -148,7 +150,8 @@ void Server::removeUser(int clientFd, std::string message) {
 	for (std::vector<std::string>::iterator it = channelsList.begin(); it != channelsList.end(); ++it) {
 		Channel *channel = getChannelByName(*it);
 		if (!channel) {
-			throw std::runtime_error("[LOG] User trying too leave a channel that doesn't exist");
+			dash->log(WARNING, "User trying too leave a channel that doesn't exist");
+			return ;
 		}
 		
 		// Announce that user leave the server/channel
@@ -171,35 +174,43 @@ void Server::removeUser(int clientFd, std::string message) {
 	// Warn client that the user has been disconnected
 	notification(user, "Error: closing link: " + message);
 	
+	// Update dashboard
+	dash->decreaseInfo(dash->getSectionByIndex(1), LEFT, 1); // Decrease total of user
+	if (getUserById(clientFd)->isAuthenticated())
+		dash->decreaseInfo(dash->getSectionByIndex(1), LEFT, 3); // Decrease total of authenticated user
+	else
+		dash->decreaseInfo(dash->getSectionByIndex(1), LEFT, 2); // Decrease total of non authenticated user
+
 	// Remove fd/user from server
     epoll_ctl(_epollFd, EPOLL_CTL_DEL, clientFd, NULL);
     close(clientFd);
     _users.erase(clientFd);
+
 }
 
 User* Server::getUserById(int fd) {
     std::map<int, User>::iterator it = _users.find(fd);
     if (it != _users.end()) {
-        return &(it->second);
+        return (&(it->second));
     }
-    return NULL;
+    return (NULL);
 }
 
 Channel* Server::getChannelByName(const std::string &name){
     for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
         if (it->second.getName() == name) {
-            return &(it->second);
+            return (&(it->second));
         }
     }
-    return NULL;
+    return (NULL);
 }
  
 User* Server::getUserByNickname(const std::string& nickname) {
     for (std::map<int, User>::iterator it = _users.begin(); it != _users.end(); ++it) {
         if (it->second.getNickname() == nickname) {
-            return &(it->second);
+            return (&(it->second));
         }
     }
-    return NULL;
+    return (NULL);
 }
 

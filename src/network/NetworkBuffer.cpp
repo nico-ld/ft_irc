@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NetworkBuffer.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdessoli <marvin@d42.fr>                   +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/28 17:46:48 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/07/28 20:25:50 by jdessoli         ###   ########.fr       */
+/*   Updated: 2026/08/31 09:58:46 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ bool NetworkBuffer::extractLine(std::string& line)
 	size_t pos = _readBuffer.find('\n');
 
 	if (pos == std::string::npos)
-		return false;
+		return (false);
 
 	// Extract everything up to the newline character
 	line = _readBuffer.substr(0, pos);
@@ -45,7 +45,7 @@ bool NetworkBuffer::extractLine(std::string& line)
 
 	// Remove the extracted line and newline character from the read buffer
 	_readBuffer.erase(0, pos + 1);
-	return true;
+	return (true);
 }
 
 // Places outgoing server messages into a waiting line to be sent to the client.
@@ -63,7 +63,7 @@ void NetworkBuffer::queueWriteData(const std::string& data)
 // It allows the sending system to know exactly what bytes to process next.
 const std::string& NetworkBuffer::getWriteBuffer() const
 {
-	return _writeBuffer;
+	return (_writeBuffer);
 }
 
 // Removes a specific number of bytes from the outgoing queue after successful delivery.
@@ -88,5 +88,5 @@ void NetworkBuffer::consumeWriteData(size_t bytesSent)
 // It helps the event monitor know when to pause or resume watching a user's connection.
 bool NetworkBuffer::hasPendingWrite() const
 {
-	return !_writeBuffer.empty();
+	return (!_writeBuffer.empty());
 }
