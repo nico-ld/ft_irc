@@ -6,12 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/30 09:15:24 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 09:06:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
 #include "Channel.hpp"
+#include "NetworkUtils.hpp"
 
 //serverFd and epollFd are set at -1, because that's a Unix convention saying the fd is closed / not init
 Server::Server(int port, const std::string& password) 
@@ -173,6 +174,14 @@ void Server::startLoop() {
                     epoll_ctl(_epollFd, EPOLL_CTL_ADD, clientFd, &ev);
 
                     addUnauthenticatedUser(clientFd);
+
+                    // Resolve and store where this client is actually connecting
+					// from (reverse-DNS via NetworkUtils, falling back to the raw
+					// IP) so we have a real audit trail for bans/rate-limits/logs.
+                    User *newUser = getUserById(clientFd);
+                    if (newUser)
+                        newUser->setHostname(NetworkUtils::getHostname(clientAddr));
+
                     
                     dash->log(INFO, "New client connected on fd : " + toStr(clientFd));
                     
@@ -233,6 +242,12 @@ void Server::startLoop() {
     		}
 			}
 		}
+
+		// Clean up any connection whose send() hit a fatal error (EPIPE,
+		// ECONNRESET, ...) during this batch of events. Deferred to here,
+		// once we're safely out of every _users/_channels iteration, so
+		// removeUser()'s erase from _users can't invalidate a live loop.
+		processPendingRemovals();
 	}
 }
 

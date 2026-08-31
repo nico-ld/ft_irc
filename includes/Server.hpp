@@ -48,6 +48,13 @@ class Server
 		std::map<int, User> _users;				  // Key: client socket FD -> Value: User object
 		std::map<std::string, Channel> _channels; // Key: Channel Name -> Value: Channel object
 
+		// FDs whose send() has hit a fatal error (EPIPE/ECONNRESET/...) and are
+		// waiting to be cleaned up. Removal is deferred rather than done inline
+		// from queueWrite()/flushWrite(), since those are called while iterating
+		// _users/_channels members (broadcastServer/broadcast) and removeUser()
+		// erases from _users - doing it mid-iteration would invalidate iterators.
+		std::vector<int> _pendingRemovals;
+
 		// Prevent copying
 		Server(const Server &src) { (void)src; }
 		Server &operator=(const Server &src) { (void)src; return (*this);}
@@ -55,6 +62,18 @@ class Server
 		// === WRITE BACKPRESSURE (NetworkBuffer) ===
 		/* > Toggle whether epoll also watches this fd for write-readiness (EPOLLOUT) */
 		void setEpollWriteInterest(int fd, bool enable);
+
+		/* > true if errno corresponds to a dead connection (vs. a transient
+		     EAGAIN/EWOULDBLOCK/EINTR that's worth queuing and retrying) */
+		bool isFatalSendError(int err) const;
+
+		/* > Queue clientFd for removeUser() cleanup once it's safe to do so
+		     (i.e. once we're not in the middle of iterating _users/_channels) */
+		void scheduleRemoval(int fd, const std::string &reason);
+
+		/* > Run removeUser() for every fd queued by scheduleRemoval(). Called
+		     once per startLoop() pass, after all events have been handled. */
+		void processPendingRemovals();
 
 	public:
 		// == Constructor & Destructor == 
