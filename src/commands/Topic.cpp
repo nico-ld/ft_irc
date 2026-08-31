@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 15:31:36 by afons             #+#    #+#             */
-/*   Updated: 2026/08/31 14:37:30 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 17:44:23 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void Server::topic(const Channel &channel, User *user) {
 	if (channel.getTopic().empty())
 		sendReply(*user, RPL_NOTOPIC, channel.getName() + " :No Topic setted on this channel");
 	else
-		sendReply(*user, RPL_TOPIC, channel.getName() + " :Channel topic is : " + channel.getTopic());
+		sendReply(*user, RPL_TOPIC, channel.getName() + " :" + channel.getTopic());
 }
 
 // TOPIC #chan :new topic : change the topic

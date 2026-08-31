@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 17:30:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/08/31 17:50:52 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,8 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		}
 		
 		// Dispatch
-		if (parameters.size() > 2)
-			server.kick(*channel, kicked, parameters[2], &user);
+		if (!parser.getTrailing().empty())
+			server.kick(*channel, kicked, parser.getTrailing(), &user);
 		else
 			server.kick(*channel, kicked, "", &user);
 	}
@@ -94,8 +94,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		
 		// Dispatch
 		listChannel = parser.getChannelList(parameters[0], server, user);
-		if (parameters.size() > 1)
-			server.part(listChannel, parameters[1], &user);
+		
+		if (!parser.getTrailing().empty())
+			server.part(listChannel, parser.getTrailing(), &user);
 		else
 			server.part(listChannel, "", &user);
 	}
@@ -117,19 +118,13 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 	// === TOPIC ===
 	else if (command == "topic") {
 		// Check if there is a channel name
-		if (parameters.size() == 0) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Missing parameter for TOPIC command");
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for TOPIC command");
+		if (missingParameter(user, server, command, parameters.size(), 1))
 			return ;
-		}
 
 		// Parse channel name
 		Channel *channel = server.getChannelByName(parameters[0]);
-		if (!channel) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Channel '" + parameters[0] + "' doesn't exist");
-			server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + parameters[0] + "' doesn't exist");
+		if (channelNotExist(user, server, channel, parameters[0]))
 			return ;
-		}
 
 		// Check if user is on the channel
 		if (!channel->isMember(user.getFd())) {
@@ -139,8 +134,8 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		}
 
 		// Dispatch
-		if (parameters.size() > 1)
-			server.topic(*channel, parameters[1], &user, parser);
+		if (!parser.getTrailing().empty())
+			server.topic(*channel, parser.getTrailing(), &user, parser);
 		else
 			server.topic(*channel, &user);
 	}
