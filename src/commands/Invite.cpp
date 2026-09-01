@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 17:25:04 by afons             #+#    #+#             */
-/*   Updated: 2026/08/31 14:18:39 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 09:25:24 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,14 @@ void Server::invite(const std::string &nickname, Channel &channel, const User *u
 	if (!channel.isMember(user->getFd())) {
 		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to invite on a channel where is not");
 		sendReply(*user, ERR_NOTONCHANNEL, "You're not in channel '" + channel.getName() + "'");
+		return ;
 	}
 
 	// Check if the target is on the server or registered
 	if (!getUserByNickname(nickname)) {
 		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to invite a non authenticated user or non existing user");
 		sendReply(*user, ERR_NOSUCHNICK, nickname + " is not on the server or not registered");
+		return ;
 	}
 
 	// If channel is on invite only, check if user have the right permission to invite someone
@@ -33,6 +35,7 @@ void Server::invite(const std::string &nickname, Channel &channel, const User *u
 		if (!channel.isOperator(user->getFd())) {
 			dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Don't have the permission to invite");
 			sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need operator permission to do that");
+			return ;
 		}
 	}
 
@@ -40,6 +43,7 @@ void Server::invite(const std::string &nickname, Channel &channel, const User *u
 	if (channel.isInvited(getUserByNickname(nickname)->getFd()) || channel.isMember(getUserByNickname(nickname)->getFd())) {
 		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to invite someone already on the channel");
 		sendReply(*user, ERR_USERONCHANNEL, nickname + " is already on the channel");
+		return ;
 	}
 
 	// If every guard are OK, invite user on the channel

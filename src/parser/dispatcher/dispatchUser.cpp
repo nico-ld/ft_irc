@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 11:47:40 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 08:32:26 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 		}
 		
 		if (parameters[0] != server.getPassword()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Invalid password");
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Invalid password : '" + parameters[0] + "'");
 			server.sendReply(user, ERR_PASSWDMISMATCH, "Invalid password");
 			return ;
 		}

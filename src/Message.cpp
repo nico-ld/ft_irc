@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 15:07:48 by afons             #+#    #+#             */
-/*   Updated: 2026/08/31 17:03:01 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 09:13:08 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ void Server::privateMessageChannel(const User *src, const Channel &channel, std:
 
 	std::string channelMessage = src->getPrefix() + " PRIVMSG " + channel.getName() + " :" + message;
 	if (message.find("\r\n") == std::string::npos)
-		channelMessage.append("\n\r");
+		channelMessage.append("\r\n");
 	
-	dash->log(SERVER, message);
+	dash->log(SERVER, channelMessage);
 	for (std::map<int, User *>::const_iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); ++it) {
 		if (it->second->getFd() != src->getFd())
 			queueWrite(*it->second, channelMessage);

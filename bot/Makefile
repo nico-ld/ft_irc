@@ -47,8 +47,8 @@ SRC			:= \
 				$(UNO) \
 				$(PARSER) \
 				$(HELPER) \
-				$(SRC_DIR)testing_main.cpp
-# 				$(SRC_DIR)main.cpp
+				$(SRC_DIR)main.cpp
+# 				$(SRC_DIR)testing_main.cpp
 
 OBJ_DIR		:= obj/
 OBJ			:= $(patsubst $(SRC_DIR)%.cpp,$(OBJ_DIR)%.o,$(SRC))

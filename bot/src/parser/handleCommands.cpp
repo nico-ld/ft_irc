@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 14:42:21 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 08:51:26 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,12 @@ void catchCommand(std::string line, t_bot_data &botData)
 	if (!botData.games.empty())
 		clearEndedGame(botData);
 	if (command == "INVITE") {
-		std::string join = "JOIN " + parameters[0] + "\r\n";
+		std::string join = "JOIN " + parameters[1] + "\r\n";
 		send(botData.sock, join.c_str(), join.size(), MSG_NOSIGNAL);
 		botData.dash->log(CLIENT, join);
+
+		// Update dashboard
+		botData.dash->increaseInfo(botData.dash->getSectionByIndex(1), LEFT, 0);
 	}
 	else if (command == "PRIVMSG") {
 		std::string trailing = parser.getTrailing();
