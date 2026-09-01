@@ -159,6 +159,7 @@ class Server
 		// MODE
 		void mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params = std::vector<std::string>());
 		void launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user);
+		std::string displayChannelStatus(Channel &channel);
 
 		// Message
 		void broadcastServer(std::string message);

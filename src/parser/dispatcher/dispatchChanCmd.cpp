@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatchChanCmd.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 17:50:52 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 15:42:37 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,12 +151,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 		if (channelNotExist(user, server, channel, parameters[0]))
 			return ;
 		
-		// Check command parameters amount => WRONG IMPLEMENTATION
-		if (parameters.size() == 1) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Missing parameter for MODE command");
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for MODE command");
-			return ;
-		}
+		// Check command parameters amount
+		if (parameters.size() == 1)
+			server.sendReply(user, RPL_CHANNELMODEIS, server.displayChannelStatus(*channel));
 		
 		// Dispatch
 		if (parameters.size() == 2)
