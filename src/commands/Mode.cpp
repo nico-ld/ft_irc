@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/09/01 15:47:53 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/01 16:08:02 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,10 @@ std::string Server::displayChannelStatus(Channel &channel) {
 	std::string status;
 	std::string parameter;
 
-	if (channel.isInviteOnly()) status += "i";
-	if (channel.isTopicRestricted()) status += "t";
+	if (channel.isInviteOnly()) 
+		status += "i";
+	if (channel.isTopicRestricted()) 
+		status += "t";
 	if (channel.getKey().size()) {
 		status += "k";
 		parameter += channel.getKey() + " ";
@@ -144,15 +146,34 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			char c = (*it_group)[i];
 
 			// i : Make the room invite-only (or not)
-			if (c == 'i') channel.setInviteOnly(adding);
-
+			if (c == 'i') {
+				channel.setInviteOnly(adding);
+				if (adding)
+					broadcast(channel, "Invite mode is activated\r\n");
+				else
+					broadcast(channel, "Invite mode is disabled\r\n");
+			}
 			// t : Restrict room topics to operators (or not)
-			else if (c == 't') channel.setTopicRestricted(adding);
+			else if (c == 't') {
+				channel.setTopicRestricted(adding);
+				if (adding)
+					broadcast(channel, "Topic mode is activated\r\n");
+				else
+					broadcast(channel, "Topic mode is disabled\r\n");
+			}
 
 			// k : Set / clear the room password
 			else if (c == 'k') {
-				if (adding) { channel.setKey(*it_params); ++it_params; }
-				else        { channel.setKey(""); }
+				if (adding) { 
+					channel.setKey(*it_params); 
+					std::string message = "The new key of the channel is: " + *it_params+"\r\n";
+					broadcast(channel, message);
+					++it_params;
+				}
+				else {
+					channel.setKey("");
+					broadcast(channel, "The key has been deleted\r\n");
+				}
 			}
 
 			// l : Set / clear the maximum number of users
@@ -161,6 +182,8 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					int limit = 0;
 					parse_limit(*it_params, limit); // already validated in pass 1
 					channel.setUserLimit(limit);
+					std::string message = "The new limit of users for this channel is: " + *it_params + "\r\n";
+					broadcast(channel, message);
 					++it_params;
 				}
 				else channel.setUserLimit(-1);
@@ -169,8 +192,16 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			// o : Grant / revoke operator privileges to the TARGET user (not the sender)
 			else if (c == 'o') {
 				User *target = getUserByNickname(*it_params); // validated in pass 1
-				if (adding) channel.addOperator(target);
-				else        channel.removeOperator(target);
+				if (adding) {
+					channel.addOperator(target);
+					std::string message = *it_params + " has just been promoted as an operator\r\n";
+					broadcast(channel, message);
+				}
+				else {
+					channel.removeOperator(target);
+					std::string message = *it_params + " has just been degraded as an operator\r\n";
+					broadcast(channel, message);
+				}
 				++it_params;
 			}
 		}
