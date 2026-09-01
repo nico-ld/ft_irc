@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:56:23 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 17:44:26 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 09:42:29 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,4 +204,4 @@ std::string createInfo(std::string key, std::string value);
 bool sectionIsNull(t_section *section, Dashboard *dash);
 
 /* > Helper for user methods, return true if the index is out of range */
-bool indexOutOfRange(Dashboard *dash, size_t index, size_t size);
+bool indexOutOfRange(Dashboard *dash, t_section *section, size_t index, size_t size);

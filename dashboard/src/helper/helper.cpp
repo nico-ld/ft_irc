@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 13:53:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 17:48:45 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 22:15:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ bool sectionIsNull(t_section *section, Dashboard *dash) {
 	return (false);
 }
 
-bool indexOutOfRange(Dashboard *dash, size_t index, size_t size) {
+bool indexOutOfRange(Dashboard *dash, t_section *section, size_t index, size_t size) {
 	if (index >= size) {
-		dash->log(ERROR_LVL, "Index out of range : cannot modify information");
+		dash->log(ERROR_LVL, "[" + section->title + "]: Index out of range {" + toStr(index) + "}: cannot modify information");
 		return (true);
 	}
 	return (false);

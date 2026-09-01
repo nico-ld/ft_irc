@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/09/01 08:51:26 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 22:19:16 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void catchCommand(std::string line, t_bot_data &botData)
 			return ;
 		}
 		
-		botData.dash->updateInfo(botData.dash->getSectionByIndex(1), RIGHT, 0, channel);
-		botData.dash->updateInfo(botData.dash->getSectionByIndex(1), RIGHT, 2, commandGrp + " " + command);
+		botData.dash->updateInfo(botData.dash->getSectionByIndex(1), LEFT, 0, channel);
+		botData.dash->updateInfo(botData.dash->getSectionByIndex(1), LEFT, 2, commandGrp + " " + command);
 	}
 }

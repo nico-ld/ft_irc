@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 15:07:48 by afons             #+#    #+#             */
-/*   Updated: 2026/09/01 09:13:08 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 22:24:28 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ void Server::broadcast(const Channel &channel, const User *user, std::string mes
 	std::map<int, User *>::const_iterator it = channel.getMembers().begin();
 	std::string messageError = user->getUsername() + message;
 	
+	if (message.find("\r\n") == std::string::npos)
+		message.append("\r\n");
+
 	dash->log(SERVER, messageError);
 	for (; it != channel.getMembers().end(); ++it) {
     	queueWrite(*it->second, messageError);

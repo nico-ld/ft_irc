@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/30 14:59:18 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 08:55:20 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 09:47:48 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ INFO_LIST *Dashboard::getElem(t_section *section, e_side colSide, size_t index) 
 		return (NULL);
 	
 	if (colSide == LEFT) {
-		if (indexOutOfRange(this, index, section->leftColumn.elemList.size()))
+		if (indexOutOfRange(this, section, index, section->leftColumn.elemList.size()))
 			return (NULL);
 		return (&(section->leftColumn.elemList[index]));
 	}
 	else {
-		if (indexOutOfRange(this, index, section->rightColumn.elemList.size()))
+		if (indexOutOfRange(this, section, index, section->rightColumn.elemList.size()))
 			return (NULL);
 		return (&(section->rightColumn.elemList[index]));
 	}
@@ -71,12 +71,12 @@ void Dashboard::removeElem(t_section *section, e_side colSide, size_t index) {
 	if (sectionIsNull(section, this))
 		return ;
 	
-	if (colSide == LEFT && !indexOutOfRange(this, index, section->leftColumn.elemList.size())) {
+	if (colSide == LEFT && !indexOutOfRange(this, section, index, section->leftColumn.elemList.size())) {
 		section->leftColumn.elemList.erase(section->leftColumn.elemList.begin() + index);
 		if (section->leftColumn.elemList.empty())
 			section->leftColumn.hasElemList = false;
 	}
-	else if (colSide == RIGHT && !indexOutOfRange(this, index, section->rightColumn.elemList.size())) {
+	else if (colSide == RIGHT && !indexOutOfRange(this, section, index, section->rightColumn.elemList.size())) {
 		section->rightColumn.elemList.erase(section->rightColumn.elemList.begin() + index);
 		if (section->rightColumn.elemList.empty())
 			section->rightColumn.hasElemList = false;
@@ -92,12 +92,12 @@ void Dashboard::setElem(t_section *section, e_side colSide, size_t index, INFO_L
 		return ;
 
 	if (colSide == LEFT) {
-		if (indexOutOfRange(this, index, section->leftColumn.elemList.size()))
+		if (indexOutOfRange(this, section, index, section->leftColumn.elemList.size()))
 			return ;
 		section->leftColumn.elemList[index] = newElem;
 	}
 	else {
-		if (indexOutOfRange(this, index, section->rightColumn.elemList.size()))
+		if (indexOutOfRange(this, section, index, section->rightColumn.elemList.size()))
 			return ;
 		section->rightColumn.elemList[index] = newElem;
 	}

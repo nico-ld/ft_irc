@@ -6,11 +6,12 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/04 14:01:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 18:44:46 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 22:28:02 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
+#include "Game.hpp"
 #include <unistd.h>
 #include <arpa/inet.h>
 
@@ -111,4 +112,10 @@ int main(int ac, char **av) {
 	}
 
 	close (sock);
+
+	// free not ended games
+	std::vector<Game *>::iterator it;
+	for (it = botData.games.begin(); it != botData.games.end(); ++it) {
+		delete *it;
+	}
 }

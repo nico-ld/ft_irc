@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 18:39:38 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 10:50:07 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 22:18:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ void Dashboard::updateInfo(t_section *section, e_side colSide, size_t index, std
 	if (sectionIsNull(section, this))
 		return ;
 
-	if (colSide == LEFT && !indexOutOfRange(this, index, section->leftColumn.infoList.size())) {
+	if (colSide == LEFT && !indexOutOfRange(this, section, index, section->leftColumn.infoList.size())) {
 		section->leftColumn.infoList[index].second = newValue;
 	}
-	else if (colSide == RIGHT && indexOutOfRange(this, index, section->rightColumn.infoList.size())) {
+	else if (colSide == RIGHT && !indexOutOfRange(this, section, index, section->rightColumn.infoList.size())) {
 		section->rightColumn.infoList[index].second = newValue;
 	}
 	else
@@ -42,11 +42,11 @@ void Dashboard::increaseInfo(t_section *section, e_side colSide, size_t index) {
 	if (sectionIsNull(section, this))
 		return ;
 
-	if (colSide == LEFT && !indexOutOfRange(this, index, section->leftColumn.infoList.size())) {
+	if (colSide == LEFT && !indexOutOfRange(this, section, index, section->leftColumn.infoList.size())) {
 		int value = toInt(section->leftColumn.infoList[index].second) + 1;
 		section->leftColumn.infoList[index].second = toStr(value);
 	}
-	else if (colSide == RIGHT && !indexOutOfRange(this, index, section->rightColumn.infoList.size())) {
+	else if (colSide == RIGHT && !indexOutOfRange(this, section, index, section->rightColumn.infoList.size())) {
 		int value = toInt(section->rightColumn.infoList[index].second) + 1;
 		section->rightColumn.infoList[index].second = toStr(value);
 	}
@@ -61,11 +61,11 @@ void Dashboard::decreaseInfo(t_section *section, e_side colSide, size_t index) {
 		return ;
 
 		
-	if (colSide == LEFT && !indexOutOfRange(this, index, section->leftColumn.infoList.size())) {
+	if (colSide == LEFT && !indexOutOfRange(this, section, index, section->leftColumn.infoList.size())) {
 		int value = toInt(section->leftColumn.infoList[index].second) - 1;
 		section->leftColumn.infoList[index].second = toStr(value);
 	}
-	else if (colSide == RIGHT && !indexOutOfRange(this, index, section->rightColumn.infoList.size())) {
+	else if (colSide == RIGHT && !indexOutOfRange(this, section, index, section->rightColumn.infoList.size())) {
 		int value = toInt(section->rightColumn.infoList[index].second) - 1;
 		section->rightColumn.infoList[index].second = toStr(value);
 	}
@@ -100,12 +100,12 @@ void Dashboard::removeSimpleInfo(t_section *section, e_side colSide, size_t inde
 	if (sectionIsNull(section, this))
 		return ;
 
-	if (colSide == LEFT && !indexOutOfRange(this, index, section->leftColumn.infoList.size())) {
+	if (colSide == LEFT && !indexOutOfRange(this, section, index, section->leftColumn.infoList.size())) {
 		section->leftColumn.infoList.erase(section->leftColumn.infoList.begin() + index); 
 		if (section->leftColumn.infoList.empty())
 			section->leftColumn.hasSimpleInfo = false;
 	}
-	else if (colSide == RIGHT && !indexOutOfRange(this, index, section->rightColumn.infoList.size())) {
+	else if (colSide == RIGHT && !indexOutOfRange(this, section, index, section->rightColumn.infoList.size())) {
 		section->rightColumn.infoList.erase(section->rightColumn.infoList.begin() + index);
 		if (section->rightColumn.infoList.empty())
 			section->rightColumn.hasSimpleInfo = false;

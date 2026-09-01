@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/12 09:10:53 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 08:58:54 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 22:33:38 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void Game::startGame(t_bot_data &botData) {
 			sendMessage(botData, _channel, "Cannot start a game that just end.", CLIENT);
 		else
 			sendMessage(botData, _channel, "Not enought player to start the game.", CLIENT);
+		return ;
 	}
 
 	// Set the game as started
