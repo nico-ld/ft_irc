@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/08/31 16:56:14 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/01 15:21:34 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,11 @@ std::string Server::displayChannelStatus(Channel &channel) {
 	}
 	if (channel.getUserLimit() != -1) {
 		status += "l";
-		parameter += channel.getUserLimit()  + " ";
+		std::stringstream ss;
+		ss << channel.getUserLimit();
+		parameter += ss.str()  + " ";
 	}
-	return status + " " + parameter;
+	return "+" + status + " " + parameter;
 }
 
 // Breaks down a raw string of settings (like "+i-t+k") into individual action groups
