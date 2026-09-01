@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/08/27 10:41:20 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/01 15:47:53 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,26 @@
 #include <iostream>
 #include <cstdlib>
 #include <climits>
+
+//Handle MODE command without argument neither option
+std::string Server::displayChannelStatus(Channel &channel) {
+	std::string status;
+	std::string parameter;
+
+	if (channel.isInviteOnly()) status += "i";
+	if (channel.isTopicRestricted()) status += "t";
+	if (channel.getKey().size()) {
+		status += "k";
+		parameter += channel.getKey() + " ";
+	}
+	if (channel.getUserLimit() != -1) {
+		status += "l";
+		std::stringstream ss;
+		ss << channel.getUserLimit();
+		parameter += ss.str()  + " ";
+	}
+	return "+" + status + " " + parameter;
+}
 
 // Breaks down a raw string of settings (like "+i-t+k") into individual action groups
 // (like ["+i", "-t", "+k"]) so they can be processed one by one.
