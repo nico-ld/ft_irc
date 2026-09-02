@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/31 14:29:37 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 11:58:32 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@
 #define MAX_EVENTS 64
 #define BUFFER_SIZE 512
 #define loop while(1)
+
+struct t_mode_reply {
+	char		mode;
+	bool		adding;
+	std::string	param;
+};
 
 class Parser;
 
@@ -154,7 +160,7 @@ class Server
 		void part(std::vector<Channel> &channels, std::string reason, User *user);
 
 		// INVITE
-		void invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser);
+		void invite(const std::string &nickname, Channel &channel, const User *user);
 
 		// MODE
 		void mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params = std::vector<std::string>());
@@ -174,5 +180,16 @@ class Server
 		/* > Send to User a numeric reply of last command */
 		void	sendReply(const User &user, const std::string &code, const std::string &rest);
 };
+
+// === MODE HELPER ===
+/* > Break down a raw string of settings (like "+i-t+k") into individual action groups
+(like ["+i", "-t", "+k"]) so they can be processed one by one */
+std::vector<std::string> split_mode(std::string listMode);
+
+/* > Create and return a new node from current MODE flag */
+t_mode_reply addNode(char mode, bool adding, std::string param);
+
+/* > Create the final broadcast message */
+std::string createReplyMessage(std::vector<t_mode_reply> messageContent);
 
 #endif

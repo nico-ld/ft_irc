@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/08/30 10:49:32 by nico             ###   ########.fr        #
+#    Updated: 2026/09/02 11:57:46 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,8 @@ COMMANDS	:= \
 				$(CMD_DIR)Topic.cpp \
 				$(CMD_DIR)Part.cpp \
 				$(CMD_DIR)Invite.cpp \
-				$(CMD_DIR)Mode.cpp
+				$(CMD_DIR)Mode.cpp \
+				$(CMD_DIR)ModeHelper.cpp
 
 CORE		:= \
 				$(CORE_DIR)Channel.cpp \

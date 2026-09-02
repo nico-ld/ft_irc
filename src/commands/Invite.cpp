@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 17:25:04 by afons             #+#    #+#             */
-/*   Updated: 2026/09/01 09:25:24 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 11:58:25 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "User.hpp"
 #include "../../includes/Parser.hpp"
 
-void Server::invite(const std::string &nickname, Channel &channel, const User *user, Parser &parser) {
+void Server::invite(const std::string &nickname, Channel &channel, const User *user) {
 	// Check if User that send command is in the channel
 	if (!channel.isMember(user->getFd())) {
 		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to invite on a channel where is not");
@@ -51,5 +51,5 @@ void Server::invite(const std::string &nickname, Channel &channel, const User *u
 
 	// Reply
 	sendReply(*user, RPL_INVITING, nickname + " " + channel.getName());
-	notification(getUserByNickname(nickname), parser.getRawString());
+	notification(getUserByNickname(nickname), user->getNickname() + " invite you to join " + channel.getName());
 }

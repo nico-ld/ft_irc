@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 15:07:48 by afons             #+#    #+#             */
-/*   Updated: 2026/09/01 22:24:28 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 09:37:44 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void Server::privateMessageChannel(const User *src, const Channel &channel, std:
 }
 
 void Server::privateMessageUser(const User *src, const User *dest, std::string message) {
-	std::string privateMessage = src->getNickname() + " PRIVMSG " + dest->getNickname() + " :" + message;
+	std::string privateMessage = src->getPrefix() + " PRIVMSG " + dest->getNickname() + " :" + message;
 	
 	if (message.find("\r\n") == std::string::npos)
 		privateMessage.append("\r\n");

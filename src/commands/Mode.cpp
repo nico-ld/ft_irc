@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/09/01 16:08:02 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/02 11:56:59 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,195 +16,145 @@
 #include "Parser.hpp"
 #include <stdexcept>
 #include <iostream>
-#include <cstdlib>
-#include <climits>
-
-//Handle MODE command without argument neither option
-std::string Server::displayChannelStatus(Channel &channel) {
-	std::string status;
-	std::string parameter;
-
-	if (channel.isInviteOnly()) 
-		status += "i";
-	if (channel.isTopicRestricted()) 
-		status += "t";
-	if (channel.getKey().size()) {
-		status += "k";
-		parameter += channel.getKey() + " ";
-	}
-	if (channel.getUserLimit() != -1) {
-		status += "l";
-		std::stringstream ss;
-		ss << channel.getUserLimit();
-		parameter += ss.str()  + " ";
-	}
-	return "+" + status + " " + parameter;
-}
-
-// Breaks down a raw string of settings (like "+i-t+k") into individual action groups
-// (like ["+i", "-t", "+k"]) so they can be processed one by one.
-// Every group returned is guaranteed to start with '+' or '-' followed by >= 1 letter.
-// A leading group with no sign (e.g. "it") is treated as "+it", as real IRC servers do.
-static std::vector<std::string> split_mode(const std::string &listMode) {
-	std::vector<std::string> listString;
-	std::string::size_type i = 0;
-	char sign = '+';
-
-	while (i < listMode.size()) {
-		// Consume the signs, so "+-i" only retains the last sign seen, -
-		while (i < listMode.size() && (listMode[i] == '+' || listMode[i] == '-')) {
-			sign = listMode[i];
-			++i;
-		}
-		// Collect the letters up to the next sign
-		std::string::size_type start = i;
-		while (i < listMode.size() && listMode[i] != '+' && listMode[i] != '-') { ++i; }
-		if (i > start)
-			listString.push_back(std::string(1, sign) + listMode.substr(start, i - start));
-	}
-	return listString;
-}
-
-// Parses the numeric argument of +l. Returns false on anything that is not a
-// strictly positive integer ("abc", "12x", "", "-5", "0", overflow).
-static bool parse_limit(const std::string &s, int &out) {
-	if (s.empty()) return false;
-	char *end = NULL;
-	long v = std::strtol(s.c_str(), &end, 10);
-	if (*end != '\0' || v <= 0 || v > INT_MAX) return false;
-	out = static_cast<int>(v);
-	return true;
-}
+#include <sstream>
 
 // Applies each requested change in settings (mode) to a specific chat room (channel).
 // Modes enable or disable room features like invite-only, passwords, or member limits.
-//
-// This is done in two passes so a request is all-or-nothing:
-//   1. validate every flag and every parameter without touching the channel
-//   2. apply them, which can no longer fail
 void Server::launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user) {
-	std::vector<std::string>::const_iterator it_params;
-	std::vector<std::string>::const_iterator it_group;
+	std::vector<std::string>::iterator it_modestring = modestring.begin();
+	std::vector<std::string>::iterator it_params;
+	std::vector<t_mode_reply> replyMessageContent;
+	if (params.size() > 0) it_params = params.begin();
 
-	/* ---------- validate-only phase ---------- */
-	it_params = params.begin();
-	for (it_group = modestring.begin(); it_group != modestring.end(); ++it_group) {
-		bool adding = ((*it_group)[0] == '+');
+	// Process letter setting for ADDING then REMOVING
+	for(; it_modestring != modestring.end(); ++it_modestring) {
+		size_t i = 0;
 
-		for (size_t i = 1; i < it_group->size(); ++i) {
-			char c = (*it_group)[i];
-
-			// Reject unrecognized settings letter before anything has been applied
-			if (c != 'i' && c != 't' && c != 'k' && c != 'l' && c != 'o') {
-				sendReply(*user, ERR_UNKNOWNMODE, "Unknow MODE flag");
-				throw std::runtime_error("[LOG] This mode doesn't exist");
-			}
-
-			// +k, +l, +o and -o consume one parameter; the rest consume none
-			bool needsParam = (c == 'o') || (adding && (c == 'k' || c == 'l'));
-			if (!needsParam) continue;
-
-			if (it_params == params.end()) {
-				std::string message = "Need more param for ";
-				message += c;
-				message.append(" mode");
-				sendReply(*user, ERR_NEEDMOREPARAMS, message);
-				throw std::runtime_error("[LOG] need argument");
-			}
-
-			// l : argument must be a valid positive number
-			if (c == 'l') {
-				int tmp;
-				if (!parse_limit(*it_params, tmp)) {
-					sendReply(*user, ERR_NEEDMOREPARAMS, "Invalid limit for +l mode");
-					throw std::runtime_error("[LOG] invalid user limit");
+		// Handling letter setting for ADDING
+		if ((*it_modestring)[i] == '+') {
+			i++;
+			while((*it_modestring)[i]) {
+			    // i : Make the room invite-only
+				if ((*it_modestring)[i] == 'i') {
+					channel.setInviteOnly(true);
+					replyMessageContent.push_back(addNode('i', true, ""));
 				}
-			}
+				// t : Restrict room topics to administrators choice
+				else if ((*it_modestring)[i] == 't') {
+					channel.setTopicRestricted(true);
+					replyMessageContent.push_back(addNode('t', true, ""));
+				}
 
-			// o : argument must be the nickname of a user who is in the channel
-			if (c == 'o') {
-				User *target = getUserByNickname(*it_params);
-				if (!target) {
-					sendReply(*user, ERR_NOSUCHNICK, "User '" + *it_params + "' doesn't exist");
-					throw std::runtime_error("[LOG] No such nick");
+				// k : Set a room password
+				else if ((*it_modestring)[i] == 'k') {
+					if (params.size() <= 0 || it_params == params.end()) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for +k MODE flag");
+						sendReply(*user, ERR_NEEDMOREPARAMS, "Missing parameter for +k MODE flag");
+						i++;
+						continue ;
+					}
+
+					channel.setKey(*it_params);
+					replyMessageContent.push_back(addNode('k', true, *it_params));
+					it_params++;
 				}
-				if (!channel.isMember(target->getFd())) {
-					sendReply(*user, ERR_USERNOTINCHANNEL, "User '" + *it_params + "' isn't on this channel");
-					throw std::runtime_error("[LOG] User not in channel");
+
+				// l : Set a maximum user limit for the room
+				else if ((*it_modestring)[i] == 'l') {
+					if (params.size() <= 0 || it_params == params.end()) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for +l MODE flag");
+						sendReply(*user, ERR_NEEDMOREPARAMS, "Missing parameter for +l MODE flag");
+						i++;
+						continue;
+					}
+
+					std::stringstream ss(*it_params);
+					int limit;
+					if (!(ss >> limit) || limit <= 0) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Invalid parameter for +l MODE flag");
+						sendReply(*user, ERR_UNKNOWNMODE, "Invalid parameter for +l flag. Valid parameter is positive and non-null integer");
+						i++;
+						continue ;
+					}
+
+					channel.setUserLimit(limit);
+					replyMessageContent.push_back(addNode('l', true, *it_params));
+					it_params++;
 				}
+
+				// o : Grant administrator/operator privileges to another user (requires user's name as parameter)
+				else if ((*it_modestring)[i] == 'o') {
+					if (params.size() <= 0 || it_params == params.end()) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for +o MODE flag");
+						sendReply(*user, ERR_NEEDMOREPARAMS, "Missing parameter for +o MODE flag");
+					}
+					
+					User *target = getUserByNickname(*it_params);
+					if (!target) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to promote a user who doesn't exist");
+						sendReply(*user, ERR_NOSUCHNICK, "User '" + *it_params + "' doesn't exist");
+						++i;
+						continue ;
+					}
+					else if (!channel.isMember(target->getFd())) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to promote a user who is not on the channel");
+						sendReply(*user, ERR_USERNOTINCHANNEL, "User '" + *it_params + "' is not on the channel");
+						++i;
+						continue ;
+					}
+					
+					channel.addOperator(target);
+					replyMessageContent.push_back(addNode('k', true, *it_params));
+					it_params++;
+				}
+				
+				// Reject unrecognized settings letter
+				else {
+					std::string message = "Unknow flag : ";
+					message += (*it_modestring)[i];
+					dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": " + message);
+					sendReply(*user, ERR_UNKNOWNMODE, message);
+				}
+				++i;
 			}
-			++it_params;
+		}
+
+		// Handling letter setting for REMOVING, removing ends the rules defined by adding
+		// so removing t, for exemple, means everyone can select a topic for the room
+		else if ((*it_modestring)[i] == '-') {
+			i++;
+			while((*it_modestring)[i]) {
+				if ((*it_modestring)[i] == 'i') {
+					channel.setInviteOnly(false);
+					replyMessageContent.push_back(addNode('i', false, ""));
+				}
+				else if ((*it_modestring)[i] == 't') {
+					channel.setTopicRestricted(false);
+					replyMessageContent.push_back(addNode('t', false, ""));
+				}
+				else if ((*it_modestring)[i] == 'k') {
+					channel.setKey("");
+					replyMessageContent.push_back(addNode('k', false, ""));
+				}
+				else if ((*it_modestring)[i] == 'l') {
+					channel.setUserLimit(-1);
+					replyMessageContent.push_back(addNode('l', false, ""));
+				}
+				else {
+					std::string message = "Unknow flag : ";
+					message += (*it_modestring)[i];
+					dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": " + message);
+					sendReply(*user, ERR_UNKNOWNMODE, message);
+				}
+				i++;
+			}
 		}
 	}
-
-	/* ---------- apply-only phase (cannot fail anymore) ---------- */
-	it_params = params.begin();
-	for (it_group = modestring.begin(); it_group != modestring.end(); ++it_group) {
-		bool adding = ((*it_group)[0] == '+');
-
-		for (size_t i = 1; i < it_group->size(); ++i) {
-			char c = (*it_group)[i];
-
-			// i : Make the room invite-only (or not)
-			if (c == 'i') {
-				channel.setInviteOnly(adding);
-				if (adding)
-					broadcast(channel, "Invite mode is activated\r\n");
-				else
-					broadcast(channel, "Invite mode is disabled\r\n");
-			}
-			// t : Restrict room topics to operators (or not)
-			else if (c == 't') {
-				channel.setTopicRestricted(adding);
-				if (adding)
-					broadcast(channel, "Topic mode is activated\r\n");
-				else
-					broadcast(channel, "Topic mode is disabled\r\n");
-			}
-
-			// k : Set / clear the room password
-			else if (c == 'k') {
-				if (adding) { 
-					channel.setKey(*it_params); 
-					std::string message = "The new key of the channel is: " + *it_params+"\r\n";
-					broadcast(channel, message);
-					++it_params;
-				}
-				else {
-					channel.setKey("");
-					broadcast(channel, "The key has been deleted\r\n");
-				}
-			}
-
-			// l : Set / clear the maximum number of users
-			else if (c == 'l') {
-				if (adding) {
-					int limit = 0;
-					parse_limit(*it_params, limit); // already validated in pass 1
-					channel.setUserLimit(limit);
-					std::string message = "The new limit of users for this channel is: " + *it_params + "\r\n";
-					broadcast(channel, message);
-					++it_params;
-				}
-				else channel.setUserLimit(-1);
-			}
-
-			// o : Grant / revoke operator privileges to the TARGET user (not the sender)
-			else if (c == 'o') {
-				User *target = getUserByNickname(*it_params); // validated in pass 1
-				if (adding) {
-					channel.addOperator(target);
-					std::string message = *it_params + " has just been promoted as an operator\r\n";
-					broadcast(channel, message);
-				}
-				else {
-					channel.removeOperator(target);
-					std::string message = *it_params + " has just been degraded as an operator\r\n";
-					broadcast(channel, message);
-				}
-				++it_params;
-			}
-		}
+	
+	// Send reply message
+	if (!replyMessageContent.empty()) {
+		std::string message = user->getPrefix() + " MODE " + channel.getName() + " ";
+		broadcast(channel, message + createReplyMessage(replyMessageContent));
 	}
 }
 
@@ -213,13 +163,14 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 void Server::mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params) {
 	// Ensure the user requesting changes is a room administrator
 	if (!channel.isOperator(user->getFd())) {
-		sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need channel operator privilege to do this");
-		throw std::runtime_error("[LOG] You're not channel operator");
+		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": User need channel operator privilege to use MODE");
+		sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need channel operator privilege to use MODE");
+		return ;
 	}
 
 	// Break down the settings string into manageable pieces
 	std::vector<std::string> modestring = split_mode(listMode);
 
-	// Apply the parsed settings to the room (validated first, then applied atomically)
+	// Apply the parsed settings to the room
 	launchMode(channel, modestring, params, user);
 }
