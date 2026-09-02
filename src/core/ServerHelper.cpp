@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 09:41:10 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 15:05:55 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 15:20:10 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void Server::removeUser(int clientFd, std::string message) {
 		Channel *channel = getChannelByName(*it);
 		if (!channel) {
 			dash->log(WARNING, "User trying too leave a channel that doesn't exist");
-			return ;
+			continue ;
 		}
 		
 		// Announce that user leave the server/channel
@@ -164,8 +164,6 @@ void Server::removeUser(int clientFd, std::string message) {
 
 		// If channel is empty, delete it
 		if (channel->getMembers().empty()) {
-			std::string message = channel->getName() + " has been deleted." + "\r\n";
-			broadcastServer(message);
 			_channels.erase(channel->getName());
 		}
 

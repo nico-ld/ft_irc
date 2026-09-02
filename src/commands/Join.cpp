@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 14:27:18 by nico              #+#    #+#             */
-/*   Updated: 2026/09/02 14:36:15 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 15:19:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,13 @@ static void joinReply(Server *server, User *client, Channel &channel, Parser &pa
 }
 
 static bool userCantJoin(Server *server, Channel &channel, User *client) {
+	// Check if user has joined too many channels or not
+	if (client->getJoinedChannels().size() > 15) {
+		server->dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Joined too many channel");
+		server->sendReply(*client, ERR_TOOMANYCHANNELS, "You have joined too many channel");
+		return (true);
+	}
+
 	// Check if user is already on the channel
 	if (channel.isMember(client->getFd())) {
 		server->dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ": Trying to join a channel already joined");
@@ -77,13 +84,6 @@ static bool userCantJoin(Server *server, Channel &channel, User *client) {
 void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parser) {
 	// Parse every channels
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
-		// Check if user has joined too many channels or not
-		if (client->getJoinedChannels().size() > 15) {
-			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Joined too many channel");
-			sendReply(*client, ERR_TOOMANYCHANNELS, "You have joined too many channel");
-			return ;
-		}
-
 		// Check if channel name is correct
 		if (!parser.checkChannelName(getChan->getName())) {
 			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Invalid channel name");
@@ -109,6 +109,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 
 			// If every guard is OK, join the channel
 			it->second.addMember(client);
+			client->joinChannel(it->second.getName());
 			joinReply(this, client, it->second, parser);
 		}
 
@@ -122,6 +123,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 			channel.addMember(client); // Add the new member
 			channel.addOperator(client); // By default the first user is a channel operator
 			_channels.insert(std::make_pair(getChan->getName(), channel)); // Add channel to channel list
+			client->joinChannel(getChan->getName());
 
 			// Send message
 			joinReply(this, client, channel, parser);
@@ -139,13 +141,6 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 
 	// Parse every channels
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
-		// Check if user has joined too many channels or not
-		if (client->getJoinedChannels().size() > 15) {
-			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Joined too many channel");
-			sendReply(*client, ERR_TOOMANYCHANNELS, "You have joined too many channel");
-			return ;
-		}
-
 		// Check if channel name is correct
 		if (!parser.checkChannelName(getChan->getName())) {
 			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Invalid channel name");
@@ -173,6 +168,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 
 				// If every guard are OK, user can join the channel
 				it->second.addMember(client);
+				client->joinChannel(it->second.getName());
 				joinReply(this, client, it->second, parser);
 			}
 
@@ -185,6 +181,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 				channel.addMember(client); // Add the first member
 				channel.addOperator(client); // By default the first member is a channel operator
 				_channels.insert(std::make_pair(getChan->getName(), channel)); // Insert channel in channel list
+				client->joinChannel(getChan->getName());
 
 				// Send message
 				joinReply(this, client, channel, parser);

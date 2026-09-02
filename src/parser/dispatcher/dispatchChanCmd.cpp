@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/09/02 11:59:05 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 14:52:32 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 	
 	// === JOIN ===
 	if (command == "join") {
+		server.dash->log(DEBUG, "JOIN catched");
+		
 		// Check if there is somes parameters
 		if (missingParameter(user, server, command, parameters.size(), 1))
 			return ;
@@ -163,5 +165,11 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 			parameters.erase(parameters.begin(), parameters.begin() + 2);
 			server.mode(*channel, listMode, &user, parameters);
 		}
+	}
+
+	// === COMMAND UNKNOW ===
+	else {
+		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Command unknow : " + command);
+		server.sendReply(user, ERR_UNKNOWNCOMMAND, "Command unknow : " + command);
 	}
 }

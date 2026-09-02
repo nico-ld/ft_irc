@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/08/31 14:28:31 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 14:58:36 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,6 @@ void Server::kick(Channel &channel, User *kicked, std::string reason, const User
 		message.append(reason);
 	
 	// Send message
-	broadcast(channel, kicked, message);
-	notification(kicked, "You've been kicked from the channel");
+	broadcast(channel, message);
+	notification(kicked, message);
 }
