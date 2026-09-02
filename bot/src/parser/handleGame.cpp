@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 17:17:07 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 14:45:23 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 16:12:54 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,10 @@ void handleGame(t_bot_data &botData, std::string channel, std::string command)
 			currentGame->removePlayer(param[1], botData, true);
 		else if (command == "start")
 			currentGame->startGame(botData);
-		else if (command == "end")
+		else if (command == "end") {
+			sendMessage(botData, channel, botData.parser.getUserName() + " just ended the game ! ", CLIENT);
 			currentGame->endGame(botData);
+		}
 		else
 			sendMessage(botData, channel, "Unknow command : " + command, WARNING);
 	}

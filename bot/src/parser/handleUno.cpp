@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/15 10:52:26 by nico              #+#    #+#             */
-/*   Updated: 2026/08/17 17:02:36 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 15:47:35 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void handleUno(t_bot_data &botData, std::string channel, std::string command) {
 	}
 	else if (command == "rules") {
 		currentGame->rules(botData);
+		return ;
 	}
 
 	// Check if this is the good player who play

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 17:25:04 by afons             #+#    #+#             */
-/*   Updated: 2026/09/02 11:58:25 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 15:43:09 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,5 @@ void Server::invite(const std::string &nickname, Channel &channel, const User *u
 
 	// Reply
 	sendReply(*user, RPL_INVITING, nickname + " " + channel.getName());
-	notification(getUserByNickname(nickname), user->getNickname() + " invite you to join " + channel.getName());
+	notification(getUserByNickname(nickname), user->getPrefix() + " INVITE " + nickname + " :" + channel.getName());
 }

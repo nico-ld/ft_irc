@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 16:02:10 by nico              #+#    #+#             */
-/*   Updated: 2026/09/01 22:19:16 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 15:45:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void catchCommand(std::string line, t_bot_data &botData)
 	if (!botData.games.empty())
 		clearEndedGame(botData);
 	if (command == "INVITE") {
-		std::string join = "JOIN " + parameters[1] + "\r\n";
+		std::string join = "JOIN " + parser.getTrailing() + "\r\n";
 		send(botData.sock, join.c_str(), join.size(), MSG_NOSIGNAL);
 		botData.dash->log(CLIENT, join);
 
