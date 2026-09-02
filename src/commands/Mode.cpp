@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/09/02 11:56:59 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/02 14:11:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,33 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 	for(; it_modestring != modestring.end(); ++it_modestring) {
 		size_t i = 0;
 
-		// Handling letter setting for ADDING
+		
+		/*=================*\
+		|			 	    |
+		|    ADDING FLAG    |
+		|				    |
+		\*=================*/
+		
 		if ((*it_modestring)[i] == '+') {
 			i++;
 			while((*it_modestring)[i]) {
-			    // i : Make the room invite-only
+			    
+				
+				// i : Make the room invite-only //
 				if ((*it_modestring)[i] == 'i') {
 					channel.setInviteOnly(true);
 					replyMessageContent.push_back(addNode('i', true, ""));
 				}
-				// t : Restrict room topics to administrators choice
+
+
+				// t : Restrict room topics to administrators choice //
 				else if ((*it_modestring)[i] == 't') {
 					channel.setTopicRestricted(true);
 					replyMessageContent.push_back(addNode('t', true, ""));
 				}
 
-				// k : Set a room password
+
+				// k : Set a room password //
 				else if ((*it_modestring)[i] == 'k') {
 					if (params.size() <= 0 || it_params == params.end()) {
 						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for +k MODE flag");
@@ -59,7 +70,8 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					it_params++;
 				}
 
-				// l : Set a maximum user limit for the room
+				
+				// l : Set a maximum user limit for the room //
 				else if ((*it_modestring)[i] == 'l') {
 					if (params.size() <= 0 || it_params == params.end()) {
 						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for +l MODE flag");
@@ -82,11 +94,14 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					it_params++;
 				}
 
-				// o : Grant administrator/operator privileges to another user (requires user's name as parameter)
+				
+				// o : Grant administrator/operator privileges to another user (requires user's name as parameter) //
 				else if ((*it_modestring)[i] == 'o') {
 					if (params.size() <= 0 || it_params == params.end()) {
 						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for +o MODE flag");
 						sendReply(*user, ERR_NEEDMOREPARAMS, "Missing parameter for +o MODE flag");
+						++i;
+						continue ;
 					}
 					
 					User *target = getUserByNickname(*it_params);
@@ -104,11 +119,12 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					}
 					
 					channel.addOperator(target);
-					replyMessageContent.push_back(addNode('k', true, *it_params));
+					replyMessageContent.push_back(addNode('o', true, *it_params));
 					it_params++;
 				}
 				
-				// Reject unrecognized settings letter
+				
+				// Unknow flag //
 				else {
 					std::string message = "Unknow flag : ";
 					message += (*it_modestring)[i];
@@ -119,27 +135,82 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			}
 		}
 
-		// Handling letter setting for REMOVING, removing ends the rules defined by adding
-		// so removing t, for exemple, means everyone can select a topic for the room
+		
+		/*=================*\
+		|			 	    |
+		|    DELETE FLAG    |
+		|				    |
+		\*=================*/
+		
 		else if ((*it_modestring)[i] == '-') {
 			i++;
 			while((*it_modestring)[i]) {
+
+				
+				// i: Remove invite-only mode //
 				if ((*it_modestring)[i] == 'i') {
 					channel.setInviteOnly(false);
 					replyMessageContent.push_back(addNode('i', false, ""));
 				}
+
+				
+				// t: Remove restricted topic access (everyone can change topic) //
 				else if ((*it_modestring)[i] == 't') {
 					channel.setTopicRestricted(false);
 					replyMessageContent.push_back(addNode('t', false, ""));
 				}
+
+
+				// k: Remove key to join channel (no more password is needeed) //
 				else if ((*it_modestring)[i] == 'k') {
 					channel.setKey("");
 					replyMessageContent.push_back(addNode('k', false, ""));
 				}
+
+
+				// l: Remove member limit // 
 				else if ((*it_modestring)[i] == 'l') {
 					channel.setUserLimit(-1);
 					replyMessageContent.push_back(addNode('l', false, ""));
 				}
+
+
+				// o: Remove channel operator privilege to the target
+				else if ((*it_modestring)[i] == 'o') {
+					if (params.size() <= 0 || it_params == params.end()) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for -o MODE flag");
+						sendReply(*user, ERR_NEEDMOREPARAMS, "Missing parameter for -o MODE flag");
+						++i;
+						continue ;
+					}
+
+					User *target = getUserByNickname(*it_params);
+					if (!target) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to promote a user who doesn't exist");
+						sendReply(*user, ERR_NOSUCHNICK, "User '" + *it_params + "' doesn't exist");
+						++i;
+						continue ;
+					}
+					else if (!channel.isMember(target->getFd())) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to promote a user who is not on the channel");
+						sendReply(*user, ERR_USERNOTINCHANNEL, "User '" + *it_params + "' is not on the channel");
+						++i;
+						continue ;
+					}
+					else if (!channel.isOperator(target->getFd())) {
+						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to remove channel operator privilege to an user who is not operator");
+						sendReply(*user, ERR_CHANOPRIVSNEEDED, "User '" + target->getNickname() + "' isn't operator");
+						++i;
+						continue ;
+					}
+					
+					channel.removeOperator(target);
+					replyMessageContent.push_back(addNode('o', false, *it_params));
+					it_params++;
+				}
+
+
+				// Unknow flag //
 				else {
 					std::string message = "Unknow flag : ";
 					message += (*it_modestring)[i];
@@ -150,6 +221,7 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 			}
 		}
 	}
+	
 	
 	// Send reply message
 	if (!replyMessageContent.empty()) {
