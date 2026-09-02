@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Join.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/02 14:27:18 by nico              #+#    #+#             */
+/*   Updated: 2026/09/02 14:36:15 by nico             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Server.hpp"
 #include "User.hpp"
 #include "Channel.hpp"
@@ -38,6 +50,30 @@ static void joinReply(Server *server, User *client, Channel &channel, Parser &pa
 	server->sendReply(*client, RPL_ENDOFNAMES, channel.getName() + " :End of user name list");
 }
 
+static bool userCantJoin(Server *server, Channel &channel, User *client) {
+	// Check if user is already on the channel
+	if (channel.isMember(client->getFd())) {
+		server->dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ": Trying to join a channel already joined");
+		server->sendReply(*client, ERR_USERONCHANNEL, "You already are on " + channel.getName());
+		return (true);
+	}
+	
+	// Check channel is on invite only (+i)
+	if (channel.isInviteOnly() && !channel.isInvited(client->getFd())) {
+		server->dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is on invite only mode");
+		server->sendReply(*client, ERR_INVITEONLYCHAN, "Channel is on invite only mode (+i)");
+		return (true);
+	}
+
+	// Check if the channel get a user limit and if there is too many user for that limit (+l)
+	if (channel.getUserLimit() != -1 && channel.getMemberCount() >= channel.getUserLimit()) {
+		server->dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is full");
+		server->sendReply(*client, ERR_CHANNELISFULL, "Channel is full, you cannot join it (+l)");
+		return (true);
+	}
+	return (false);
+}
+
 void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parser) {
 	// Parse every channels
 	for (std::vector<Channel>::iterator getChan = listChannel.begin(); getChan != listChannel.end(); ++getChan) {
@@ -60,19 +96,9 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 
 		// === CHANNEL EXIST ===
 		if (it != _channels.end()) {
-			// Check channel is on invite only (+i)
-			if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd())) {
-				dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is on invite only mode");
-				sendReply(*client, ERR_INVITEONLYCHAN, "Channel is on invite only mode (+i)");
+			// Check if user can join the channel
+			if (userCantJoin(this, it->second, client))
 				return ;
-			}
-
-			// Check if the channel get a user limit and if there is too many user for that limit (+l)
-			if (it->second.getUserLimit() != -1 && it->second.getMemberCount() >= it->second.getUserLimit()) {
-				dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is full");
-				sendReply(*client, ERR_CHANNELISFULL, "Channel is full, you cannot join it (+l)");
-				return ;
-			}
 
 			// Check if channel need a key to be joined (+k)
 			if (it->second.getKey().size() > 0) {
@@ -134,19 +160,9 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 
 			// === CHANNEL EXIST ===
 			if (it != _channels.end()) {
-				// Check channel is on invite only (+i)
-				if (it->second.isInviteOnly() && !it->second.isInvited(client->getFd())) {
-					dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is on invite only mode");
-					sendReply(*client, ERR_INVITEONLYCHAN, "Channel is on invite only mode (+i)");
+				// Check if user can join the server
+				if (userCantJoin(this, it->second, client))
 					return ;
-				}
-
-				// Check if the channel get a user limit and if there is too many user for that limit (+l)
-				if (it->second.getUserLimit() != -1 && it->second.getMemberCount() >= it->second.getUserLimit()) {
-					dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Channel is full");
-					sendReply(*client, ERR_CHANNELISFULL, "Channel is full, you cannot join it (+l)");
-					return ;
-				}
 
 				// Check if the key is valid
 				if (it->second.getKey() != listKey[i]) {
