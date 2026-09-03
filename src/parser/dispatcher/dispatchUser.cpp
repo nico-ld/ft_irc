@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatchUser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/01 15:42:40 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/03 21:00:55 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static bool isNicknameValid(Server &server, User &user, std::string nickname) {
 	}
 	
 	for (size_t i = 1; i < nickname.size(); ++i) {
-		if (!isalpha(nickname[i]) && isdigit(nickname[i]) && !strchr(VALID_CHAR, nickname[i]) && nickname[i] != '-') {
+		if (!isalpha(nickname[i]) && !isdigit(nickname[i]) && !strchr(VALID_CHAR, nickname[i]) && nickname[i] != '-') {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Invalid char in nickname");
 			server.sendReply(user, ERR_ERRONEUSNICKNAME, "Invalid character in nickname");
 			return (false);

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:19:20 by nico              #+#    #+#             */
-/*   Updated: 2026/08/30 09:17:43 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/03 20:51:27 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void messageCommandsDispatch(Server &server, std::string command, User &user, Pa
 		if (parameters.size() == 0) {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Missing parameter for PRIVMSG command");
 			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing paramete for PRIVMSG command");
+			return ;
 		}
 		
 		// Check if there is a message

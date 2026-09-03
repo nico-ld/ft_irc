@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/09/01 15:41:31 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/03 20:50:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,6 @@ void Server::startLoop() {
                     User *newUser = getUserById(clientFd);
                     if (newUser)
                         newUser->setHostname(NetworkUtils::getHostname(clientAddr));
-                    getUserById(clientFd)->setAuthenticated(true);
 
                     dash->log(INFO, "New client connected on fd : " + toStr(clientFd));
 

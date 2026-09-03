@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/09/02 14:11:37 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/03 21:09:41 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,6 +237,12 @@ void Server::mode(Channel &channel, std::string listMode, User *user, std::vecto
 	if (!channel.isOperator(user->getFd())) {
 		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": User need channel operator privilege to use MODE");
 		sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need channel operator privilege to use MODE");
+		return ;
+	}
+
+	if (listMode[0] != '+' && listMode[0] != '-') {
+		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing operator at start of flag list ('+' or '-')");
+		sendReply(*user, ERR_UNKNOWNMODE, "Missing operator at start of flag list ('+' or '-')");
 		return ;
 	}
 
