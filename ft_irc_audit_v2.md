@@ -24,9 +24,9 @@ Scope: same `includes/` + `src/` tree (now split further: `ServerHelper.cpp`, `M
 | 10 | `Channel` shallow-copies raw `User*` | ❌ still open (lower risk now that #6 is fixed, but still a latent footgun) |
 | 11 | `User::joinChannel()/leaveChannel()` dead code | ✅ fixed — called from `Join.cpp` and centrally from `Channel::removeMember()` |
 | 12 | `PASS` check commented out (auth bypass) | ✅ fixed — real comparison restored, `ERR_PASSWDMISMATCH` on mismatch |
-| 13 | No registration gating before auth | ⚠️ fixed in `dispatcher.cpp`... but see **New-A**: undone by a line in `Server.cpp` |
+| 13 | No registration gating before auth | ✅ ~~fixed in `dispatcher.cpp`... but see **New-A**: undone by a line in `Server.cpp`~~ |
 | 14 | Errors only logged server-side | ✅ fixed — `sendReply()` used consistently |
-| 15 | No nickname validation / duplicate check | ⚠️ fixed, but see **New-D**: the validation itself has a logic-inversion bug |
+| 15 | No nickname validation / duplicate check | ✅ ~~fixed, but see **New-D**: the validation itself has a logic-inversion bug~~ |
 | 16 | `checkChannelName`/`getlistChannel` unsafe on empty names | ✅ fixed |
 | 17 | No `QUIT`, no `PING`/`PONG` | ⚠️ half-fixed — `QUIT` implemented; `PING`/`PONG` keep-alive still absent |
 | 18 | No per-user channel-join cap | ✅ fixed — capped at 15, `ERR_TOOMANYCHANNELS` used |
@@ -63,7 +63,7 @@ Scope: same `includes/` + `src/` tree (now split further: `ServerHelper.cpp`, `M
   Nothing between here and `main()` catches per-command exceptions — the only `try/catch` left is the one wrapped around the entire `server.startLoop()` call in `main.cpp` (fix #3). That catch logs the exception and then `main()` returns, ending the process. **One malformed line from any single client takes the whole server down for every connected user.**
   → Validate that the mode-flags parameter starts with `+`/`-` in `dispatchChanCmd.cpp` before calling `server.mode()`, and reply `ERR_UNKNOWNMODE` otherwise; separately, wrap command dispatch itself in a per-command try/catch so no single client can ever crash the shared process again — this is a structural gap, not just a `MODE`-specific one.
 
-- **`src/parser/dispatcher/dispatchMessage.cpp` — missing `return` after a `PRIVMSG` parameter-count error causes an out-of-bounds vector access.**
+- **_[FIXED]_** **`src/parser/dispatcher/dispatchMessage.cpp` — missing `return` after a `PRIVMSG` parameter-count error causes an out-of-bounds vector access.**
   The `parameters.size() == 0` branch sends `ERR_NEEDMOREPARAMS` but doesn't `return`. Execution falls into the next `if (parameters.size() > 1 || !parser.getTrailing().empty())` check — which is `true` for a message like `PRIVMSG :hi` (no target, just trailing text) — and then reads `parameters[0][0]` on an **empty vector**. `std::vector::operator[]` performs no bounds checking; this is undefined behavior, not a catchable exception, so no try/catch anywhere in the call stack will save the process. In practice this is a guaranteed crash/segfault from one client sending one line.
   → Add `return;` right after the `sendReply(... ERR_NEEDMOREPARAMS ...)` call, so the function can never proceed to indexing `parameters[0]` with zero parameters.
 
