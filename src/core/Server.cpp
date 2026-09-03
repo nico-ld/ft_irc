@@ -135,7 +135,7 @@ void Server::startLoop() {
                         epoll_ctl(_epollFd, EPOLL_CTL_ADD, clientFd, &ev);
 
                         addUnauthenticatedUser(clientFd);
-                        getUserById(clientFd)->setAuthenticated(true);
+                        // getUserById(clientFd)->setAuthenticated(true);
                         std::cout << "New client connected on fd: " << clientFd << std::endl;
                     }
                 }
