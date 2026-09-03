@@ -47,9 +47,11 @@ void Server::notification(const User *user, std::string message) {
         std::perror("Send crashed.");
 }
 
-void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message) {
+//send a message to the channel. sendErr is used to know if it's NOTICE or PRIVMSG and if the server has to send a notificaiton of the error.
+void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message, bool sendErr) {
 	if (!channel.isMember(src->getFd())) {
-		notification(src, "442 ERR_NOTONCHANNEL");
+		if (sendErr)
+			notification(src, "442 ERR_NOTONCHANNEL");
 		throw std::runtime_error("User not on the channel.");
 	}
 	std::string privateMessage = channel.getName() + "-> " + src->getNickname() + ": " + message + "\r\n";
@@ -58,6 +60,7 @@ void Server::privateMessageChannel(const User *src, const Channel &channel, std:
         	std::perror("Send crashed.");
 }
 
+//send a message to an user.
 void Server::privateMessageUser(const User *src, const User *dest, std::string message) {
 	std::string privateMessage = src->getNickname() + ": " + message + "\r\n";
 	if (send(dest->getFd(), privateMessage.c_str(), privateMessage.size(), MSG_NOSIGNAL) == -1)

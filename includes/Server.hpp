@@ -121,7 +121,7 @@ class Server
 		void broadcast(const Channel &channel, const User *user, std::string message);
 		void notification(const User *user, std::string message);
 		void privateMessageUser(const User *src, const User *dest, std::string message);
-		void privateMessageChannel(const User *src, const Channel &channel, std::string message);
+		void privateMessageChannel(const User *src, const Channel &channel, std::string message, bool sendErr);
 
 
 		// === NULERIC REPLIES ===
