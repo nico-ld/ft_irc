@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/09/03 20:50:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/04 10:32:09 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,15 @@ void Server::startLoop() {
     				// Append the newly read bytes to the client's buffer
 					// Then process all complete commands (so closed with either \r\n or \n) in the buffer
 					currentUser->second.inputBuffer.append(buffer, bytesRead);
-    				size_t pos;
+
+                    // Message size must not being >= to 512 (including CLRF)
+                    if (currentUser->second.inputBuffer.size() > 512) {
+                        dash->log(WARNING, "Fd : " + toStr(currentFd) + ": Message too long, trim input and send it");
+                        notification(&currentUser->second, "You're message was too long, it was trimmed");
+                        currentUser->second.inputBuffer = currentUser->second.inputBuffer.substr(0, 510).append("\r\n");
+                    }
+    				
+                    size_t pos;
     				while ((pos = currentUser->second.inputBuffer.find("\r\n")) != std::string::npos) {
         				// Extract the complete command string (excluding the \r\n)
 						// Then erase the extracted command and the \r\n delim from the client's buffer

@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 12:07:19 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 14:11:16 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/04 09:56:17 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@ void Server::sendReply(const User &user, const std::string &code, const std::str
 		nick = "*";
 	
 	std::string msg = ":ircserv " + code + " " + nick + " " + rest + "\r\n";
+
+	if (msg.size() > 512) {
+		dash->log(ERROR_LVL, "Reply too long, message being trimed");
+		msg = msg.substr(0, 510).append("\r\n");
+	}
+	
 	// Routed through the buffered write path (see ServerHelper.cpp) instead of
 	// a raw send(), so a slow client doesn't silently lose the reply.
 	queueWrite(const_cast<User &>(user), msg);
