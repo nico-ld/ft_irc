@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:50:45 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/31 09:58:20 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/04 10:38:59 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ Channel::~Channel() {}
 Channel::Channel(const Channel& src) {
     *this = src;
 }
+
 
 // Orthodox Canonical Form: Copy Assignment Operator
 Channel& Channel::operator=(const Channel& src) {

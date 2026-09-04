@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 17:37:06 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/27 10:01:40 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/04 11:04:44 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void Parser::_initCommandsList( void ) {
 	_commandsMessage.push_back("notice");
 
 	// User and connection commands
+	_commandsUser.push_back("ping");
 	_commandsUser.push_back("user");
 	_commandsUser.push_back("nick");
 	_commandsUser.push_back("pass");

@@ -21,14 +21,14 @@ Scope: same `includes/` + `src/` tree (now split further: `ServerHelper.cpp`, `M
 | 7 | Unbounded `inputBuffer` growth (memory DoS) | ✅ ~~still open — no size cap before `\r\n`~~ |
 | 8 | No cap on accepted connections (fd exhaustion) | ❌ still open |
 | 9 | Real client IP/hostname never captured | ✅ fixed — `NetworkUtils::getHostname()` now called on accept |
-| 10 | `Channel` shallow-copies raw `User*` | ❌ still open (lower risk now that #6 is fixed, but still a latent footgun) |
+| 10 | `Channel` shallow-copies raw `User*` | ❌ still open (lower risk now that #6 is fixed, but still a latent footgun) (while no channel copy is made, this isn't a problem) |
 | 11 | `User::joinChannel()/leaveChannel()` dead code | ✅ fixed — called from `Join.cpp` and centrally from `Channel::removeMember()` |
 | 12 | `PASS` check commented out (auth bypass) | ✅ fixed — real comparison restored, `ERR_PASSWDMISMATCH` on mismatch |
 | 13 | No registration gating before auth | ✅ ~~fixed in `dispatcher.cpp`... but see **New-A**: undone by a line in `Server.cpp`~~ |
 | 14 | Errors only logged server-side | ✅ fixed — `sendReply()` used consistently |
 | 15 | No nickname validation / duplicate check | ✅ ~~fixed, but see **New-D**: the validation itself has a logic-inversion bug~~ |
 | 16 | `checkChannelName`/`getlistChannel` unsafe on empty names | ✅ fixed |
-| 17 | No `QUIT`, no `PING`/`PONG` | ⚠️ half-fixed — `QUIT` implemented; `PING`/`PONG` keep-alive still absent |
+| 17 | No `QUIT`, no `PING`/`PONG` | ⚠️ half-fixed — `QUIT` implemented; `PING`/`PONG` implemented only for client->server, not server->client |
 | 18 | No per-user channel-join cap | ✅ fixed — capped at 15, `ERR_TOOMANYCHANNELS` used |
 | 19 | Off-by-one between `join()` overloads for `+l` | ✅ fixed — both use `>=` now |
 | 20 | `broadcast()` fired before `addMember()` | ✅ fixed |

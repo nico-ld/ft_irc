@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/03 21:00:55 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/04 11:04:15 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,21 @@ static bool isNicknameValid(Server &server, User &user, std::string nickname) {
 
 void userCommandsDispatch(std::string command, User &user, Server &server, Parser &parser) {
 	std::vector<std::string> parameters = parser.getParameters();
+
+	// === PING ===
+	if (command == "ping") {
+		// If trailing is empty take first parameter
+		std::string token = (!parser.getTrailing().empty()) ? parser.getTrailing() :
+			(!parameters[0].empty()) ? parameters[0] : "";
+
+		if (token.empty()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Missing parameter for PING command");
+			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for PING command");
+		}
+
+		server.notification(&user, ":ircserv PONG ircserv :" + token);
+		return ;
+	}
 	
 	// === USER ===
 	if (command == "user") {
