@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 15:07:48 by afons             #+#    #+#             */
-/*   Updated: 2026/09/02 09:37:44 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/04 09:27:22 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,20 @@ void Server::notification(const User *user, std::string message) {
 	queueWrite(*const_cast<User *>(user), messageError);
 }
 
-void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message) {
-	if (!channel.isMember(src->getFd())) {
+// Send a message to the channel. The boolean 'sendErr' is used to know wich command call this function (PRIVMSG or NOTICE).
+// Also this boolean is used to trigger an error notification
+void Server::privateMessageChannel(const User *src, const Channel &channel, std::string message, bool isNotice) {
+	if (!channel.isMember(src->getFd()) && isNotice == false) {
 		dash->log(WARNING, "Fd : " + toStr(src->getFd()) + ", Is not on the channel");
 		sendReply(*src, ERR_NOTONCHANNEL, "You're not in this channel");
 		return ;
 	}
 
-	std::string channelMessage = src->getPrefix() + " PRIVMSG " + channel.getName() + " :" + message;
+	std::string command = " PRIVMSG ";
+	if (isNotice)
+		command = " NOTICE ";
+
+	std::string channelMessage = src->getPrefix() + command + channel.getName() + " :" + message;
 	if (message.find("\r\n") == std::string::npos)
 		channelMessage.append("\r\n");
 	
@@ -87,8 +93,13 @@ void Server::privateMessageChannel(const User *src, const Channel &channel, std:
 	}
 }
 
-void Server::privateMessageUser(const User *src, const User *dest, std::string message) {
-	std::string privateMessage = src->getPrefix() + " PRIVMSG " + dest->getNickname() + " :" + message;
+// Send a message to a specific user
+void Server::privateMessageUser(const User *src, const User *dest, std::string message, bool isNotice) {
+	std::string command = " PRIVMSG ";
+	if (isNotice)
+		command = " NOTICE ";
+	
+	std::string privateMessage = src->getPrefix() + command + dest->getNickname() + " :" + message;
 	
 	if (message.find("\r\n") == std::string::npos)
 		privateMessage.append("\r\n");

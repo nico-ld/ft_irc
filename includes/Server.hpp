@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/09/02 11:58:32 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/04 09:26:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,35 +145,51 @@ class Server
 		
 		
 		// === COMMANDS ===
-		// JOIN
+		// ~~ JOIN ~~
 		void join(std::vector<Channel> &listChannel, std::vector<std::string> &listKey, User *client, Parser &parser);
 		void join(std::vector<Channel> &listChannel, User *client, Parser &parser);
 
-		// KICK
+		// ~~ KICK ~~
 		void kick(Channel &channel, User *kicked, std::string reason, const User *op);
 
-		// TOPIC
+		// ~~ TOPIC ~~
 		void topic(const Channel &channel, User *user);
 		void topic(Channel &channel, std::string newTopic, User *user, Parser &parser);
 
-		// PART
+		// ~~ PART ~~
 		void part(std::vector<Channel> &channels, std::string reason, User *user);
 
-		// INVITE
+		// ~~ INVITE ~~
 		void invite(const std::string &nickname, Channel &channel, const User *user);
 
-		// MODE
+		// ~~ MODE ~~
 		void mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params = std::vector<std::string>());
 		void launchMode(Channel &channel, std::vector<std::string> modestring, std::vector<std::string> params, User *user);
 		std::string displayChannelStatus(Channel &channel);
 
-		// Message
+		// ~~ PRIVMSG / NOTICE ~~
+		/* > Send a message to a channel
+		> Boolean isNotice is used to differentiate both commands, NOTICE must not send any replies */
+		void privateMessageChannel(const User *src, const Channel &channel, std::string message, bool isNotice);
+		
+		/* > Send a message to a user 
+		> Boolean isNotice is used to differentiate both commands, NOTICE must not send any replies */
+		void privateMessageUser(const User *src, const User *dest, std::string message, bool isNotice);
+
+		
+		// === SERVER MESSAGES ===
+		/* > Send a server message in every channel of the server */
 		void broadcastServer(std::string message);
+		
+		/* > Send a server message in a channel */
 		void broadcast(const Channel &channel, std::string message);
+
+		/* > Send a server message to a channel */
 		void broadcast(const Channel &channel, const User *user, std::string message);
+		
+		/* > Send a notification to an user */
 		void notification(const User *user, std::string message);
-		void privateMessageUser(const User *src, const User *dest, std::string message);
-		void privateMessageChannel(const User *src, const Channel &channel, std::string message);
+
 
 
 		// === NULERIC REPLIES ===

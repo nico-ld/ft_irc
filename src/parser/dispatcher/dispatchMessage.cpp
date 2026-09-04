@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:19:20 by nico              #+#    #+#             */
-/*   Updated: 2026/09/03 20:51:27 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/04 09:32:44 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@
 void messageCommandsDispatch(Server &server, std::string command, User &user, Parser &parser) {
 	std::vector<std::string> parameters = parser.getParameters();
 
+	// === PRIVMSG ===
 	if (command == "privmsg") {
 		// Check if target is given
 		if (parameters.size() == 0) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Missing parameter for PRIVMSG command");
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Missing parameter for PRIVMSG command");
 			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing paramete for PRIVMSG command");
 			return ;
 		}
@@ -34,27 +35,73 @@ void messageCommandsDispatch(Server &server, std::string command, User &user, Pa
 				
 				// Check if channel exist
 				if (!channel) {
-					server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Channel doesn't exist");
+					server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Channel doesn't exist");
 					server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + parameters[0] + "' doesn't exist");
 					return ;
 				}
 				
 				// Send message to channel
-				server.privateMessageChannel(&user, *channel, message);
+				server.privateMessageChannel(&user, *channel, message, false);
 			}
 			
 			// If message target is a user
 			else {
 				// Check if user exist
 				if (!server.getUserByNickname(parameters[0])) {
-					server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User target doesn't exist");
+					server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": User target doesn't exist");
 					server.sendReply(user, ERR_NOSUCHNICK, "User '" + parameters[0] + "' doesn't exist");
 					return ;
 				}
 				
 				// Send message to user
-				server.privateMessageUser(&user, server.getUserByNickname(parameters[0]), message);
+				server.privateMessageUser(&user, server.getUserByNickname(parameters[0]), message, false);
 			}
 		}
+	}
+
+	// === NOTICE ===
+	else if (command == "notice") {
+		// If channel name is missing
+		if (parameters.empty()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Missing parameter for NOTICE command");
+			return ;
+		}
+
+		// Check if there is a message
+		std::string message = parser.getMessage();		
+		if (message.empty()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Missing parameter for NOTICE command");
+			return ;
+		}
+
+		std::string target = parameters[0];
+		
+		// If target is a channel
+		if (target[0] == '#') {
+			Channel *channel = server.getChannelByName(target);
+			if (!channel) {
+				server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Trying to use NOTICE in channel that doesn't exist");
+				return ;
+			}
+			
+			server.privateMessageChannel(&user, *channel, message, true);
+		}
+
+		// If target is a user
+		else {
+			User *userTarget = server.getUserByNickname(target);
+			if (!userTarget) {
+				server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Trying to send a NOTICE message to a user who doesn't exist");
+				return ;
+			}
+			
+			server.privateMessageUser(&user, userTarget, message, true);
+		}
+	}
+
+	// === UNKNOW ===
+	else {
+		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Command unknow : " + command);
+		server.sendReply(user, ERR_UNKNOWNCOMMAND, "Command unknow : " + command);
 	}
 }

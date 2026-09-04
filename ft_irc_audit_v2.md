@@ -53,7 +53,7 @@ Scope: same `includes/` + `src/` tree (now split further: `ServerHelper.cpp`, `M
 
 ### 🔴 New critical
 
-- **_[AMY TASK]_** **`src/core/Server.cpp` — every new connection is marked authenticated immediately on `accept()`, silently reopening the auth bypass that #12/#13 were supposed to close.**
+- **_[FIXED]_** **`src/core/Server.cpp` — every new connection is marked authenticated immediately on `accept()`, silently reopening the auth bypass that #12/#13 were supposed to close.**
   Right after registering the socket, the accept handler calls `getUserById(clientFd)->setAuthenticated(true);` — before the client has sent `PASS`, `NICK`, or `USER`. `User.hpp`'s own comment says `_isAuthenticated` should "become true only when the top three are true," so this line contradicts the class's own contract.
   The `ERR_NOTREGISTERED` gate added in `dispatcher.cpp` (fix #13) checks exactly this flag — since it's already `true` at connect time, the gate never actually blocks anything. A client can open a raw TCP connection and immediately send `JOIN`, `PRIVMSG`, `KICK`, or `MODE` with zero registration, no password, no nick, nothing.
   → Delete that line. `setAuthenticated(true)` must only be set from the `PASS && NICK && USER` check already correctly implemented in `dispatchUser.cpp`.
@@ -73,7 +73,7 @@ Scope: same `includes/` + `src/` tree (now split further: `ServerHelper.cpp`, `M
   The condition `!isalpha(c) && isdigit(c) && !strchr(VALID_CHAR, c) && c != '-'` is true for any digit character (a digit is never alpha, and is always a digit) — so any nickname like `user1` or `bob42` is rejected with `ERR_ERRONEUSNICKNAME`, even though digits are explicitly legal in IRC nicknames (just not as the first character, which is already checked separately on the line above). This will confuse real users and real clients during testing/defense, since a very common style of nickname simply won't work.
   → The digit branch shouldn't reject at all — drop the `isdigit(c)` clause from the rejection condition (digits are allowed anywhere except position 0, which is handled by the separate first-character check).
 
-- **_[AMY TASK]_** **`src/parser/dispatcher/dispatchMessage.cpp` — `NOTICE` is a recognized command that does nothing.**
+- **_[FIXED]_** **`src/parser/dispatcher/dispatchMessage.cpp` — `NOTICE` is a recognized command that does nothing.**
   `notice` is registered in `ParserInit.cpp`'s `_commandsMessage` list (so it correctly routes into `messageCommandsDispatch`), but the function only has an `if (command == "privmsg")` branch — there's no `else if (command == "notice")` at all. A client sending `NOTICE` gets silent, total non-behavior: no message delivered, no error reply, nothing in the logs pointing at why.
   → Add a `notice` branch mirroring `privmsg`'s logic, with one difference per RFC: `NOTICE` must never generate an automatic error reply back to the sender (that's the whole point of using `NOTICE` for bot/server messages — it avoids reply loops), so skip the `sendReply(... ERR_* ...)` calls on that path and just silently drop invalid `NOTICE`s server-side (log only).
 
