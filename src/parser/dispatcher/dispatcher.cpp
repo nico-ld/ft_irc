@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatcher.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/09/04 11:04:25 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/06 18:39:57 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,36 +43,42 @@ void dispatchCommand(Server &server, User &user, std::string command) {
 	
 	// Server command
 	// === QUIT ===
-	if (command == "quit") {
-		server.removeUser(user.getFd(), user.getPrefix() + " " + parser.getRawString());
-		return ;
+	try {
+		if (command == "quit") {
+			server.removeUser(user.getFd(), user.getPrefix() + " " + parser.getRawString());
+			return ;
+		}
+
+		// Dispatch and handle command
+		switch (parser.getCommandId())
+		{
+			case 1:
+				if (user.isAuthenticated())
+					channelCommandsDispatch(server, command, user, parser);
+				else {
+					server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User is not registered yet");
+					server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
+				}
+				break ;
+			case 2:
+				if (user.isAuthenticated())
+					messageCommandsDispatch(server, command, user, parser);
+				else {
+					server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User is not registered yet");
+					server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
+				}
+				break ;
+			case 3:
+				userCommandsDispatch(command, user, server, parser);
+				break ;
+
+			default:
+				server.dash->log(ERROR_LVL, "How the fuck did you get here ?? This is mathematically impossible ! XoX");
+				break ;
+		}
 	}
-
-	// Dispatch and handle command
-	switch (parser.getCommandId())
-	{
-		case 1:
-			if (user.isAuthenticated())
-				channelCommandsDispatch(server, command, user, parser);
-			else {
-				server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User is not registered yet");
-				server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
-			}
-			break ;
-		case 2:
-			if (user.isAuthenticated())
-				messageCommandsDispatch(server, command, user, parser);
-			else {
-				server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User is not registered yet");
-				server.sendReply(user, ERR_NOTREGISTERED, "User is not registered yet");
-			}
-			break ;
-		case 3:
-			userCommandsDispatch(command, user, server, parser);
-			break ;
-
-		default:
-			server.dash->log(ERROR_LVL, "How the fuck did you get here ?? This is mathematically impossible ! XoX");
-			break ;
+	catch (const std::exception &e) {
+		server.sendReply(user, ERR_UNKNOWNCOMMAND, "Error during the execution of the command");
+		server.dash->log(ERROR_LVL, "Error during the execution of the command" + std::string(e.what()));
 	}
 }

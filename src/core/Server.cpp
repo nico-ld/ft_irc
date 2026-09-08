@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/09/04 10:32:09 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/08 17:39:51 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ void Server::startLoop() {
                 continue ;
             }
             dash->log(ERROR_LVL, "epoll_wait() error: unable to pause the socket");
-            break; 
+            break;
         }
 
 		// Pulls out the currentFd that triggered an event
@@ -232,7 +232,8 @@ void Server::startLoop() {
                 if (bytesRead <= 0) {
                     dash->log(INFO, "Client disconnected on fd : " + toStr(currentFd));
                     removeUser(currentFd, "Client disconnected");
-                } else {
+                }
+                else {
 					std::map<int, User>::iterator currentUser = _users.find(currentFd);
 					if (currentUser == _users.end()) {
                         dash->log(WARNING, "Error : User not found for fd : " + toStr(currentFd));
@@ -257,11 +258,16 @@ void Server::startLoop() {
 						// To finally execute the command, such as IRC PASS, NICK or JOIN
         				std::string command = currentUser->second.inputBuffer.substr(0, pos);
         				currentUser->second.inputBuffer.erase(0, pos + 2);
-                        
+
                         dash->log(CLIENT, command);
 
         				if (!command.empty()) {
-							dispatchCommand(*this, currentUser->second, command);
+                            try {
+							    dispatchCommand(*this, currentUser->second, command);
+                            }
+                            catch (const std::exception &e) {
+                                dash->log(WARNING, "Error during dispatching" + std::string(e.what()));
+                            }
 						}
             		}
         		}

@@ -79,7 +79,7 @@ Scope: same `includes/` + `src/` tree (now split further: `ServerHelper.cpp`, `M
 
 ### 🟡 New low / structural
 
-- `main.cpp`'s single top-level try/catch is an architectural single point of failure.**
+- **_[FIXED]_** **`main.cpp`'s single top-level try/catch is an architectural single point of failure.**
   This isn't a new bug on its own — it's the mechanism that turns the two crashes above (and any future one like them) into "kill the whole server" instead of "drop one bad connection." Right now, *any* uncaught `std::exception` thrown anywhere during command processing takes down every connected client's session at once, not just the offending one.
   → Wrap the body of `dispatchCommand()` (or the command-execution call inside `Server::startLoop()`) in its own try/catch that logs and calls `removeUser()` (or just drops the malformed line) for that one client, instead of letting exceptions propagate up to `main()`. Keep `main()`'s catch as a last-resort safety net for startup failures only.
 
@@ -92,7 +92,15 @@ Scope: same `includes/` + `src/` tree (now split further: `ServerHelper.cpp`, `M
 ## Priority order for the next sprint
 
 1. **Delete the `setAuthenticated(true)` line in `Server.cpp`'s accept handler** — one line, restores the entire registration gate.
+2. **Add the missing `return;` in `dispatchMessage.cpp`** — one line, closes a guar mislead whoever reads this file next without also reading the dispatcher.
+
+---
+
+## Priority order for the next sprint
+
+1. **Delete the `setAuthenticated(true)` line in `Server.cpp`'s accept handler** — one line, restores the entire registration gate.
 2. **Add the missing `return;` in `dispatchMessage.cpp`** — one line, closes a guaranteed crash.
+3. **Validate the MODE flags string starts with `+`/`-` before calling `server.mode()`**, and/or wrap per-command dispatch in its own try/catch — closes the other guaranteed crash aanteed crash.
 3. **Validate the MODE flags string starts with `+`/`-` before calling `server.mode()`**, and/or wrap per-command dispatch in its own try/catch — closes the other guaranteed crash and hardens against the next one like it.
 4. Fix the nickname digit-rejection logic and add the missing `NOTICE` branch — both quick, both visible the moment someone tests with a normal client.
 5. Everything still marked ❌ in the Part 1 table (connection caps, input-buffer cap, plaintext password arg, PING/PONG, Channel's shallow pointer copy) — none of these are regressions, they're just the original backlog items nobody picked up yet.
