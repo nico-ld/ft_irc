@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/09/08 17:39:51 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/08 17:52:14 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ void Server::startLoop() {
             dash->log(INFO, "Shutdown signal received, stopping server");
             break ;
         }
-        
+
         // Pause the socket until an event happens
 		// _epollFd = the socket to watch over, events = An array of struct epoll_event
 		// MAX_EVENTS = the size of the events array
@@ -180,6 +180,8 @@ void Server::startLoop() {
 			// The OS picks up the new connection, create a socket for the client
 			// then adds it to the epoll list and register it as Unauthenticated User for now
             if (currentFd == _serverFd) {
+                if (_users.size() >= MAX_USERS)
+                    close(currentFd);
                 struct sockaddr_in clientAddr;
                 socklen_t addrLen = sizeof(clientAddr);
                 int clientFd = accept(_serverFd, (struct sockaddr*)&clientAddr, &addrLen);
