@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/09/08 17:52:14 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/08 17:53:14 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,7 @@ void Server::startLoop() {
             if (currentFd == _serverFd) {
                 if (_users.size() >= MAX_USERS)
                     close(currentFd);
+
                 struct sockaddr_in clientAddr;
                 socklen_t addrLen = sizeof(clientAddr);
                 int clientFd = accept(_serverFd, (struct sockaddr*)&clientAddr, &addrLen);
