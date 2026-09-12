@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/12 16:16:11 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/12 16:48:08 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,13 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 		if (user.isAuthenticated()) {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
 			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
+			return ;
 		}
 
 		if (!user.getRealname().empty()) {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User has already a realname : '" + parameters[0] + "'");
 			server.sendReply(user, ERR_ALREADYREGISTRED, "User has already a realname");
+			return ;
 		}
 		user.setRealname(parameters[0]);
 		user.setProvidedUser(true);
