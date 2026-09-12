@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/12 16:48:08 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/12 16:50:23 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,16 +101,19 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 		if (!user.hasProvidedPassword()) {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User not registered");
 			server.sendReply(user, ERR_NOTREGISTERED, "User not registered");
+			return ;
 		}
 
 		if (user.isAuthenticated()) {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
 			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
+			return ;
 		}
 
 		if (!user.getNickname().empty()) {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User has already a nickname : '" + parameters[0] + "'");
 			server.sendReply(user, ERR_ALREADYREGISTRED, "User has already a nickname");
+			return ;
 		}
 		// Parse Nickname
 		if (isNicknameValid(server, user, parameters[0])) {
