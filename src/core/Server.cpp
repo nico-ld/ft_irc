@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:13:26 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/09/08 17:53:14 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/12 14:09:38 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,6 +271,10 @@ void Server::startLoop() {
                             catch (const std::exception &e) {
                                 dash->log(WARNING, "Error during dispatching" + std::string(e.what()));
                             }
+                            currentUser = _users.find(currentFd);
+                            if (currentUser == _users.end())
+                                break;
+        
 						}
             		}
         		}

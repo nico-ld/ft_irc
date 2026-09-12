@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatchUser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/04 11:04:15 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/12 14:19:31 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,11 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Invalid password : '" + parameters[0] + "'");
 			server.sendReply(user, ERR_PASSWDMISMATCH, "Invalid password");
 			return ;
+		}
+		
+		if (user.isAuthenticated()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
+			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
 		}
 		user.setProvidedPassword(true);
 	}

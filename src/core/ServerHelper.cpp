@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerHelper.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 09:41:10 by nico              #+#    #+#             */
-/*   Updated: 2026/09/02 15:20:10 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/12 13:58:02 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,6 @@ void Server::removeUser(int clientFd, std::string message) {
     epoll_ctl(_epollFd, EPOLL_CTL_DEL, clientFd, NULL);
     close(clientFd);
     _users.erase(clientFd);
-
 }
 
 User* Server::getUserById(int fd) {
