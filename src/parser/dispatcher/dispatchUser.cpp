@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/12 14:19:31 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/12 15:52:39 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,10 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for USER command");
 		}
 		
+		if (!user.hasProvidedPassword()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User not registered");
+			server.sendReply(user, ERR_NOTREGISTERED, "User not registered");
+		}
 		user.setRealname(parameters[0]);
 		user.setProvidedUser(true);
 	}
@@ -82,7 +86,12 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for NICK command");
 			return ;
 		}
-		
+
+		if (!user.hasProvidedPassword()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User not registered");
+			server.sendReply(user, ERR_NOTREGISTERED, "User not registered");
+		}
+
 		// Parse Nickname
 		if (isNicknameValid(server, user, parameters[0])) {
 			user.setNickname(parameters[0]);
