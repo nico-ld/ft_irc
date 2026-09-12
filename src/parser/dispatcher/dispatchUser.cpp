@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/12 15:52:39 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/12 16:16:11 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,15 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User not registered");
 			server.sendReply(user, ERR_NOTREGISTERED, "User not registered");
 		}
+		if (user.isAuthenticated()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
+			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
+		}
+
+		if (!user.getRealname().empty()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User has already a realname : '" + parameters[0] + "'");
+			server.sendReply(user, ERR_ALREADYREGISTRED, "User has already a realname");
+		}
 		user.setRealname(parameters[0]);
 		user.setProvidedUser(true);
 	}
@@ -92,6 +101,15 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 			server.sendReply(user, ERR_NOTREGISTERED, "User not registered");
 		}
 
+		if (user.isAuthenticated()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
+			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
+		}
+
+		if (!user.getNickname().empty()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User has already a nickname : '" + parameters[0] + "'");
+			server.sendReply(user, ERR_ALREADYREGISTRED, "User has already a nickname");
+		}
 		// Parse Nickname
 		if (isNicknameValid(server, user, parameters[0])) {
 			user.setNickname(parameters[0]);
