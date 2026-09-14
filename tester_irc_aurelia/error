@@ -1,0 +1,167 @@
+[33m------------------------------------------------------------
+                         test PASS                          
+------------------------------------------------------------
+[33m    test_err_461 : [32mOK[39m
+[33m    test_err_462 : [32mOK[39m
+[33m    test_err_464 : [31mKO[39m
+:ircserv 464 * Invalid password
+:ircserv 464 * Invalid password
+:ircserv 464 * Invalid password
+:ircserv 464 * Invalid password
+:ircserv 464 * Invalid password
+:ircserv 464 * Invalid password
+:ircserv 464 * Invalid password
+:ircserv 464 * Invalid password
+:ircserv 461 * Missing parameter for PASS command
+Error: closing link:  QUIT
+[33m------------------------------------------------------------
+                         test USER                          
+------------------------------------------------------------
+[33m    test_err_451 : [32mOK[39m
+[33m    test_err_462 : [32mOK[39m
+[33m    test_err_464 : [32mOK[39m
+[33m------------------------------------------------------------
+                         test NICK                          
+------------------------------------------------------------
+[33m    test_err_432 : [31mKO[39m
+:ircserv 432 * First character of nickname is invalid
+Error: closing link:  QUIT
+:ircserv 461 * Missing parameter for NICK command
+Error: closing link:  QUIT
+:ircserv 461 * Missing parameter for NICK command
+Error: closing link:  QUIT
+:ircserv 432 * First character of nickname is invalid
+Error: closing link:  QUIT
+:ircserv 432 * First character of nickname is invalid
+Error: closing link:  QUIT
+:ircserv 432 * First character of nickname is invalid
+Error: closing link:  QUIT
+:ircserv 432 * First character of nickname is invalid
+Error: closing link:  QUIT
+[33m    test_err_451 : [32mOK[39m
+[33m    test_err_461 : [32mOK[39m
+[33m    test_err_464 : [32mOK[39m
+[33m------------------------------------------------------------
+                         test JOIN                          
+------------------------------------------------------------
+[33m    test_err_451 : [32mOK[39m
+[33m    test_err_461 : [32mOK[39m
+[33m    test_err_476 : [32mOK[39m
+[33m------------------------------------------------------------
+                         test KICK                          
+------------------------------------------------------------
+[33m    test_err_401 : [32mOK[39m
+[33m    test_err_403 : [32mOK[39m
+[33m    test_err_451 : [32mOK[39m
+[33m    test_err_461 : [32mOK[39m
+[33m         test_ok : [31mKO[39m
+:ircserv 001 jacqu User 'jacqu' successfully registered
+:jacqu!jacqu@localhost JOIN #salut
+:ircserv 331 jacqu #salut :No Topic setted on this channel
+:ircserv 353 jacqu = #salut :@jacqu 
+:ircserv 366 jacqu #salut :End of user name list
+:jacqu!jacqu@localhost KICK #salut jacqu :
+Error: closing link: :jacqu!jacqu@localhost QUIT
+:ircserv 001 jacqu User 'jacqu' successfully registered
+:jacqu!jacqu@localhost JOIN #salut
+:ircserv 331 jacqu #salut :No Topic setted on this channel
+:ircserv 353 jacqu = #salut :jacqu 
+:ircserv 366 jacqu #salut :End of user name list
+:ircserv 482 jacqu You need to get operator privilege to kick someone
+:jacqu!jacqu@localhost QUIT
+Error: closing link: :jacqu!jacqu@localhost QUIT
+[33m------------------------------------------------------------
+                        test INVITE                         
+------------------------------------------------------------
+[33m    test_err_401 : [32mOK[39m
+[33m    test_err_403 : [32mOK[39m
+[33m    test_err_443 : [32mOK[39m
+[33m    test_err_451 : [32mOK[39m
+[33m    test_err_461 : [32mOK[39m
+[33m------------------------------------------------------------
+                        test PRIVMSG                        
+------------------------------------------------------------
+[33m    test_err_401 : [32mOK[39m
+[33m    test_err_403 : [32mOK[39m
+[33m    test_err_412 : [31mKO[39m
+:ircserv 001 aurelia User 'aurelia' successfully registered
+Error: closing link: :aurelia!aurelia@localhost QUIT
+[33m    test_err_451 : [32mOK[39m
+[33m    test_err_461 : [31mKO[39m
+:ircserv 001 aurelia User 'aurelia' successfully registered
+:aurelia!aurelia@localhost JOIN #salut
+:ircserv 331 aurelia #salut :No Topic setted on this channel
+:ircserv 353 aurelia = #salut :@aurelia 
+:ircserv 366 aurelia #salut :End of user name list
+:aurelia!aurelia@localhost QUIT
+Error: closing link: :aurelia!aurelia@localhost QUIT
+:ircserv 001 aurelia User 'aurelia' successfully registered
+:aurelia!aurelia@localhost JOIN #salut
+:ircserv 331 aurelia #salut :No Topic setted on this channel
+:ircserv 353 aurelia = #salut :@aurelia 
+:ircserv 366 aurelia #salut :End of user name list
+:ircserv 461 aurelia Missing paramete for PRIVMSG command
+:aurelia!aurelia@localhost QUIT
+Error: closing link: :aurelia!aurelia@localhost QUIT
+:ircserv 001 aurelia User 'aurelia' successfully registered
+:aurelia!aurelia@localhost JOIN #salut
+:ircserv 331 aurelia #salut :No Topic setted on this channel
+:ircserv 353 aurelia = #salut :@aurelia 
+:ircserv 366 aurelia #salut :End of user name list
+:aurelia!aurelia@localhost QUIT
+Error: closing link: :aurelia!aurelia@localhost QUIT
+[33m         test_ok : [32mOK[39m
+[33m------------------------------------------------------------
+                         test TOPIC                         
+------------------------------------------------------------
+[33m  test_cmd_TOPIC : [32mOK[39m
+[33m    test_err_403 : [32mOK[39m
+[33m    test_err_451 : [32mOK[39m
+[33m    test_err_461 : [32mOK[39m
+[33m    test_err_482 : [32mOK[39m
+[33m    test_rpl_331 : [31mKO[39m
+:ircserv 001 aurelia User 'aurelia' successfully registered
+:aurelia!aurelia@localhost JOIN #salut
+:ircserv 331 aurelia #salut :No Topic setted on this channel
+:ircserv 353 aurelia = #salut :@aurelia 
+:ircserv 366 aurelia #salut :End of user name list
+:aurelia!aurelia@localhost MODE #salut +t
+:aurelia!aurelia@localhost TOPIC #salut :un salon tres propre
+:aurelia!aurelia@localhost QUIT
+Error: closing link: :aurelia!aurelia@localhost QUIT
+:ircserv 001 aurelia User 'aurelia' successfully registered
+:aurelia!aurelia@localhost JOIN #salut
+:ircserv 331 aurelia #salut :No Topic setted on this channel
+:ircserv 353 aurelia = #salut :@aurelia 
+:ircserv 366 aurelia #salut :End of user name list
+:ircserv 331 aurelia #salut :No Topic setted on this channel
+:aurelia!aurelia@localhost QUIT
+Error: closing link: :aurelia!aurelia@localhost QUIT
+:ircserv 001 aurelia User 'aurelia' successfully registered
+:aurelia!aurelia@localhost JOIN #salut
+:ircserv 331 aurelia #salut :No Topic setted on this channel
+:ircserv 353 aurelia = #salut :@aurelia 
+:ircserv 366 aurelia #salut :End of user name list
+:aurelia!aurelia@localhost MODE #salut +t
+:aurelia!aurelia@localhost TOPIC #salut :un salon pas propre
+:ircserv 332 aurelia #salut :un salon pas propre
+:aurelia!aurelia@localhost QUIT
+Error: closing link: :aurelia!aurelia@localhost QUIT
+[33m    test_rpl_332 : [32mOK[39m
+[33m------------------------------------------------------------
+                         test MODE                          
+------------------------------------------------------------
+[33m    test_err_401 : [32mOK[39m
+[33m    test_err_403 : [32mOK[39m
+[33m    test_err_461 : [32mOK[39m
+[33m    test_err_472 : [32mOK[39m
+[33m    test_err_482 : [32mOK[39m
+[33m         test_ok : [32mOK[39m
+[33m------------------------------------------------------------
+                         test QUIT                          
+------------------------------------------------------------
+[33m         test_ok : [31mKO[39m
+:ircserv 001 aurelia User 'aurelia' successfully registered
+Error: closing link: :aurelia!aurelia@localhost QUIT
+:ircserv 001 aurelia User 'aurelia' successfully registered
+Error: closing link: :aurelia!aurelia@localhost QUIT :Too smart for here
