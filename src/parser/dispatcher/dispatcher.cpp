@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatcher.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/20 09:32:14 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/09/06 18:39:57 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/14 13:35:39 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void dispatchCommand(Server &server, User &user, std::string command) {
 	command = parser.getCommand();
 	
 	// Server command
-	// === QUIT ===
 	try {
+		// === QUIT ===
 		if (command == "quit") {
 			server.removeUser(user.getFd(), user.getPrefix() + " " + parser.getRawString());
 			return ;
@@ -79,6 +79,6 @@ void dispatchCommand(Server &server, User &user, std::string command) {
 	}
 	catch (const std::exception &e) {
 		server.sendReply(user, ERR_UNKNOWNCOMMAND, "Error during the execution of the command");
-		server.dash->log(ERROR_LVL, "Error during the execution of the command" + std::string(e.what()));
+		server.dash->log(ERROR_LVL, "Error during the execution of the command: " + std::string(e.what()));
 	}
 }

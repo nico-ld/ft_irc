@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatchUser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/12 16:50:23 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/14 13:52:34 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,24 @@ static bool isNicknameValid(Server &server, User &user, std::string nickname) {
 	return (true);
 }
 
+/* > Return true if the user is already authenticated or if he doesn't provided the password */
+static bool notCommandAvailable(Server &server, User &user, bool notRegistered, bool isAuthenticated)
+{
+	if (isAuthenticated) {
+		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered and authenticated");
+		server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered and authenticated");
+		return (true);
+	}
+	
+	else if (notRegistered) {
+		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User not registered, missing password");
+		server.sendReply(user, ERR_NOTREGISTERED, "User not registered, missing password");
+		return (true);
+	}
+
+	return (false);
+}
+
 void userCommandsDispatch(std::string command, User &user, Server &server, Parser &parser) {
 	std::vector<std::string> parameters = parser.getParameters();
 
@@ -63,26 +81,21 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 		server.notification(&user, ":ircserv PONG ircserv :" + token);
 		return ;
 	}
+
+	if (parameters.empty()) {
+		std::transform(command.begin(), command.end(), command.begin(), ::toupper);
+		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Missing parameter for " + command + " command");
+		server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for " + command + " command");
+		return ;
+	}
 	
 	// === USER ===
 	if (command == "user") {
-		if (parameters.empty()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Missing parameter for USER command");
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for USER command");
-		}
-		
-		if (!user.hasProvidedPassword()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User not registered");
-			server.sendReply(user, ERR_NOTREGISTERED, "User not registered");
-		}
-		if (user.isAuthenticated()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
-			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
+		if (notCommandAvailable(server, user, user.hasProvidedPassword(), user.isAuthenticated()))
 			return ;
-		}
 
 		if (!user.getRealname().empty()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User has already a realname : '" + parameters[0] + "'");
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User has already a realname : '" + user.getRealname() + "'");
 			server.sendReply(user, ERR_ALREADYREGISTRED, "User has already a realname");
 			return ;
 		}
@@ -92,29 +105,15 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 
 	// === NICK ===
 	else if (command == "nick") {
-		if (parameters.empty()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Missing parameter for NICK command");
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for NICK command");
+		if (notCommandAvailable(server, user, user.hasProvidedPassword(), user.isAuthenticated()))
 			return ;
-		}
-
-		if (!user.hasProvidedPassword()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User not registered");
-			server.sendReply(user, ERR_NOTREGISTERED, "User not registered");
-			return ;
-		}
-
-		if (user.isAuthenticated()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
-			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
-			return ;
-		}
 
 		if (!user.getNickname().empty()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User has already a nickname : '" + parameters[0] + "'");
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User has already a nickname : '" + user.getNickname() + "'");
 			server.sendReply(user, ERR_ALREADYREGISTRED, "User has already a nickname");
 			return ;
 		}
+		
 		// Parse Nickname
 		if (isNicknameValid(server, user, parameters[0])) {
 			user.setNickname(parameters[0]);
@@ -124,22 +123,18 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 
 	// === PASS ===
 	else if (command == "pass") {
-		if (parameters.empty()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Missing parameter for PASS command");
-			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for PASS command");
+		if (user.isAuthenticated()) {
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
+			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
 			return ;
 		}
-		
+
 		if (parameters[0] != server.getPassword()) {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Invalid password : '" + parameters[0] + "'");
 			server.sendReply(user, ERR_PASSWDMISMATCH, "Invalid password");
 			return ;
 		}
 		
-		if (user.isAuthenticated()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
-			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
-		}
 		user.setProvidedPassword(true);
 	}
 	
