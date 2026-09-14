@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    utils.sh                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: svogrig <svogrig@student.42.fr>            +#+  +:+       +#+         #
+#    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/01 23:31:31 by svogrig           #+#    #+#              #
-#    Updated: 2025/04/03 14:12:47 by svogrig          ###   ########.fr        #
+#    Updated: 2026/09/14 17:05:47 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ title() {
 	ln_before=$((($columns - 2 - ${#1})/2))
 	ln_after=$(($columns - 2 - ${#1} - $ln_before))
 
-	echo -n "$2"
+	printf "$2"
 
 	printf "%*s\n" "${COLUMNS:-$columns}" '' | tr ' ' '*'
 
@@ -39,7 +39,7 @@ title() {
 
 	printf "%*s\n" "${COLUMNS:-$columns}" '' | tr ' ' '*'
 
-	echo -n "$FG_DEFAULT"
+	printf "$FG_DEFAULT"
 }
 
 subtitle() {
@@ -47,7 +47,7 @@ subtitle() {
 	ln_before=$((($columns - ${#1})/2))
 	ln_after=$(($columns - ${#1} - $ln_before))
 
-	echo -n "$FG_YELLOW"
+	printf "$FG_YELLOW"
 
 	printf "%*s\n" "${COLUMNS:-$columns}" '' | tr ' ' '-'
 
@@ -57,14 +57,14 @@ subtitle() {
 
 	printf "%*s\n" "${COLUMNS:-$columns}" '' | tr ' ' '-'
 
-	echo -n "$FG_DEFAULT"
+	printf "$FG_DEFAULT"
 
 	{
 		columns=60
 		ln_before=$((($columns - ${#1})/2))
 		ln_after=$(($columns - ${#1} - $ln_before))
 
-		echo -n "$FG_YELLOW"
+		printf "$FG_YELLOW"
 
 		printf "%*s\n" "${COLUMNS:-$columns}" '' | tr ' ' '-'
 

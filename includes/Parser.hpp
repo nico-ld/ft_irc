@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 10:49:01 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 17:23:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 17:55:45 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Parser {
 
 
 		// === PRIVATE ATTRIBUTS ===
+		bool			_isTrailing;
 		std::string		_prefix;
 		std::string		_command;
 		std::string		_trailing;
@@ -61,6 +62,9 @@ class Parser {
 
 		/* > Return the wanted command */
 		std::string getCommand( void ) const { return (_command); }
+
+		/* > Return a boolean to know if there is a trailing parameter */
+		bool isTrailing( void ) const { return (_isTrailing); }
 
 		/* > Return the trailing parameter */
 		std::string getTrailing( void ) const { return (_trailing); }

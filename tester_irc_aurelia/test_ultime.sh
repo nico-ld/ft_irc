@@ -66,7 +66,7 @@ nbr=$(count_in_file $NBR_TEST)
 fail=$(count_in_file $NBR_FAIL)
 success=$(count_in_file $NBR_SUCCESS)
 
-echo "\nsuccess: ${FG_GREEN}$success${FG_DEFAULT} / $nbr - fail: ${FG_RED}$fail${FG_DEFAULT} / $nbr"
+printf "\nsuccess: ${FG_GREEN}$success${FG_DEFAULT} / $nbr - fail: ${FG_RED}$fail${FG_DEFAULT} / $nbr\n"
 
 # clean ***************************************
 

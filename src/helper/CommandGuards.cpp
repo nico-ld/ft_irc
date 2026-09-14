@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 14:48:10 by nico              #+#    #+#             */
-/*   Updated: 2026/09/14 16:25:10 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 17:27:42 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,12 @@ bool notFullyAuthenticated(Server &server, User &user) {
 
 bool alreadyAuthenticated(Server &server, User &user) {
 	if (user.isAuthenticated() == true) {
-		server.sendReply(user, ERR_NOTREGISTERED, "You're already authenticated");
+		server.sendReply(user, ERR_ALREADYREGISTRED, "You're already authenticated");
 		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": User already authenticated");
 		return (true);
 	}
+	else
+		return (false);
 }
 
 bool channelNotExist(Server &server, User &user, Channel *channel, std::string chanName) {

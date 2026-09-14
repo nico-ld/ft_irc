@@ -67,9 +67,9 @@ nc $SERVER $PORT < "$TEMPFILE" >> "$LOGFILE" 2>&1
 count=$(cat "$LOGFILE" | grep "461" | wc -l)
 
 if [ "$count" -eq 10 ]; then
-    echo "${GREEN}$LOGFILE : OK${RESET}"
+    printf "${GREEN}$LOGFILE : OK${RESET}\n"
 else
-    echo "${RED}$LOGFILE : KO${RESET}"
+    printf "${RED}$LOGFILE : KO${RESET}\n"
     cat $LOGFILE
 fi
 

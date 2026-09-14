@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 16:43:41 by afons             #+#    #+#             */
-/*   Updated: 2026/09/14 16:17:24 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 16:49:19 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 #include <stdexcept>
 
 void Server::part(std::vector<Channel> &channelsList, std::string reason, User *user) {
-	int fd = user->getFd();
-
 	for (std::vector<Channel>::iterator it = channelsList.begin(); it != channelsList.end(); ++it) {
 		// Get pointer on current channel
 		Channel *channel = getChannelByName(it->getName());

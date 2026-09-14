@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:19:20 by nico              #+#    #+#             */
-/*   Updated: 2026/09/14 16:14:34 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 18:00:49 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,15 @@ void messageCommandsDispatch(Server &server, std::string command, User &user, Pa
 	if (command == "privmsg") {
 		if (missingParam(server, user, command, parameters, 1))
 			return ;
+		else if (parser.isTrailing() == false) {
+			server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter(s) for PRIVMSG command");
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Missing parameter(s) for PRIVMSG command");
+			return ;
+		}
 		
-		// Check if there is a message
-		if (parameters.size() > 1 || !parser.getTrailing().empty()) {
-			std::string message = parser.getMessage();
+		// If there is a message
+		if (!parser.getTrailing().empty()) {
+			std::string message = parser.getTrailing();
 			
 			// If message target is a channel
 			if (parameters[0][0] == '#') {
@@ -43,6 +48,10 @@ void messageCommandsDispatch(Server &server, std::string command, User &user, Pa
 				// Send message to user
 				server.privateMessageUser(&user, server.getUserByNickname(parameters[0]), message, false);
 			}
+		}
+		else {
+			server.sendReply(user, ERR_NOTEXTTOSEND, "No message given for PRIVMSG");
+			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": No message given for PRIVMSG");
 		}
 	}
 

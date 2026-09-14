@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerHelper.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/27 09:41:10 by nico              #+#    #+#             */
-/*   Updated: 2026/09/12 13:58:02 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/14 18:15:13 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ void Server::removeUser(int clientFd, std::string message) {
 	}
 	
 	// Warn client that the user has been disconnected
-	notification(user, "Error: closing link: " + message);
+	notification(user, "ERROR: closing link: " + message);
 	
 	// Update dashboard
 	dash->decreaseInfo(dash->getSectionByIndex(1), LEFT, 1); // Decrease total of user

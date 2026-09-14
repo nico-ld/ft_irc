@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/14 15:19:11 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 16:52:30 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 		if (
 			alreadyAuthenticated(server, user)
 			|| notRegistered(server, user)
-			|| missingParam(server, user, command, parameters, 4)
+			|| missingParam(server, user, command, parameters, 3)
 		)
 			return ;
 

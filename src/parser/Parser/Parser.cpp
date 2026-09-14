@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 10:58:49 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 17:42:21 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 17:56:37 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ Parser &Parser::operator=(const Parser &other) {
 // === PARSER ===
 
 int Parser::parse(std::string &line) {
+	_isTrailing = false;
 	_rawString = line;
 
 	std::stringstream ss(line);
@@ -72,6 +73,7 @@ int Parser::parse(std::string &line) {
 		if (ss.peek() == ':') {
 			ss.get(); // Consume the ':'
 			std::getline(ss, _trailing);
+			_isTrailing = true;
 			return (0);
 		}
 
@@ -87,6 +89,7 @@ int Parser::parse(std::string &line) {
 		if (ss.peek() == ':')
 			ss.get(); // Consume the ':'
 		std::getline(ss, _trailing);
+		_isTrailing = true;
 	}
 	
 	return (0);
