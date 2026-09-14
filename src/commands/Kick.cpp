@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/09/02 14:58:36 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 14:34:03 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static bool commandValid(Server *server, Channel &channel, User *kicked, const U
 	// Check if target is on channel
 	if (!channel.isMember(kicked->getFd())) {
 		server->dash->log(WARNING, "Fd : " + toStr(opFd) + ", Try to kick someone that is not on the channel");
-		server->sendReply(*op, ERR_USERNOTINCHANNEL, "User you trying to kick is not on this channel");
+		server->sendReply(*op, ERR_NOSUCHNICK, "User you trying to kick is not on this channel");
 		return (false);
 	}
 
