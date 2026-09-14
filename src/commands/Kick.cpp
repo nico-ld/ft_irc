@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/09/14 14:34:03 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/14 16:37:14 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,37 +15,11 @@
 #include "User.hpp"
 #include <iostream>
 
-/* > Check if sender is on the channel and get operator rights, then if kicked user is on the channel*/
-static bool commandValid(Server *server, Channel &channel, User *kicked, const User *op) {
-	int opFd = op->getFd();
-	
-	// Check if sender is on the channel
-	if (!channel.isMember(opFd)) {
-		server->dash->log(WARNING, "Fd : " + toStr(opFd) + ", Is not on the channel");
-		server->sendReply(*op, ERR_NOTONCHANNEL, "You're not on this channel");
-		return (false);
-	}
-
-	// Check if sender get operator rights
-	if (!channel.isOperator(opFd)) {
-		server->dash->log(WARNING, "Fd : " + toStr(opFd) + ", doesn't get operator privilege to kick");
-		server->sendReply(*op, ERR_CHANOPRIVSNEEDED, "You need to get operator privilege to kick someone");
-		return (false);
-	}
-
-	// Check if target is on channel
-	if (!channel.isMember(kicked->getFd())) {
-		server->dash->log(WARNING, "Fd : " + toStr(opFd) + ", Try to kick someone that is not on the channel");
-		server->sendReply(*op, ERR_NOSUCHNICK, "User you trying to kick is not on this channel");
-		return (false);
-	}
-
-	return (true);
-}
-
-void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {
-	// Check if command is valid
-	if (!commandValid(this, channel, kicked, op))
+void Server::kick(Channel &channel, User *kicked, std::string reason, const User *op) {	
+	if (userNotOnChannel(*this, const_cast<User&>(*op), channel)
+		|| notOperator(*this, const_cast<User&>(*op), channel)
+		|| targetNotOnChannel(*this, const_cast<User&>(*op), channel, *kicked)
+	)
 		return ;
 
 	// If every guards are OK, kick user

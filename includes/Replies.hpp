@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 14:28:48 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/09/14 16:02:05 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 16:26:14 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@
 
 // === COMMANDS GUARDS ===
 # include <string>
+# include <vector>
 # include <cstddef>
 
 class	Server;
@@ -134,5 +135,11 @@ bool targetNotOnChannel(Server &server, User &user, Channel &channel, User &targ
 
 /* > Return True is user isn't operator on this channel */
 bool notOperator(Server &server, User &user, Channel &channel);
+
+/* > Return True is there is not enought parameters for mode flag */
+bool missingFlagParameter(
+	Server &server, User &user, std::string flag,
+	std::vector<std::string> list, std::vector<std::string>::iterator current
+);
 
 #endif

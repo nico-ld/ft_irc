@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 17:25:04 by afons             #+#    #+#             */
-/*   Updated: 2026/09/02 15:43:09 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 16:45:31 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,22 @@
 #include "../../includes/Parser.hpp"
 
 void Server::invite(const std::string &nickname, Channel &channel, const User *user) {
-	// Check if User that send command is in the channel
-	if (!channel.isMember(user->getFd())) {
-		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to invite on a channel where is not");
-		sendReply(*user, ERR_NOTONCHANNEL, "You're not in channel '" + channel.getName() + "'");
-		return ;
-	}
+	User *target = getUserByNickname(nickname);
 
-	// Check if the target is on the server or registered
-	if (!getUserByNickname(nickname)) {
-		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to invite a non authenticated user or non existing user");
-		sendReply(*user, ERR_NOSUCHNICK, nickname + " is not on the server or not registered");
+	if (userNotOnChannel(*this, const_cast<User&>(*user), channel)
+		|| userNotExist(*this, const_cast<User&>(*user), target, nickname))
+		return ;
+
+	// Check if the target is registered
+	if (!target->isAuthenticated()) {
+		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to invite a non authenticated user");
+		sendReply(*user, ERR_NOSUCHNICK, nickname + " is not authenticated");
 		return ;
 	}
 
 	// If channel is on invite only, check if user have the right permission to invite someone
-	if (channel.isInviteOnly()) {
-		if (!channel.isOperator(user->getFd())) {
-			dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Don't have the permission to invite");
-			sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need operator permission to do that");
-			return ;
-		}
-	}
+	if (channel.isInviteOnly() && notOperator(*this, const_cast<User&>(*user), channel))
+		return ;
 
 	// Check if invited user is on the channel
 	if (channel.isInvited(getUserByNickname(nickname)->getFd()) || channel.isMember(getUserByNickname(nickname)->getFd())) {
@@ -46,7 +40,7 @@ void Server::invite(const std::string &nickname, Channel &channel, const User *u
 		return ;
 	}
 
-	// If every guard are OK, invite user on the channel
+	// If every guards are OK, invite user on the channel
 	channel.inviteUser(getUserByNickname(nickname));
 
 	// Reply

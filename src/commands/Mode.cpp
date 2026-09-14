@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 16:46:21 by afons             #+#    #+#             */
-/*   Updated: 2026/09/03 21:09:41 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 16:33:24 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 		\*=================*/
 		
 		if ((*it_modestring)[i] == '+') {
-			i++;
+			++i;
 			while((*it_modestring)[i]) {
 			    
 				
@@ -58,10 +58,8 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 
 				// k : Set a room password //
 				else if ((*it_modestring)[i] == 'k') {
-					if (params.size() <= 0 || it_params == params.end()) {
-						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for +k MODE flag");
-						sendReply(*user, ERR_NEEDMOREPARAMS, "Missing parameter for +k MODE flag");
-						i++;
+					if (missingFlagParameter(*this, *user, "+k", params, it_params)) {
+						++i;
 						continue ;
 					}
 
@@ -73,11 +71,9 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 				
 				// l : Set a maximum user limit for the room //
 				else if ((*it_modestring)[i] == 'l') {
-					if (params.size() <= 0 || it_params == params.end()) {
-						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for +l MODE flag");
-						sendReply(*user, ERR_NEEDMOREPARAMS, "Missing parameter for +l MODE flag");
-						i++;
-						continue;
+					if (missingFlagParameter(*this, *user, "+l", params, it_params)) {
+						++i;
+						continue ;
 					}
 
 					std::stringstream ss(*it_params);
@@ -85,7 +81,7 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 					if (!(ss >> limit) || limit <= 0) {
 						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Invalid parameter for +l MODE flag");
 						sendReply(*user, ERR_UNKNOWNMODE, "Invalid parameter for +l flag. Valid parameter is positive and non-null integer");
-						i++;
+						++i;
 						continue ;
 					}
 
@@ -97,23 +93,12 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 				
 				// o : Grant administrator/operator privileges to another user (requires user's name as parameter) //
 				else if ((*it_modestring)[i] == 'o') {
-					if (params.size() <= 0 || it_params == params.end()) {
-						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for +o MODE flag");
-						sendReply(*user, ERR_NEEDMOREPARAMS, "Missing parameter for +o MODE flag");
-						++i;
-						continue ;
-					}
-					
 					User *target = getUserByNickname(*it_params);
-					if (!target) {
-						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to promote a user who doesn't exist");
-						sendReply(*user, ERR_NOSUCHNICK, "User '" + *it_params + "' doesn't exist");
-						++i;
-						continue ;
-					}
-					else if (!channel.isMember(target->getFd())) {
-						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to promote a user who is not on the channel");
-						sendReply(*user, ERR_USERNOTINCHANNEL, "User '" + *it_params + "' is not on the channel");
+					
+					if (missingFlagParameter(*this, *user, "+o", params, it_params)
+						|| userNotExist(*this, *user, target, *it_params)
+						|| targetNotOnChannel(*this, *user, channel, *target))
+					{
 						++i;
 						continue ;
 					}
@@ -177,26 +162,17 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 
 				// o: Remove channel operator privilege to the target
 				else if ((*it_modestring)[i] == 'o') {
-					if (params.size() <= 0 || it_params == params.end()) {
-						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing parameter for -o MODE flag");
-						sendReply(*user, ERR_NEEDMOREPARAMS, "Missing parameter for -o MODE flag");
-						++i;
-						continue ;
-					}
-
 					User *target = getUserByNickname(*it_params);
-					if (!target) {
-						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to promote a user who doesn't exist");
-						sendReply(*user, ERR_NOSUCHNICK, "User '" + *it_params + "' doesn't exist");
+
+					if (missingFlagParameter(*this, *user, "-o", params, it_params)
+						|| userNotExist(*this, *user, target, *it_params)
+						|| targetNotOnChannel(*this, *user, channel, *target))
+					{
 						++i;
 						continue ;
 					}
-					else if (!channel.isMember(target->getFd())) {
-						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to promote a user who is not on the channel");
-						sendReply(*user, ERR_USERNOTINCHANNEL, "User '" + *it_params + "' is not on the channel");
-						++i;
-						continue ;
-					}
+					
+					// Check if target get channel operator privilege
 					else if (!channel.isOperator(target->getFd())) {
 						dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Trying to remove channel operator privilege to an user who is not operator");
 						sendReply(*user, ERR_CHANOPRIVSNEEDED, "User '" + target->getNickname() + "' isn't operator");
@@ -233,12 +209,8 @@ void Server::launchMode(Channel &channel, std::vector<std::string> modestring, s
 // Entry point for handling a user's request to change room settings.
 // It verifies that the room exists, validates the user has permission, and triggers the settings update.
 void Server::mode(Channel &channel, std::string listMode, User *user, std::vector<std::string> params) {
-	// Ensure the user requesting changes is a room administrator
-	if (!channel.isOperator(user->getFd())) {
-		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": User need channel operator privilege to use MODE");
-		sendReply(*user, ERR_CHANOPRIVSNEEDED, "You need channel operator privilege to use MODE");
+	if (notOperator(*this, *user, channel))
 		return ;
-	}
 
 	if (listMode[0] != '+' && listMode[0] != '-') {
 		dash->log(WARNING, "Fd : " + toStr(user->getFd()) + ": Missing operator at start of flag list ('+' or '-')");

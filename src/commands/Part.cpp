@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 16:43:41 by afons             #+#    #+#             */
-/*   Updated: 2026/09/02 15:35:02 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 16:17:24 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,9 @@ void Server::part(std::vector<Channel> &channelsList, std::string reason, User *
 		// Get pointer on current channel
 		Channel *channel = getChannelByName(it->getName());
 		
-		// Check if channel exist
-		if (!channel) {
-			dash->log(WARNING, "Fd : " + toStr(fd) + ", Try to leave a channel that doesn't exist");
-			sendReply(*user, ERR_NOSUCHCHANNEL, "Channel doesn't exist");
+		if (channelNotExist(*this, *user, channel, it->getName())
+			|| userNotOnChannel(*this, *user, *channel))
 			return ;
-		}
-
-		// Check if user is in the channel
-		if (!channel->isMember(fd)) {
-			dash->log(WARNING, "Fd : " + toStr(fd) + ", Try to leave a channel without being on this channel");
-			sendReply(*user, ERR_NOTONCHANNEL, "You're not on this channel");
-			return ;
-		}
 		
 		// Remove user from the channel
 		channel->removeMember(user);

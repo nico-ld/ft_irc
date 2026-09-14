@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 14:48:10 by nico              #+#    #+#             */
-/*   Updated: 2026/09/14 15:57:32 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 16:25:10 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,18 @@ bool notOperator(Server &server, User &user, Channel &channel) {
 	if (!channel.isOperator(user.getFd())) {
 		server.sendReply(user, ERR_CHANOPRIVSNEEDED, "You need operator privilege to do this");
 		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Doesn't get operator privilege");
+		return (true);
+	}
+	else
+		return (false);
+}
+
+bool missingFlagParameter(Server &server, User &user, std::string flag,
+							std::vector<std::string> list, std::vector<std::string>::iterator current)
+{
+	if (list.size() <= 0 || current == list.end()) {
+		server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for " + flag + " MODE flag");
+		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Missing parameter for " + flag + " MODE flag");
 		return (true);
 	}
 	else
