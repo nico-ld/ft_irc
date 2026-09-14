@@ -6,37 +6,13 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:26:19 by nico              #+#    #+#             */
-/*   Updated: 2026/09/02 14:52:32 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 16:05:10 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "../../../includes/Parser.hpp"
 #include "Channel.hpp"
-
-/* > If amount of parameter is lower than expected, send an error message */
-static bool missingParameter(User &user, Server &server, std::string command,
-						size_t size, size_t expected)
-{
-	if (size >= expected)
-		return (false);
-
-	std::transform(command.begin(), command.end(), command.begin(), ::toupper);
-
-	server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Missing parameter(s) for " + command + " command");
-	server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter(s) for " + command + " command");
-	return (true);
-}
-
-/* > If pointer on channel is NULL, channel doesn't exist, so an error message is send*/
-static bool channelNotExist(User &user, Server &server, Channel *channel, std::string chanName) {
-	if (channel)
-		return (false);
-	
-	server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", Channel '" + chanName + "' doesn't exist");
-	server.sendReply(user, ERR_NOSUCHCHANNEL, "Channel '" + chanName + "' doesn't exist");
-	return (true);
-}
 
 /* > Dispatcher */
 void	channelCommandsDispatch(Server &server, std::string command, User &user, Parser &parser) {
@@ -46,11 +22,9 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 	
 	// === JOIN ===
 	if (command == "join") {
-		server.dash->log(DEBUG, "JOIN catched");
-		
-		// Check if there is somes parameters
-		if (missingParameter(user, server, command, parameters.size(), 1))
+		if (missingParam(server, user, command, parameters, 1))
 			return ;
+
 		listChannel = parser.getChannelList(parameters[0], server, user);
 
 		// Dispatch on channels amount
@@ -65,21 +39,17 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 
 	// === KICK ===
 	else if (command == "kick") {
-		// Check user enter every parameters
-		if (missingParameter(user, server, command, parameters.size(), 2))
+		if (missingParam(server, user, command, parameters, 2))
 			return ;
 		
 		// Parse parameters
 		Channel *channel = server.getChannelByName(parameters[0]);
-		if (channelNotExist(user, server, channel, parameters[0]))
+		if (channelNotExist(server, user, channel, parameters[0]))
 			return ;
 
 		User *kicked = server.getUserByNickname(parameters[1]);
-		if (!kicked) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User '" + parameters[0] + "' doesn't exist");
-			server.sendReply(user, ERR_NOSUCHNICK, "User '" + parameters[0] + "' doesn't exist");
+		if (userNotExist(server, user, kicked, parameters[1]))
 			return ;
-		}
 		
 		// Dispatch
 		if (!parser.getTrailing().empty())
@@ -90,13 +60,11 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 
 	// === PART ===
 	else if (command == "part") {
-		// Check if there is a channel name
-		if (missingParameter(user, server, command, parameters.size(), 1))
+		if (missingParam(server, user, command, parameters, 1))
 			return ;
 		
 		// Dispatch
 		listChannel = parser.getChannelList(parameters[0], server, user);
-		
 		if (!parser.getTrailing().empty())
 			server.part(listChannel, parser.getTrailing(), &user);
 		else
@@ -105,13 +73,12 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 
 	// === INVITE ===
 	else if (command == "invite") {
-		// Check parameters amount
-		if (missingParameter(user, server, command, parameters.size(), 2))
+		if (missingParam(server, user, command, parameters, 2))
 			return ;
 
 		// Parse channel name
 		Channel *channel = server.getChannelByName(parameters[1]);
-		if (channelNotExist(user, server, channel, parameters[0]))
+		if (channelNotExist(server, user, channel, parameters[0]))
 			return ;
 
 		server.invite(parameters[0], *channel, &user);
@@ -119,21 +86,13 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 
 	// === TOPIC ===
 	else if (command == "topic") {
-		// Check if there is a channel name
-		if (missingParameter(user, server, command, parameters.size(), 1))
+		if (missingParam(server, user, command, parameters, 1))
 			return ;
 
 		// Parse channel name
 		Channel *channel = server.getChannelByName(parameters[0]);
-		if (channelNotExist(user, server, channel, parameters[0]))
+		if (channelNotExist(server, user, channel, parameters[0]))
 			return ;
-
-		// Check if user is on the channel
-		if (!channel->isMember(user.getFd())) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ", User not on channel target ('" + parameters[0] + "')");
-			server.sendReply(user, ERR_NOTONCHANNEL, "You're not on this channel");
-			return ;
-		}
 
 		// Dispatch
 		if (!parser.getTrailing().empty())
@@ -144,21 +103,18 @@ void	channelCommandsDispatch(Server &server, std::string command, User &user, Pa
 
 	// === MODE ===
 	else if (command == "mode") {
-		// Check if there is a channel name
-		if (missingParameter(user, server, command, parameters.size(), 1))
+		if (missingParam(server, user, command, parameters, 1))
 			return ;
 
-		// Ensure channel on server 
 		Channel *channel = server.getChannelByName(parameters[0]);
-		if (channelNotExist(user, server, channel, parameters[0]))
+		if (channelNotExist(server, user, channel, parameters[0]))
 			return ;
 		
-		// Check command parameters amount
+			
+		// Dispatch on parameter amount
 		if (parameters.size() == 1)
 			server.sendReply(user, RPL_CHANNELMODEIS, server.displayChannelStatus(*channel));
-		
-		// Dispatch
-		if (parameters.size() == 2)
+		else if (parameters.size() == 2)
 			server.mode(*channel, parameters[1], &user);
 		else if (parameters.size() > 2) {
 			std::string listMode = parameters[1];

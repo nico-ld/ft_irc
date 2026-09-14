@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 11:13:34 by nico              #+#    #+#             */
-/*   Updated: 2026/09/14 13:52:34 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 15:19:11 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,24 +46,6 @@ static bool isNicknameValid(Server &server, User &user, std::string nickname) {
 	return (true);
 }
 
-/* > Return true if the user is already authenticated or if he doesn't provided the password */
-static bool notCommandAvailable(Server &server, User &user, bool notRegistered, bool isAuthenticated)
-{
-	if (isAuthenticated) {
-		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered and authenticated");
-		server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered and authenticated");
-		return (true);
-	}
-	
-	else if (notRegistered) {
-		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User not registered, missing password");
-		server.sendReply(user, ERR_NOTREGISTERED, "User not registered, missing password");
-		return (true);
-	}
-
-	return (false);
-}
-
 void userCommandsDispatch(std::string command, User &user, Server &server, Parser &parser) {
 	std::vector<std::string> parameters = parser.getParameters();
 
@@ -82,16 +64,13 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 		return ;
 	}
 
-	if (parameters.empty()) {
-		std::transform(command.begin(), command.end(), command.begin(), ::toupper);
-		server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Missing parameter for " + command + " command");
-		server.sendReply(user, ERR_NEEDMOREPARAMS, "Missing parameter for " + command + " command");
-		return ;
-	}
-	
 	// === USER ===
 	if (command == "user") {
-		if (notCommandAvailable(server, user, user.hasProvidedPassword(), user.isAuthenticated()))
+		if (
+			alreadyAuthenticated(server, user)
+			|| notRegistered(server, user)
+			|| missingParam(server, user, command, parameters, 4)
+		)
 			return ;
 
 		if (!user.getRealname().empty()) {
@@ -105,7 +84,11 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 
 	// === NICK ===
 	else if (command == "nick") {
-		if (notCommandAvailable(server, user, user.hasProvidedPassword(), user.isAuthenticated()))
+		if (
+			alreadyAuthenticated(server, user)
+			|| notRegistered(server, user)
+			|| missingParam(server, user, command, parameters, 1)
+		)
 			return ;
 
 		if (!user.getNickname().empty()) {
@@ -123,11 +106,9 @@ void userCommandsDispatch(std::string command, User &user, Server &server, Parse
 
 	// === PASS ===
 	else if (command == "pass") {
-		if (user.isAuthenticated()) {
-			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : User already registered : '" + parameters[0] + "'");
-			server.sendReply(user, ERR_ALREADYREGISTRED, "User already registered");
+		if (alreadyAuthenticated(server, user)
+			|| missingParam(server, user, command, parameters, 1))
 			return ;
-		}
 
 		if (parameters[0] != server.getPassword()) {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + " : Invalid password : '" + parameters[0] + "'");

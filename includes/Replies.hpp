@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 14:28:48 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/09/14 14:23:55 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/14 16:02:05 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,40 @@
 # define ERR_UMODEUNKNOWNFLAG   "501" // ":Unknown MODE flag"
 # define ERR_USERSDONTMATCH     "502" // ":Cannot change mode for other users"
 
+
+// === COMMANDS GUARDS ===
+# include <string>
+# include <cstddef>
+
+class	Server;
+class	Channel;
+class	User;
+
+/* > Compare the size of parameter list and the exepected size, return True if there is not enought parameters */
+bool missingParam(Server &server, User &user, std::string command, std::vector<std::string> params, size_t expected);
+
+/* > Return True if user has not provided password */
+bool notRegistered(Server &server, User &user);
+
+/* > Return True if there is an information missing about user (password, nickname or realname) */
+bool notFullyAuthenticated(Server &server, User &user);
+
+/* > Return True is user is already authenticated */
+bool alreadyAuthenticated(Server &server, User &user);
+
+/* > Return True if channel is NULL */
+bool channelNotExist(Server &server, User &user, Channel *channel, std::string chanName);
+
+/* > Return True if expected user is NULL */
+bool userNotExist(Server &server, User &user, User *expected, std::string userName);
+
+/* > Return True if user isn't on the channel he trying to send a command */
+bool userNotOnChannel(Server &server, User &User, Channel &channel);
+
+/* > Return True if target of command isn't on the channel */
+bool targetNotOnChannel(Server &server, User &user, Channel &channel, User &target);
+
+/* > Return True is user isn't operator on this channel */
+bool notOperator(Server &server, User &user, Channel &channel);
 
 #endif

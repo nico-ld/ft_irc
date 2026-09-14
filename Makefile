@@ -6,7 +6,7 @@
 #    By: nico <nico@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/13 08:07:33 by nile-dai          #+#    #+#              #
-#    Updated: 2026/09/02 11:57:46 by nico             ###   ########.fr        #
+#    Updated: 2026/09/14 14:47:51 by nico             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,7 @@ BUF_DIR		:= $(SRC_DIR)buffer/
 NET_DIR		:= $(SRC_DIR)network/
 CMD_DIR		:= $(SRC_DIR)commands/
 REP_DIR		:= $(SRC_DIR)Replies/
+HELP_DIR	:= $(SRC_DIR)helper/
 PARS_DIR	:= $(SRC_DIR)parser/Parser/
 DISP_DIR	:= $(SRC_DIR)parser/dispatcher/
 CORE_DIR	:= $(SRC_DIR)core/
@@ -50,6 +51,10 @@ CORE		:= \
 				$(CORE_DIR)ServerHelper.cpp \
 				$(CORE_DIR)User.cpp
 
+HELPER		:= \
+				$(HELP_DIR)Message.cpp \
+				$(HELP_DIR)CommandGuards.cpp
+
 NETWORK		:= \
 				$(NET_DIR)NetworkBuffer.cpp \
 				$(NET_DIR)NetworkUtils.cpp
@@ -68,14 +73,14 @@ DISPATCHER	:= \
 REPLIES		:= $(REP_DIR)Replies.cpp
 
 SRC			:= \
+				$(COMMANDS) \
 				$(CORE) \
+				$(HELPER) \
 				$(NETWORK) \
 				$(PARSER) \
-				$(REPLIES) \
-				$(COMMANDS) \
 				$(DISPATCHER) \
+				$(REPLIES) \
 				$(SRC_DIR)main.cpp \
-				$(SRC_DIR)Message.cpp
 
 # ~~ Objects ~~
 OBJ_DIR		:= obj/
