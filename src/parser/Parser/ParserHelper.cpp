@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ParserHelper.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 09:11:31 by nico              #+#    #+#             */
-/*   Updated: 2026/08/31 17:30:04 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 14:26:57 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ std::vector<Channel> Parser::getChannelList(std::string parameter, Server &serve
 			channelList.push_back(Channel(currentName));
 		else {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Invalid channel name : " + currentName);
-			server.sendReply(user, ERR_NOSUCHCHANNEL, "Invalid channel name : " + currentName);
+			server.sendReply(user, ERR_BADCHANMASK, "Invalid channel name : " + currentName);
 		}
 		search = pos + 1;
 	}
@@ -39,7 +39,7 @@ std::vector<Channel> Parser::getChannelList(std::string parameter, Server &serve
 			channelList.push_back(Channel(currentName));
 		else {
 			server.dash->log(WARNING, "Fd : " + toStr(user.getFd()) + ": Invalid channel name : " + currentName);
-			server.sendReply(user, ERR_NOSUCHCHANNEL, "Invalid channel name : " + currentName);
+			server.sendReply(user, ERR_BADCHANMASK, "Invalid channel name : " + currentName);
 		}
 	}
 

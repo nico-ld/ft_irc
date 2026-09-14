@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 14:28:48 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/08/19 12:07:00 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 14:23:55 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@
 # define ERR_INVITEONLYCHAN     "473" // "<channel> :Cannot join channel (+i)"
 # define ERR_BANNEDFROMCHAN     "474" // "<channel> :Cannot join channel (+b)"
 # define ERR_BADCHANNELKEY      "475" // "<channel> :Cannot join channel (+k)"
+# define ERR_BADCHANMASK		"476" // "<channel> :Invalid name"
 
 # define ERR_CHANOPRIVSNEEDED   "482" // "<channel> :You're not channel operator"
 

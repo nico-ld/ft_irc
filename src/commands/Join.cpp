@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 14:27:18 by nico              #+#    #+#             */
-/*   Updated: 2026/09/02 15:19:56 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 14:25:23 by afons            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,13 @@ static void joinReply(Server *server, User *client, Channel &channel, Parser &pa
 }
 
 static bool userCantJoin(Server *server, Channel &channel, User *client) {
+	//Check if user is authenticated
+	if (!client->isAuthenticated()) {
+		server->dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", is not authenticated");
+		server->sendReply(*client, ERR_NOTREGISTERED, "User not authenticated");
+		return (true);
+	}
+	
 	// Check if user has joined too many channels or not
 	if (client->getJoinedChannels().size() > 15) {
 		server->dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Joined too many channel");
@@ -87,7 +94,7 @@ void Server::join(std::vector<Channel> &listChannel, User *client, Parser &parse
 		// Check if channel name is correct
 		if (!parser.checkChannelName(getChan->getName())) {
 			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Invalid channel name");
-			sendReply(*client, ERR_NOSUCHCHANNEL, "Invalid channel name");
+			sendReply(*client, ERR_BADCHANMASK, "Invalid channel name");
 			return ;
 		}
 
@@ -144,7 +151,7 @@ void Server::join(std::vector<Channel> &listChannel, std::vector<std::string> &l
 		// Check if channel name is correct
 		if (!parser.checkChannelName(getChan->getName())) {
 			dash->log(WARNING, "Fd : " + toStr(client->getFd()) + ", Invalid channel name");
-			sendReply(*client, ERR_NOSUCHCHANNEL, "Invalid channel name");
+			sendReply(*client, ERR_BADCHANMASK, "Invalid channel name");
 			return ;
 		}
 
