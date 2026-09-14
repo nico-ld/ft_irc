@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 16:24:09 by afons             #+#    #+#             */
-/*   Updated: 2026/09/14 16:37:14 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 18:25:40 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,12 @@ void Server::kick(Channel &channel, User *kicked, std::string reason, const User
 	// Send message
 	broadcast(channel, message);
 	notification(kicked, message);
+
+	// if channel is empty, delete it
+	if (channel.getMembers().empty()) {
+		_channels.erase(channel.getName());
+
+		// Update dashboard
+		dash->decreaseInfo(dash->getSectionByIndex(1), LEFT, 0); // Decrease Channel amount
+	}
 }

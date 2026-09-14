@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 16:43:41 by afons             #+#    #+#             */
-/*   Updated: 2026/09/14 16:49:19 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/14 18:25:12 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void Server::part(std::vector<Channel> &channelsList, std::string reason, User *
 		
 		// if channel is empty, delete it
 		if (channel->getMembers().empty()) {
-			std::string message = channel->getName() + " has been deleted." + "\r\n";
 			_channels.erase(channel->getName());
 
 			// Update dashboard
