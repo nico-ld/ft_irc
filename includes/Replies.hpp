@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/29 14:28:48 by nile-dai          #+#    #+#             */
-/*   Updated: 2026/09/14 16:26:14 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/18 07:46:59 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,12 @@
 
 /*
 ** ============================================================
-**  IRC Numeric Replies — RFC 1459 / RFC 2812
-**  Scoped to what a typical ft_irc server needs:
-**  connection registration, JOIN/PART/QUIT, PRIVMSG/NOTICE,
-**  NICK/USER, TOPIC, MODE, KICK, INVITE, and common errors.
+**  IRC — RFC norm : 1459 / 2812
 ** ============================================================
-**
-**  Every real IRC reply line has the shape:
-**    :<server_name> <numeric> <target_nick> <params...> :<trailing>
-**
-**  <target_nick> is the nick of the client the reply is sent to
-**  (use "*" if not registered yet). <trailing> is prefixed with
-**  ':' and can contain spaces; everything before it is
-**  space-separated tokens with no spaces inside them.
 **
 **  The macros below are just the numeric codes (as in RFC 2812).
 **  The helper functions after them build ready-to-send lines so
-**  you don't hand-format ":" and spaces everywhere and typo them.
+**  we don't hand-format ":", spaces nor risk typos.
 */
 
 // ---------------------------------------------------------------
@@ -109,34 +98,29 @@ class	Server;
 class	Channel;
 class	User;
 
-/* > Compare the size of parameter list and the exepected size, return True if there is not enought parameters */
+// Compare the size of param list to expected size, to see if there's enought paramets
 bool missingParam(Server &server, User &user, std::string command, std::vector<std::string> params, size_t expected);
 
-/* > Return True if user has not provided password */
+// Return True if user has not provided password
 bool notRegistered(Server &server, User &user);
 
-/* > Return True if there is an information missing about user (password, nickname or realname) */
+// Return True if there is an information missing about user (password, nickname or realname)
 bool notFullyAuthenticated(Server &server, User &user);
 
-/* > Return True is user is already authenticated */
 bool alreadyAuthenticated(Server &server, User &user);
-
-/* > Return True if channel is NULL */
 bool channelNotExist(Server &server, User &user, Channel *channel, std::string chanName);
-
-/* > Return True if expected user is NULL */
 bool userNotExist(Server &server, User &user, User *expected, std::string userName);
 
-/* > Return True if user isn't on the channel he trying to send a command */
+// Return True if user isn't on the channel he trying to send a command
 bool userNotOnChannel(Server &server, User &User, Channel &channel);
 
-/* > Return True if target of command isn't on the channel */
+// Return True if target of command isn't on the channel
 bool targetNotOnChannel(Server &server, User &user, Channel &channel, User &target);
 
-/* > Return True is user isn't operator on this channel */
+// Return True is user isn't operator on this channel
 bool notOperator(Server &server, User &user, Channel &channel);
 
-/* > Return True is there is not enought parameters for mode flag */
+// Return True is there is not enought parameters for mode flag
 bool missingFlagParameter(
 	Server &server, User &user, std::string flag,
 	std::vector<std::string> list, std::vector<std::string>::iterator current

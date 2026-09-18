@@ -6,7 +6,7 @@
 /*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 21:11:39 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/09/14 15:56:36 by nico             ###   ########.fr       */
+/*   Updated: 2026/09/18 07:49:39 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,10 @@ class Server
 		int _serverFd;
 		int _epollFd;
 
-		// Central Memory Storage (The "Database")
-		std::map<int, User> _users;				  // Key: client socket FD -> Value: User object
-		std::map<std::string, Channel> _channels; // Key: Channel Name -> Value: Channel object
+		//mapping socket's FD to User object
+		std::map<int, User> _users;
+		//mapping channel name to channel object 
+		std::map<std::string, Channel> _channels;
 
 		// FDs whose send() has hit a fatal error (EPIPE/ECONNRESET/...) and are
 		// waiting to be cleaned up. Removal is deferred rather than done inline
@@ -67,8 +68,7 @@ class Server
 		Server(const Server &src) { (void)src; }
 		Server &operator=(const Server &src) { (void)src; return (*this);}
 
-		// === WRITE BACKPRESSURE (NetworkBuffer) ===
-		/* > Toggle whether epoll also watches this fd for write-readiness (EPOLLOUT) */
+		// Toggle whether epoll also watches this fd for write-readiness (EPOLLOUT)
 		void setEpollWriteInterest(int fd, bool enable);
 
 		/* > true if errno corresponds to a dead connection (vs. a transient

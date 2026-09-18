@@ -6,7 +6,7 @@
 /*   By: afons <afons@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 19:49:37 by jdessoli          #+#    #+#             */
-/*   Updated: 2026/08/03 17:15:38 by afons            ###   ########.fr       */
+/*   Updated: 2026/09/18 07:33:42 by jdessoli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <map>
 #include <vector>
 
-class User; // Forward declaration
+class User; // Forward declaration needed as Channel needs User
 
 class Channel {
 private:
@@ -36,37 +36,29 @@ private:
     long        _userLimit;          // +l (-1 means no limit active)
 
 public:
-    // Constructor / Destructor
     Channel(const std::string& name);
     Channel(const std::string& name, const std::string& key);
     ~Channel();
-
-    // Orthodox Canonical Form
     Channel(const Channel& src);
     Channel& operator=(const Channel& src);
 
-    // --- Core Management ---
     const std::string& getName() const;
     const std::string& getTopic() const;
     void               setTopic(const std::string& topic);
 
-    // --- Membership Operations (Person C) ---
     void addMember(User* user);
     void removeMember(User* user);
     bool isMember(int fd) const;
     const std::map<int, User*>& getMembers() const;
 
-    // --- Operator Privilege Operations (Person C) ---
     void addOperator(User* user);
     void removeOperator(User* user);
     bool isOperator(int fd) const;
 
-    // --- Invite Operations (Person C) ---
     void inviteUser(User* user);
     bool isInvited(int fd) const;
     void clearInvite(int fd);
 
-    // --- Mode Getters & Setters (Person C) ---
     bool               isInviteOnly() const;
     void               setInviteOnly(bool state);
 
